@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V-Shape Fase 1 — Vídeos dos Treinos</title>
+<style>
+  :root{
+    --bg:#0e0e10; --bg-card:#1a1a1f; --bg-soft:#25252b;
+    --fg:#ececef; --fg-dim:#9a9aa3; --fg-mute:#6b6b75;
+    --accent:#3b82f6; --accent-soft:#1e3a5f;
+    --warn:#f59e0b; --warn-soft:#3a2a0e;
+    --danger:#ef4444; --ok:#22c55e;
+    --border:#2a2a30;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5}
+  body{padding:0 0 60px;min-height:100vh}
+  header{padding:24px 20px 16px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#181820,var(--bg))}
+  header h1{font-size:22px;letter-spacing:-.01em}
+  header .sub{font-size:13px;color:var(--fg-dim);margin-top:4px}
+  .alerta{margin-top:14px;padding:12px 14px;background:var(--warn-soft);border-left:3px solid var(--warn);border-radius:6px;font-size:13px}
+  .alerta strong{color:var(--warn)}
+  .sinais{margin-top:10px;padding:10px 14px;background:rgba(239,68,68,.08);border-left:3px solid var(--danger);border-radius:6px;font-size:12px;color:#fecaca}
+  nav.tabs{display:flex;gap:6px;padding:16px 12px;background:var(--bg);position:sticky;top:0;z-index:10;border-bottom:1px solid var(--border);overflow-x:auto}
+  nav.tabs button{flex:1;min-width:90px;padding:10px 8px;background:var(--bg-card);color:var(--fg-dim);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s}
+  nav.tabs button:hover{border-color:var(--accent);color:var(--fg)}
+  nav.tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  nav.tabs .tab-sub{display:block;font-size:10px;font-weight:400;opacity:.85;margin-top:2px}
+  main{padding:16px 12px}
+  .tab-content{display:none;animation:fadeIn .2s}
+  .tab-content.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .treino-header{padding:14px 16px;background:var(--bg-card);border-radius:10px;margin-bottom:14px;border:1px solid var(--border)}
+  .treino-header h2{font-size:17px;margin-bottom:4px}
+  .treino-header .foco{font-size:12px;color:var(--fg-dim)}
+  .treino-header .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .treino-header .meta span{font-size:11px;padding:3px 8px;background:var(--bg-soft);border-radius:10px;color:var(--fg-dim)}
+  details.exercicio{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;transition:border-color .15s}
+  details.exercicio[open]{border-color:var(--accent)}
+  details.exercicio summary{padding:14px 16px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;font-size:14px;font-weight:500;user-select:none}
+  details.exercicio summary::-webkit-details-marker{display:none}
+  details.exercicio summary:hover{background:rgba(59,130,246,.05)}
+  .ex-num{flex:0 0 28px;height:28px;background:var(--bg-soft);color:var(--fg-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+  details.exercicio[open] .ex-num{background:var(--accent);color:#fff}
+  .ex-nome{flex:1;font-weight:600}
+  .ex-serie{font-size:11px;padding:3px 8px;background:var(--bg-soft);color:var(--fg-dim);border-radius:10px;font-weight:600}
+  .ex-toggle{flex:0 0 18px;color:var(--fg-dim);font-size:14px;transition:transform .2s}
+  details.exercicio[open] .ex-toggle{transform:rotate(180deg)}
+  .ex-conteudo{padding:0 16px 16px;display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:760px){.ex-conteudo{grid-template-columns:340px 1fr}}
+  .ex-video{background:#000;border-radius:8px;overflow:hidden;position:relative;aspect-ratio:9/16;max-width:280px;margin:0 auto}
+  .ex-video .video-poster{position:relative;display:block;width:100%;height:100%;background:#000;cursor:pointer;overflow:hidden}
+  .ex-video .video-poster img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s}
+  .ex-video .video-poster:hover img{opacity:.8}
+  .ex-video .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;background:rgba(255,255,255,.95);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:24px;padding-left:4px;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:transform .15s}
+  .ex-video .video-poster:hover .play-btn{transform:translate(-50%,-50%) scale(1.1)}
+  .ex-video .video-poster iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  .ex-video .yt-link{display:block;text-align:center;padding:8px;background:var(--bg-soft);color:var(--accent);font-size:12px;text-decoration:none;font-weight:600}
+  .ex-video .yt-link:hover{background:var(--accent-soft)}
+  .combo-videos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .combo-videos .combo-video{background:var(--bg-soft);border-radius:8px;padding:8px}
+  .combo-videos .combo-video h4{font-size:11px;color:var(--fg-dim);margin-bottom:6px;text-align:center;text-transform:uppercase;letter-spacing:.05em}
+  .combo-videos .combo-video .video-poster{position:relative;display:block;width:100%;aspect-ratio:9/16;border-radius:6px;background:#000;overflow:hidden;cursor:pointer}
+  .combo-videos .combo-video .video-poster img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s}
+  .combo-videos .combo-video .video-poster:hover img{opacity:.8}
+  .combo-videos .combo-video .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;background:rgba(255,255,255,.95);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:16px;padding-left:3px;box-shadow:0 2px 6px rgba(0,0,0,.4);transition:transform .15s}
+  .combo-videos .combo-video .video-poster:hover .play-btn{transform:translate(-50%,-50%) scale(1.1)}
+  .combo-videos .combo-video .video-poster iframe{position:absolute;inset:0;width:100%;height:100%;border-radius:6px;border:0;display:block}
+  .combo-videos .combo-video a{display:block;margin-top:4px;padding:3px 6px;background:var(--bg-card);color:var(--accent);text-align:center;text-decoration:none;font-size:10px;border-radius:4px;font-weight:600}
+  .ex-grupo{font-size:12px;color:var(--fg-dim);font-style:italic;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .ex-dicas{list-style:none;font-size:13px}
+  .ex-dicas li{padding:5px 0 5px 22px;position:relative;color:var(--fg)}
+  .ex-dicas li::before{position:absolute;left:0;top:5px;font-size:13px;font-weight:700}
+  .ex-dicas li.ok::before{content:"✓";color:var(--ok)}
+  .ex-dicas li.no::before{content:"✗";color:var(--danger)}
+  .ex-respira{margin-top:10px;padding:8px 10px;background:var(--bg-soft);border-radius:6px;font-size:12px;color:var(--fg-dim)}
+  .ex-respira strong{color:var(--fg)}
+  .ex-aviso{margin-top:10px;padding:8px 10px;background:var(--warn-soft);border-left:2px solid var(--warn);border-radius:4px;font-size:12px;color:#fde68a}
+  .combo-how{background:var(--bg-soft);padding:10px 12px;border-radius:6px;margin-bottom:12px}
+  .combo-how h4{font-size:12px;color:var(--accent);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+  .combo-how ol{padding-left:18px;font-size:12px;color:var(--fg-dim)}
+  .combo-how ol li{padding:2px 0}
+  footer{padding:24px 20px;text-align:center;font-size:11px;color:var(--fg-mute);border-top:1px solid var(--border);margin-top:30px}
+  footer a{color:var(--accent);text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏋️ V-Shape · Fase 1 — Vídeos</h1>
+  <div class="sub">Clica em cada exercício e assiste o Short antes de treinar (~60s cada)</div>
+  <div class="alerta">
+    <strong>Categoria A + GLP-1:</strong> forma 100% vale mais que carga. ↑ carga só após <strong>2 treinos seguidos perfeitos</strong>. Se sentir tontura, fraqueza ou enjoo forte, <strong>para o treino</strong>.
+  </div>
+  <div class="sinais">
+    🚨 <strong>Sinais de alerta GLP-1:</strong> tontura persistente · fraqueza/tremor · vômito repetido (&gt;2x) · dor articular &gt;2 dias → pare e me avisa no Telegram.
+  </div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button class="tab-btn active" data-tab="A">Treino A<span class="tab-sub">Upper 1 · puxar</span></button>
+  <button class="tab-btn" data-tab="B">Treino B<span class="tab-sub">Lower 1</span></button>
+  <button class="tab-btn" data-tab="C">Treino C<span class="tab-sub">Upper 2 · empurrar</span></button>
+  <button class="tab-btn" data-tab="D">Treino D<span class="tab-sub">Lower 2</span></button>
+</nav>
+
+<main>
+
+<!-- ====================== TREINO A ====================== -->
+<section id="tab-A" class="tab-content active">
+  <div class="treino-header">
+    <h2>Treino A — Upper 1 (puxar)</h2>
+    <div class="foco">Costas (dorsais, romboides) + deltoide + core</div>
+    <div class="meta">
+      <span>📅 2ª feira</span>
+      <span>⏱ ~50 min</span>
+      <span>🔁 3x12 · 45s descanso</span>
+    </div>
+  </div>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">0</span><span class="ex-nome">Bike (aquecimento)</span><span class="ex-serie">5 min</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="v_h7lHYsV_U" href="https://www.youtube.com/shorts/v_h7lHYsV_U" target="_blank" rel="noopener" aria-label="Assistir Bike aquecimento no YouTube"><img src="https://i.ytimg.com/vi/v_h7lHYsV_U/hqdefault.jpg" alt="Bike aquecimento" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/v_h7lHYsV_U" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Cardiovascular / aquecimento geral</div>
+        <ul class="ex-dicas">
+          <li class="ok">Cadência ~70-80 rpm (rotação confortável)</li>
+          <li class="ok">Resistência BAIXA — objetivo é aquecer, não cansar</li>
+          <li class="ok">Aproveita pra beber água (200-300ml)</li>
+          <li class="no">Não é HIIT — não precisa acelerar o coração</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> nasal, ritmada, sem prender ar.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">1</span><span class="ex-nome">Prancha isométrica</span><span class="ex-serie">3x30s</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="uxPlAbWFUDs" href="https://www.youtube.com/shorts/uxPlAbWFUDs" target="_blank" rel="noopener" aria-label="Assistir Prancha isométrica no YouTube"><img src="https://i.ytimg.com/vi/uxPlAbWFUDs/hqdefault.jpg" alt="Prancha isométrica" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/uxPlAbWFUDs" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Core: reto abdominal, transverso, oblíquos</div>
+        <ul class="ex-dicas">
+          <li class="ok">Corpo em linha reta: cabeça → ombros → quadril → joelhos → calcanhares</li>
+          <li class="ok">Contraia glúteo + abdômen o tempo todo</li>
+          <li class="ok">Cotovelos DEBAIXO dos ombros (90°)</li>
+          <li class="no">NÃO deixe quadril cair (compensa lombar → dor)</li>
+          <li class="no">NÃO suba quadril (diminui trabalho do core)</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> lenta, nunca prender ar (aumenta pressão desnecessária).</div>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> 30s é o MÍNIMO viável. Foco em FORMA, não em tempo. Se 30s for fácil: 35-40s. Se a forma cair antes dos 30s: 20-25s e evolui.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">2</span><span class="ex-nome">Puxada aberta frente</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="_2MfZAj98tk" href="https://www.youtube.com/shorts/_2MfZAj98tk" target="_blank" rel="noopener" aria-label="Assistir Puxada aberta frente no YouTube"><img src="https://i.ytimg.com/vi/_2MfZAj98tk/hqdefault.jpg" alt="Puxada aberta frente" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/_2MfZAj98tk" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Dorsais (latíssimo do dorso), romboides, bíceps</div>
+        <ul class="ex-dicas">
+          <li class="ok">Pegada um pouco mais aberta que a largura dos ombros</li>
+          <li class="ok">Puxa cotovelos <strong>PRA BAIXO E PRA TRÁS</strong> (não pra frente do corpo)</li>
+          <li class="ok">Peito "vai na barra" — em 1-2s de contração no final</li>
+          <li class="ok">Costas apoiadas no banco, abdômen contraído</li>
+          <li class="no">NÃO jogue a cabeça pra trás (machuca cervical)</li>
+          <li class="no">NÃO use impulso do tronco (balançar)</li>
+          <li class="no">NÃO solte a barra na volta — desce controlada</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao puxar (contrário da intuição!), <strong>inspirar</strong> na volta.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">3</span><span class="ex-nome">Remada aberta máquina</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="14GcffFimi0" href="https://www.youtube.com/shorts/14GcffFimi0" target="_blank" rel="noopener" aria-label="Assistir Remada aberta máquina no YouTube"><img src="https://i.ytimg.com/vi/14GcffFimi0/hqdefault.jpg" alt="Remada aberta máquina" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/14GcffFimi0" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Dorsais, romboides, trapézio médio, bíceps</div>
+        <ul class="ex-dicas">
+          <li class="ok">Peito ENCOSTADO no apoio o tempo todo</li>
+          <li class="ok">Puxa cotovelos <strong>PRA TRÁS</strong>, próximos do tronco</li>
+          <li class="ok">No final, <strong>contrai escapular</strong> (junta omoplatas) e segura 1-2s</li>
+          <li class="ok">Banco bem ajustado: apoio encosta no peito sem pressionar abdômen</li>
+          <li class="no">NÃO encolhe ombro nas orelhas</li>
+          <li class="no">NÃO use impulso do tronco (força vem das costas)</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> expirar ao puxar, inspirar na volta.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">4</span><span class="ex-nome">Remada serrote</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="mjFIZX68F_8" href="https://www.youtube.com/shorts/mjFIZX68F_8" target="_blank" rel="noopener" aria-label="Assistir Remada serrote no YouTube"><img src="https://i.ytimg.com/vi/mjFIZX68F_8/hqdefault.jpg" alt="Remada serrote" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/mjFIZX68F_8" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Dorsais, trapézio, deltoide posterior, bíceps</div>
+        <ul class="ex-dicas">
+          <li class="ok">1 halter, apoio de joelho + mão no banco (posição "serrote")</li>
+          <li class="ok">Costas <strong>PARALELAS ao chão</strong> (não arqueia lombar)</li>
+          <li class="ok">Puxa cotovelo pra trás, próximo do tronco</li>
+          <li class="ok">Desce devagar (3-4 segundos) — fase excêntrica é onde ganha força</li>
+          <li class="no">NÃO rotacione o tronco (força sai do core, não do dorsal)</li>
+          <li class="no">NÃO use o bíceps como motor principal (puxa com as costas)</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> expirar ao puxar, inspirar na volta.</div>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> core firme o tempo todo. Se a lombar começar a doer, a carga está alta demais ou a forma caiu.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">5</span><span class="ex-nome">Desenvolvimento halteres</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="5I7ogOjvdnc" href="https://www.youtube.com/shorts/5I7ogOjvdnc" target="_blank" rel="noopener" aria-label="Assistir Desenvolvimento halteres no YouTube"><img src="https://i.ytimg.com/vi/5I7ogOjvdnc/hqdefault.jpg" alt="Desenvolvimento halteres" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/5I7ogOjvdnc" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Deltoide (anterior e medial), tríceps</div>
+        <ul class="ex-dicas">
+          <li class="ok"><strong>Sentado</strong> no banco com apoio — mais seguro que em pé</li>
+          <li class="ok">Halteres na altura dos ombros no início (palmas pra frente)</li>
+          <li class="ok">Sobe até a altura do topo da cabeça (sem bater os halteres)</li>
+          <li class="ok">Cotovelos a ~45° do tronco (não totalmente abertos = lesiona ombro)</li>
+          <li class="no">NÃO trave cotovelo no topo (protege articulação)</li>
+          <li class="no">NÃO jogue a lombar pra trás (compensar carga excessiva)</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> expirar ao subir, inspirar na descida.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">6</span><span class="ex-nome">Ele lateral + crucifixo máquina (COMBO)</span><span class="ex-serie">3x12+12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="combo-videos">
+        <div class="combo-video">
+          <h4>A) Elevação lateral</h4>
+          <a class="video-poster" data-vid="nhQ4mdk0TmM" href="https://www.youtube.com/shorts/nhQ4mdk0TmM" target="_blank" rel="noopener" aria-label="Assistir Elevação lateral no YouTube"><img src="https://i.ytimg.com/vi/nhQ4mdk0TmM/hqdefault.jpg" alt="Elevação lateral" loading="lazy"><div class="play-btn">▶</div></a>
+          <a href="https://www.youtube.com/shorts/nhQ4mdk0TmM" target="_blank" rel="noopener">↗ YouTube</a>
+        </div>
+        <div class="combo-video">
+          <h4>B) Crucifixo máquina</h4>
+          <a class="video-poster" data-vid="9BEQWr0u-ac" href="https://www.youtube.com/shorts/9BEQWr0u-ac" target="_blank" rel="noopener" aria-label="Assistir Crucifixo máquina no YouTube"><img src="https://i.ytimg.com/vi/9BEQWr0u-ac/hqdefault.jpg" alt="Crucifixo máquina" loading="lazy"><div class="play-btn">▶</div></a>
+          <a href="https://www.youtube.com/shorts/9BEQWr0u-ac" target="_blank" rel="noopener">↗ YouTube</a>
+        </div>
+      </div>
+      <div>
+        <div class="combo-how">
+          <h4>Como fazer o combo</h4>
+          <ol>
+            <li>12 elevações laterais (A)</li>
+            <li>Sem descanso (10-15s pra trocar de máquina)</li>
+            <li>12 crucifixo na máquina (B)</li>
+            <li>Aí sim: 45s de descanso</li>
+            <li>Repete o bloco 3x</li>
+          </ol>
+        </div>
+        <ul class="ex-dicas">
+          <li class="ok">A) Elevação lateral: sobe até a altura do ombro (não acima), polegar pra cima, desce controlada</li>
+          <li class="ok">B) Crucifixo máquina: amplitude completa, sem travar cotovelo</li>
+          <li class="ok">Carga LEVE em ambos — foco é <strong>pump</strong>, não força máxima</li>
+          <li class="no">NÃO subir elevação acima do ombro (lesiona manguito)</li>
+          <li class="no">NÃO usar carga que comprometa forma em qualquer dos 2</li>
+        </ul>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> se a carga não der pra fazer os dois com qualidade, <strong>abaixa</strong>. Sem vergonha — Fase 1 é fundação.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">7</span><span class="ex-nome">Abdominal remador</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="2ephPjg2CZs" href="https://www.youtube.com/shorts/2ephPjg2CZs" target="_blank" rel="noopener" aria-label="Assistir Abdominal remador no YouTube"><img src="https://i.ytimg.com/vi/2ephPjg2CZs/hqdefault.jpg" alt="Abdominal remador" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/2ephPjg2CZs" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Reto abdominal, oblíquos, flexores do quadril</div>
+        <ul class="ex-dicas">
+          <li class="ok">Em apoio: antebraços nos estofados, mãos nas alças</li>
+          <li class="ok">Flexiona o quadril — joelhos vão em direção ao peito</li>
+          <li class="ok">No final do movimento, <strong>contrai abdômen</strong> e segura 1s</li>
+          <li class="ok">Volta devagar (não solta)</li>
+          <li class="no">NÃO use impulso (balançar o corpo)</li>
+          <li class="no">NÃO puxe com a força dos braços — o motor é o core</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao flexionar (contração), <strong>inspirar</strong> na volta.</div>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> amplitude que mantenha a lombar protegida. Não force amplitude máxima se sentir a lombar trabalhar.</div>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ====================== TREINO B ====================== -->
+<section id="tab-B" class="tab-content">
+  <div class="treino-header">
+    <h2>Treino B — Lower 1</h2>
+    <div class="foco">Quadríceps + posterior de coxa + adutores/abdutores</div>
+    <div class="meta">
+      <span>📅 4ª feira</span>
+      <span>⏱ ~55 min</span>
+      <span>🔁 3x12 · 45s descanso</span>
+    </div>
+  </div>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">0</span><span class="ex-nome">Bike (aquecimento)</span><span class="ex-serie">10 min</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="v_h7lHYsV_U" href="https://www.youtube.com/shorts/v_h7lHYsV_U" target="_blank" rel="noopener" aria-label="Assistir Bike aquecimento no YouTube"><img src="https://i.ytimg.com/vi/v_h7lHYsV_U/hqdefault.jpg" alt="Bike aquecimento" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/v_h7lHYsV_U" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Cardiovascular / aquecimento geral</div>
+        <ul class="ex-dicas">
+          <li class="ok">Cadência ~70-80 rpm</li>
+          <li class="ok">Resistência BAIXA — objetivo é aquecer pernas e joelho</li>
+          <li class="ok">Bebe 300-400ml de água durante a bike</li>
+          <li class="no">NÃO é cardio de verdade — frequência cardíaca não precisa subir muito</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> nasal, ritmada.</div>
+        <div class="ex-aviso">⚠️ <strong>Treino B (Lower):</strong> bike 10 min é o aquecimento específico pra preparar joelho, quadril e tornozelo antes de agachar.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">1</span><span class="ex-nome">Prancha isométrica</span><span class="ex-serie">3x30s</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="uxPlAbWFUDs" href="https://www.youtube.com/shorts/uxPlAbWFUDs" target="_blank" rel="noopener" aria-label="Assistir Prancha isométrica no YouTube"><img src="https://i.ytimg.com/vi/uxPlAbWFUDs/hqdefault.jpg" alt="Prancha isométrica" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/uxPlAbWFUDs" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Core: reto abdominal, transverso, oblíquos</div>
+        <ul class="ex-dicas">
+          <li class="ok">Corpo em linha reta: cabeça → ombros → quadril → joelhos → calcanhares</li>
+          <li class="ok">Contraia glúteo + abdômen o tempo todo</li>
+          <li class="ok">Cotovelos DEBAIXO dos ombros (90°)</li>
+          <li class="no">NÃO deixe quadril cair (compensa lombar → dor)</li>
+          <li class="no">NÃO suba quadril (diminui trabalho do core)</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> lenta, nunca prender ar.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">2</span><span class="ex-nome">Cadeira extensora</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="PzIfB9MiiX8" href="https://www.youtube.com/shorts/PzIfB9MiiX8" target="_blank" rel="noopener" aria-label="Assistir Cadeira extensora no YouTube"><img src="https://i.ytimg.com/vi/PzIfB9MiiX8/hqdefault.jpg" alt="Cadeira extensora" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/PzIfB9MiiX8" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Quadríceps (reto femoral, vastos lateral/medial)</div>
+        <ul class="ex-dicas">
+          <li class="ok"><strong>Ajuste do banco:</strong> eixo da máquina alinhado com o joelho</li>
+          <li class="ok">Costas bem apoiadas no banco, cinto afivelada se tiver</li>
+          <li class="ok">Sobe de forma controlada, segura 2s em cima (contraindo quadríceps)</li>
+          <li class="ok">Desce devagar (3-4 segundos)</li>
+          <li class="no">NÃO tranca o joelho em extensão total (protege articulação)</li>
+          <li class="no">NÃO faça o movimento rápido (perde controle do quadríceps)</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao subir, <strong>inspirar</strong> na descida.</div>
+        <div class="ex-aviso">⚠️ <strong>Categoria A + joelho:</strong> se sentir qualquer dor no joelho durante o exercício, <strong>para</strong> e testa carga mais leve.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">3</span><span class="ex-nome">Leg press 45° (pés afastados)</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="NY5fw4Zaofg" href="https://www.youtube.com/shorts/NY5fw4Zaofg" target="_blank" rel="noopener" aria-label="Assistir Leg press 45 no YouTube"><img src="https://i.ytimg.com/vi/NY5fw4Zaofg/hqdefault.jpg" alt="Leg press 45" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/NY5fw4Zaofg" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Quadríceps, glúteo máximo, posteriores</div>
+        <ul class="ex-dicas">
+          <li class="ok">Pés afastados na largura do quadril, pontas levemente pra fora</li>
+          <li class="ok"><strong>Lombar TOTALMENTE colada no banco</strong> o tempo todo</li>
+          <li class="ok">Desce até o joelho a ~90° (profundidade confortável)</li>
+          <li class="ok">Empurra com quadríceps + glúteo, não com a "força do joelho"</li>
+          <li class="no">NÃO tire o quadril do banco (lombar solicita — risco de hérnia)</li>
+          <li class="no">NÃO desça além do que o joelho permite com conforto</li>
+          <li class="no">NÃO tranca joelho em cima (sempre tensão no quadríceps)</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao empurrar, <strong>inspirar</strong> na descida.</div>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> cuidado com profundidade. O joelho vai pedir pra parar antes de você achar que precisa. Respeita.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">4</span><span class="ex-nome">Agachamento Smith</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="nQzIKqrMErE" href="https://www.youtube.com/shorts/nQzIKqrMErE" target="_blank" rel="noopener" aria-label="Assistir Agachamento Smith no YouTube"><img src="https://i.ytimg.com/vi/nQzIKqrMErE/hqdefault.jpg" alt="Agachamento Smith" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/nQzIKqrMErE" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Quadríceps, glúteos, posteriores, core</div>
+        <ul class="ex-dicas">
+          <li class="ok">Barra no <strong>trapézio</strong> (ombro), NÃO no pescoço</li>
+          <li class="ok">Pés um pouco à frente (Smith fixa a barra na vertical)</li>
+          <li class="ok">Lombar NEUTRA, peito aberto</li>
+          <li class="ok">Desce controlando — joelhos não passam muito da ponta do pé</li>
+          <li class="no">NÃO trave a barra em cima (sempre tensão no quadríceps)</li>
+          <li class="no">NÃO arredonde as costas (perigo de hérnia)</li>
+          <li class="no">NÃO desça além do que a mobilidade e joelho permitem</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>inspirar</strong> no topo, <strong>prender ar</strong> descendo, <strong>expirar</strong> ao passar do ponto mais baixo.</div>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> amplitude até onde lombar e joelho suportarem (muitas vezes 90° é o ideal). Sem vergonha de não ser profundo — Fase 1 é pra ganhar mobilidade.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">5</span><span class="ex-nome">Cadeira flexora</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="T46yKiz8laY" href="https://www.youtube.com/shorts/T46yKiz8laY" target="_blank" rel="noopener" aria-label="Assistir Cadeira flexora no YouTube"><img src="https://i.ytimg.com/vi/T46yKiz8laY/hqdefault.jpg" alt="Cadeira flexora" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/T46yKiz8laY" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Posteriores de coxa (bíceps femoral, semitendinoso, semimembranoso)</div>
+        <ul class="ex-dicas">
+          <li class="ok"><strong>Ajuste:</strong> eixo alinhado com o joelho, almofada ACIMA do tornozelo (não em cima do pé)</li>
+          <li class="ok">Puxa o calcanhar em direção ao glúteo</li>
+          <li class="ok">Segura 2s em cima contraindo o posterior</li>
+          <li class="ok">Desce devagar (3-4 segundos)</li>
+          <li class="no">NÃO levante o quadril do banco (perde força no posterior)</li>
+          <li class="no">NÃO use impulso</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao puxar, <strong>inspirar</strong> na volta.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">6</span><span class="ex-nome">Cadeira abdutora</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="nabhYLtz8Gg" href="https://www.youtube.com/shorts/nabhYLtz8Gg" target="_blank" rel="noopener" aria-label="Assistir Cadeira abdutora no YouTube"><img src="https://i.ytimg.com/vi/nabhYLtz8Gg/hqdefault.jpg" alt="Cadeira abdutora" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/nabhYLtz8Gg" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Glúteo médio, tensor da fáscia lata (TFL)</div>
+        <ul class="ex-dicas">
+          <li class="ok">Costas apoiadas, abdômen contraído</li>
+          <li class="ok">Abre as pernas controlando, segura 2s no final</li>
+          <li class="ok">Devagar na volta (fase excêntrica)</li>
+          <li class="no">NÃO rotacione o quadril (força sai do glúteo médio, não do tronco)</li>
+          <li class="no">NÃO use carga que faça o quadril "empurrar" antes de chegar no fim</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao abrir, <strong>inspirar</strong> ao voltar.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">7</span><span class="ex-nome">Cadeira adutora</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="XbhmXUYp8hs" href="https://www.youtube.com/shorts/XbhmXUYp8hs" target="_blank" rel="noopener" aria-label="Assistir Cadeira adutora no YouTube"><img src="https://i.ytimg.com/vi/XbhmXUYp8hs/hqdefault.jpg" alt="Cadeira adutora" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/XbhmXUYp8hs" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Adutores (magno, longo, curto, grácil)</div>
+        <ul class="ex-dicas">
+          <li class="ok">Costas apoiadas, abdômen contraído</li>
+          <li class="ok">Fecha as pernas controlando, segura 2s no final</li>
+          <li class="ok">Devagar na volta</li>
+          <li class="no">NÃO rotacione o quadril</li>
+          <li class="no">NÃO force amplitude máxima se o quadril reclamar</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao fechar, <strong>inspirar</strong> ao voltar.</div>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> amplitude até onde o quadril permitir. Pode ser bem reduzida no início — é normal, vai melhorar com a prática.</div>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ====================== TREINO C ====================== -->
+<section id="tab-C" class="tab-content">
+  <div class="treino-header">
+    <h2>Treino C — Upper 2 (empurrar)</h2>
+    <div class="foco">Peito + deltoide + costas (puxada supinada)</div>
+    <div class="meta">
+      <span>📅 6ª feira</span>
+      <span>⏱ ~50 min</span>
+      <span>🔁 3x12 · 45s descanso</span>
+    </div>
+  </div>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">0</span><span class="ex-nome">Bike (aquecimento)</span><span class="ex-serie">10 min</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="v_h7lHYsV_U" href="https://www.youtube.com/shorts/v_h7lHYsV_U" target="_blank" rel="noopener" aria-label="Assistir Bike aquecimento no YouTube"><img src="https://i.ytimg.com/vi/v_h7lHYsV_U/hqdefault.jpg" alt="Bike aquecimento" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/v_h7lHYsV_U" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Cardiovascular / aquecimento geral</div>
+        <ul class="ex-dicas">
+          <li class="ok">Cadência ~70-80 rpm</li>
+          <li class="ok">Resistência baixa — foco é aquecer ombros e cotovelo antes de empurrar</li>
+          <li class="ok">Aproveita pra hidratar (300-400ml)</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> nasal, ritmada.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">1</span><span class="ex-nome">Prancha isométrica</span><span class="ex-serie">3x30s</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="uxPlAbWFUDs" href="https://www.youtube.com/shorts/uxPlAbWFUDs" target="_blank" rel="noopener" aria-label="Assistir Prancha isométrica no YouTube"><img src="https://i.ytimg.com/vi/uxPlAbWFUDs/hqdefault.jpg" alt="Prancha isométrica" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/uxPlAbWFUDs" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Core: reto abdominal, transverso, oblíquos</div>
+        <ul class="ex-dicas">
+          <li class="ok">Corpo em linha reta: cabeça → ombros → quadril → joelhos → calcanhares</li>
+          <li class="ok">Contraia glúteo + abdômen</li>
+          <li class="no">NÃO deixe quadril cair</li>
+          <li class="no">NÃO suba quadril</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> lenta, nunca prender ar.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">2</span><span class="ex-nome">Supino inclinado halteres</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="wkUemXl4vFI" href="https://www.youtube.com/shorts/wkUemXl4vFI" target="_blank" rel="noopener" aria-label="Assistir Supino inclinado halteres no YouTube"><img src="https://i.ytimg.com/vi/wkUemXl4vFI/hqdefault.jpg" alt="Supino inclinado halteres" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/wkUemXl4vFI" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Peitoral maior (clavicular), deltoide anterior, tríceps</div>
+        <ul class="ex-dicas">
+          <li class="ok">Banco a 30-45° (mais reto = mais ombro; mais inclinado = mais peitoral clavicular)</li>
+          <li class="ok"><strong>Pés firmes no chão</strong> (estabilidade vem de baixo)</li>
+          <li class="ok">Escápulas RETRAÍDAS e DEBAIXO do banco (não deixa omoplata subir)</li>
+          <li class="ok">Halteres descem na linha do peitoral (não no pescoço)</li>
+          <li class="ok">Cotovelos a ~45° do tronco (não totalmente abertos)</li>
+          <li class="no">NÃO bater halter no topo (perde tensão no peitoral)</li>
+          <li class="no">NÃO arquear lombar excessivamente (perigoso pra coluna)</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>inspirar</strong> descendo, <strong>expirar</strong> ao empurrar.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">3</span><span class="ex-nome">Supino máquina</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="acC6hFJuQPU" href="https://www.youtube.com/shorts/acC6hFJuQPU" target="_blank" rel="noopener" aria-label="Assistir Supino máquina no YouTube"><img src="https://i.ytimg.com/vi/acC6hFJuQPU/hqdefault.jpg" alt="Supino máquina" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/acC6hFJuQPU" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Peitoral maior, deltoide anterior, tríceps</div>
+        <ul class="ex-dicas">
+          <li class="ok"><strong>Ajuste do banco:</strong> alças na altura do peito (não do ombro, não do pescoço)</li>
+          <li class="ok">Costas bem apoiadas, escápulas retraídas</li>
+          <li class="ok">Empurra sem travar cotovelo (sempre tensão no peitoral)</li>
+          <li class="ok">Desce devagar (fase excêntrica é importante)</li>
+          <li class="no">NÃO use carga que faça você levantar o quadril do banco</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao empurrar, <strong>inspirar</strong> na volta.</div>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> máquina é mais segura que halter (trajetória fixa, sem estabilizar peso). Ótima escolha pra focar no peitoral sem pensar em equilíbrio.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">4</span><span class="ex-nome">Supino reto Smith</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="vGqxqSs37_g" href="https://www.youtube.com/shorts/vGqxqSs37_g" target="_blank" rel="noopener" aria-label="Assistir Supino reto Smith no YouTube"><img src="https://i.ytimg.com/vi/vGqxqSs37_g/hqdefault.jpg" alt="Supino reto Smith" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/vGqxqSs37_g" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Peitoral maior (fibras esternais), deltoide anterior, tríceps</div>
+        <ul class="ex-dicas">
+          <li class="ok">Banco bem posicionado — barra passa em cima do peitoral (não do pescoço)</li>
+          <li class="ok">Escápulas retraídas e contraídas no banco</li>
+          <li class="ok">Pés firmes no chão, lombar neutra (pequeno arco é ok)</li>
+          <li class="ok">Barra fixa = mais fácil focar em peitoral</li>
+          <li class="no">NÃO desça a barra até o peito com impacto (controla a descida)</li>
+          <li class="no">NÃO trave cotovelo em cima</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>inspirar</strong> descendo, <strong>expirar</strong> ao empurrar.</div>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> Smith é um dos melhores exercícios pra começar (estabilidade total). Permite focar no peitoral sem pensar em equilíbrio.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">5</span><span class="ex-nome">Desenvolvimento halteres</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="5I7ogOjvdnc" href="https://www.youtube.com/shorts/5I7ogOjvdnc" target="_blank" rel="noopener" aria-label="Assistir Desenvolvimento halteres no YouTube"><img src="https://i.ytimg.com/vi/5I7ogOjvdnc/hqdefault.jpg" alt="Desenvolvimento halteres" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/5I7ogOjvdnc" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Deltoide (anterior e medial), tríceps</div>
+        <ul class="ex-dicas">
+          <li class="ok">Sentado com apoio lombar — mais seguro que em pé</li>
+          <li class="ok">Halteres na altura dos ombros no início</li>
+          <li class="ok">Sobe até topo da cabeça, sem bater halteres</li>
+          <li class="ok">Cotovelos a ~45° do tronco</li>
+          <li class="no">NÃO trave cotovelo no topo</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao subir, <strong>inspirar</strong> na descida.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">6</span><span class="ex-nome">Ele lateral + puxada supinada (COMBO)</span><span class="ex-serie">3x12+12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="combo-videos">
+        <div class="combo-video">
+          <h4>A) Elevação lateral</h4>
+          <a class="video-poster" data-vid="nhQ4mdk0TmM" href="https://www.youtube.com/shorts/nhQ4mdk0TmM" target="_blank" rel="noopener" aria-label="Assistir Elevação lateral no YouTube"><img src="https://i.ytimg.com/vi/nhQ4mdk0TmM/hqdefault.jpg" alt="Elevação lateral" loading="lazy"><div class="play-btn">▶</div></a>
+          <a href="https://www.youtube.com/shorts/nhQ4mdk0TmM" target="_blank" rel="noopener">↗ YouTube</a>
+        </div>
+        <div class="combo-video">
+          <h4>B) Puxada frente supinada</h4>
+          <a class="video-poster" data-vid="RwcLBaFCsu4" href="https://www.youtube.com/shorts/RwcLBaFCsu4" target="_blank" rel="noopener" aria-label="Assistir Puxada supinada no YouTube"><img src="https://i.ytimg.com/vi/RwcLBaFCsu4/hqdefault.jpg" alt="Puxada supinada" loading="lazy"><div class="play-btn">▶</div></a>
+          <a href="https://www.youtube.com/shorts/RwcLBaFCsu4" target="_blank" rel="noopener">↗ YouTube</a>
+        </div>
+      </div>
+      <div>
+        <div class="combo-how">
+          <h4>Como fazer o combo</h4>
+          <ol>
+            <li>12 elevações laterais (A)</li>
+            <li>Sem descanso (10-15s pra trocar de máquina)</li>
+            <li>12 puxadas supinadas (B)</li>
+            <li>Aí sim: 45s de descanso</li>
+            <li>Repete o bloco 3x</li>
+          </ol>
+        </div>
+        <ul class="ex-dicas">
+          <li class="ok">A) Elevação lateral: sobe até ombro, polegar pra cima, controla descida</li>
+          <li class="ok">B) Puxada supinada: palmas pra você, pegada na largura dos ombros, foco em dorsais</li>
+          <li class="ok">Carga LEVE em ambos</li>
+          <li class="no">NÃO subir elevação acima do ombro</li>
+          <li class="no">NÃO usar impulso na puxada</li>
+        </ul>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> carga LEVE em ambos — foco é densidade, não carga máxima. A Fase 1 é fundação.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">7</span><span class="ex-nome">Remada máquina pegada neutra</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="Sq7rWvJtzDY" href="https://www.youtube.com/shorts/Sq7rWvJtzDY" target="_blank" rel="noopener" aria-label="Assistir Remada máquina neutra no YouTube"><img src="https://i.ytimg.com/vi/Sq7rWvJtzDY/hqdefault.jpg" alt="Remada máquina neutra" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/Sq7rWvJtzDY" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Dorsais, romboides, trapézio, bíceps (pegada neutra)</div>
+        <ul class="ex-dicas">
+          <li class="ok">Peito no apoio o tempo todo</li>
+          <li class="ok">Puxa cotovelos pra trás e pra BAIXO (não pra cima)</li>
+          <li class="ok">Contrai escapular (junta omoplatas) e segura 1-2s no pico</li>
+          <li class="ok">Pegada neutra = palmas se encarando (mais confortável pro ombro)</li>
+          <li class="no">NÃO encolhe ombro nas orelhas</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao puxar, <strong>inspirar</strong> na volta.</div>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- ====================== TREINO D ====================== -->
+<section id="tab-D" class="tab-content">
+  <div class="treino-header">
+    <h2>Treino D — Lower 2</h2>
+    <div class="foco">Posterior de coxa + glúteo + quadril</div>
+    <div class="meta">
+      <span>📅 2ª feira seguinte</span>
+      <span>⏱ ~55 min</span>
+      <span>🔁 3x12 · 45s descanso</span>
+    </div>
+  </div>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">0</span><span class="ex-nome">Bike (aquecimento)</span><span class="ex-serie">10 min</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="v_h7lHYsV_U" href="https://www.youtube.com/shorts/v_h7lHYsV_U" target="_blank" rel="noopener" aria-label="Assistir Bike aquecimento no YouTube"><img src="https://i.ytimg.com/vi/v_h7lHYsV_U/hqdefault.jpg" alt="Bike aquecimento" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/v_h7lHYsV_U" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Cardiovascular / aquecimento geral</div>
+        <ul class="ex-dicas">
+          <li class="ok">Cadência ~70-80 rpm</li>
+          <li class="ok">Resistência baixa — aquece quadril, joelho e tornozelo antes do posterior</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> nasal, ritmada.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">1</span><span class="ex-nome">Prancha isométrica</span><span class="ex-serie">3x30s</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="uxPlAbWFUDs" href="https://www.youtube.com/shorts/uxPlAbWFUDs" target="_blank" rel="noopener" aria-label="Assistir Prancha isométrica no YouTube"><img src="https://i.ytimg.com/vi/uxPlAbWFUDs/hqdefault.jpg" alt="Prancha isométrica" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/uxPlAbWFUDs" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Core: reto abdominal, transverso, oblíquos</div>
+        <ul class="ex-dicas">
+          <li class="ok">Corpo em linha reta, abdômen e glúteo contraídos</li>
+          <li class="no">NÃO quadril cair ou subir</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> lenta, nunca prender ar.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">2</span><span class="ex-nome">Cadeira flexora</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="T46yKiz8laY" href="https://www.youtube.com/shorts/T46yKiz8laY" target="_blank" rel="noopener" aria-label="Assistir Cadeira flexora no YouTube"><img src="https://i.ytimg.com/vi/T46yKiz8laY/hqdefault.jpg" alt="Cadeira flexora" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/T46yKiz8laY" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Posteriores de coxa</div>
+        <ul class="ex-dicas">
+          <li class="ok">Eixo da máquina alinhado com o joelho</li>
+          <li class="ok">Almofada ACIMA do tornozelo</li>
+          <li class="ok">Puxa calcanhar em direção ao glúteo, segura 2s em cima</li>
+          <li class="ok">Desce devagar</li>
+          <li class="no">NÃO levante quadril do banco</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao puxar, <strong>inspirar</strong> na volta.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">3</span><span class="ex-nome">Elevação pélvica</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="1gVulBzh43o" href="https://www.youtube.com/shorts/1gVulBzh43o" target="_blank" rel="noopener" aria-label="Assistir Elevação pélvica no YouTube"><img src="https://i.ytimg.com/vi/1gVulBzh43o/hqdefault.jpg" alt="Elevação pélvica" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/1gVulBzh43o" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Glúteo máximo, posteriores</div>
+        <ul class="ex-dicas">
+          <li class="ok">Costas apoiadas em banco, pés firmes no chão (afastados na largura do quadril)</li>
+          <li class="ok">Sobe quadril até alinhamento coxa-tronco (não hiperextender lombar)</li>
+          <li class="ok">Contrai glúteo FORTE no topo, segura 2s</li>
+          <li class="ok">Desce devagar (3-4s)</li>
+          <li class="no">NÃO empurrar a lombar pra cima (perigoso — foco é glúteo, não lombar)</li>
+          <li class="no">NÃO usar carga que comprometa a posição</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao subir, <strong>inspirar</strong> na descida.</div>
+        <div class="ex-aviso">⚠️ <strong>Categoria A:</strong> peso do próprio corpo + carga leve/média é o suficiente. Carga excessiva = lombar começa a trabalhar. Se isso acontecer, <strong>abaixa</strong>.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">4</span><span class="ex-nome">Agachamento Smith</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="nQzIKqrMErE" href="https://www.youtube.com/shorts/nQzIKqrMErE" target="_blank" rel="noopener" aria-label="Assistir Agachamento Smith no YouTube"><img src="https://i.ytimg.com/vi/nQzIKqrMErE/hqdefault.jpg" alt="Agachamento Smith" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/nQzIKqrMErE" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Quadríceps, glúteos, posteriores</div>
+        <ul class="ex-dicas">
+          <li class="ok">Barra no trapézio (não no pescoço)</li>
+          <li class="ok">Pés um pouco à frente (Smith fixa a barra)</li>
+          <li class="ok">Lombar neutra, peito aberto</li>
+          <li class="no">NÃO arredondar costas</li>
+          <li class="no">NÃO travar barra em cima</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>inspirar</strong> no topo, <strong>prender ar</strong> descendo, <strong>expirar</strong> ao passar do ponto mais baixo.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">5</span><span class="ex-nome">Cadeira extensora</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="PzIfB9MiiX8" href="https://www.youtube.com/shorts/PzIfB9MiiX8" target="_blank" rel="noopener" aria-label="Assistir Cadeira extensora no YouTube"><img src="https://i.ytimg.com/vi/PzIfB9MiiX8/hqdefault.jpg" alt="Cadeira extensora" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/PzIfB9MiiX8" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Quadríceps</div>
+        <ul class="ex-dicas">
+          <li class="ok">Eixo alinhado com joelho, banco bem ajustado</li>
+          <li class="ok">Sobe controlada, segura 2s em cima</li>
+          <li class="ok">Desce devagar</li>
+          <li class="no">NÃO travar joelho em extensão</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao subir, <strong>inspirar</strong> na descida.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">6</span><span class="ex-nome">Cadeira abdutora</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="nabhYLtz8Gg" href="https://www.youtube.com/shorts/nabhYLtz8Gg" target="_blank" rel="noopener" aria-label="Assistir Cadeira abdutora no YouTube"><img src="https://i.ytimg.com/vi/nabhYLtz8Gg/hqdefault.jpg" alt="Cadeira abdutora" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/nabhYLtz8Gg" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Glúteo médio, TFL</div>
+        <ul class="ex-dicas">
+          <li class="ok">Costas apoiadas, abdômen contraído</li>
+          <li class="ok">Abre controlada, 2s no final</li>
+          <li class="no">NÃO rotacionar quadril</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao abrir, <strong>inspirar</strong> ao voltar.</div>
+      </div>
+    </div>
+  </details>
+
+  <details class="exercicio">
+    <summary><span class="ex-num">7</span><span class="ex-nome">Cadeira adutora</span><span class="ex-serie">3x12</span><span class="ex-toggle">▾</span></summary>
+    <div class="ex-conteudo">
+      <div class="ex-video">
+        <a class="video-poster" data-vid="XbhmXUYp8hs" href="https://www.youtube.com/shorts/XbhmXUYp8hs" target="_blank" rel="noopener" aria-label="Assistir Cadeira adutora no YouTube"><img src="https://i.ytimg.com/vi/XbhmXUYp8hs/hqdefault.jpg" alt="Cadeira adutora" loading="lazy"><div class="play-btn">▶</div></a>
+        <a class="yt-link" href="https://www.youtube.com/shorts/XbhmXUYp8hs" target="_blank" rel="noopener">↗ Abrir no YouTube</a>
+      </div>
+      <div>
+        <div class="ex-grupo">Adutores</div>
+        <ul class="ex-dicas">
+          <li class="ok">Costas apoiadas, abdômen contraído</li>
+          <li class="ok">Fecha controlada, 2s no final</li>
+          <li class="no">NÃO forçar amplitude máxima no início</li>
+        </ul>
+        <div class="ex-respira"><strong>Respiração:</strong> <strong>expirar</strong> ao fechar, <strong>inspirar</strong> ao voltar.</div>
+      </div>
+    </div>
+  </details>
+</section>
+
+</main>
+
+<footer>
+  <p>📁 Salvo em <code>videos-vshape/videos-treino.html</code> · Atualizado em 09/06/2026</p>
+  <p>Origem: <a href="https://www.youtube.com/results?search_query=exercicio+execucao+shorts" target="_blank" rel="noopener">YouTube Shorts</a> — todos públicos · V-Shape Fase 1 (Categoria A Obeso + GLP-1)</p>
+  <p>🚨 Em caso de tontura, fraqueza, vômito repetido ou dor &gt;2 dias durante/após o treino, pare e me avise.</p>
+</footer>
+
+<script>
+  // Vanilla JS — troca de abas
+  document.querySelectorAll('nav.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+  // Click no poster ativa o player inline (lazy + tolerante a bloqueio de embed)
+  document.querySelectorAll('.video-poster').forEach(p => {
+    p.addEventListener('click', e => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+      e.preventDefault();
+      const vid = p.dataset.vid;
+      if (!vid || p.querySelector('iframe')) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + vid + '?autoplay=1&rel=0';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+      iframe.allowFullscreen = true;
+      iframe.title = p.querySelector('img')?.alt || 'Video';
+      p.appendChild(iframe);
+      setTimeout(() => {
+        p.querySelector('img')?.remove();
+        p.querySelector('.play-btn')?.remove();
+      }, 200);
+    });
+  });
+</script>
+
+</body>
+</html>
