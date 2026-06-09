@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>V-Shape Fase 1 — Vídeos dos Treinos</title>
+<meta name="theme-color" content="#3b82f6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="V-Shape">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <style>
   :root{
     --bg:#0e0e10; --bg-card:#1a1a1f; --bg-soft:#25252b;
@@ -58,7 +66,34 @@
   .ex-video .video-poster iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
   .ex-video .yt-link{display:block;text-align:center;padding:8px;background:var(--bg-soft);color:var(--accent);font-size:12px;text-decoration:none;font-weight:600}
   .ex-video .yt-link:hover{background:var(--accent-soft)}
-  .combo-videos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .prancha-timer{background:var(--bg-soft);border-radius:12px;padding:18px;margin-bottom:14px;text-align:center;border:2px solid var(--border);transition:border-color .2s}
+.prancha-timer.rodando{border-color:var(--accent)}
+.prancha-timer.pausado{border-color:var(--warn)}
+.prancha-timer.pronto{border-color:var(--ok)}
+.prancha-timer.completo{border-color:var(--ok);background:linear-gradient(180deg,var(--bg-soft),rgba(34,197,94,.08))}
+.timer-serie{font-size:11px;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.timer-relogio{font-size:54px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1;margin:6px 0 12px}
+.prancha-timer.completo .timer-relogio{color:var(--ok);font-size:48px}
+.timer-progress{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:14px}
+.timer-progress-bar{height:100%;background:var(--accent);width:0%;transition:width 1s linear}
+.prancha-timer.completo .timer-progress-bar{background:var(--ok);width:100%!important}
+.timer-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.timer-btn{padding:10px 18px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--fg);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+.timer-btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.timer-btn:active{transform:translateY(0)}
+.timer-btn-start{background:var(--ok);color:#fff;border-color:var(--ok)}
+.timer-btn-start:hover{background:#1ea750;border-color:#1ea750}
+.timer-btn-pause{background:var(--warn);color:#000;border-color:var(--warn)}
+.timer-btn-pause:hover{background:#d97706;border-color:#d97706}
+.timer-btn-next{background:var(--accent);color:#fff;border-color:var(--accent)}
+.timer-btn-next:hover{background:#2563eb;border-color:#2563eb}
+.timer-series{display:flex;gap:8px;justify-content:center;margin-top:14px}
+.serie-dot{width:11px;height:11px;border-radius:50%;background:var(--border);transition:all .2s}
+.serie-dot.active{background:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.25)}
+.serie-dot.done{background:var(--ok)}
+@keyframes pulse-win{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.prancha-timer.completo .timer-relogio{animation:pulse-win .6s 3}
+.combo-videos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .combo-videos .combo-video{background:var(--bg-soft);border-radius:8px;padding:8px}
   .combo-videos .combo-video h4{font-size:11px;color:var(--fg-dim);margin-bottom:6px;text-align:center;text-transform:uppercase;letter-spacing:.05em}
   .combo-videos .combo-video .video-poster{position:relative;display:block;width:100%;aspect-ratio:9/16;border-radius:6px;background:#000;overflow:hidden;cursor:pointer}
@@ -148,7 +183,25 @@
       </div>
       <div>
         <div class="ex-grupo">Core: reto abdominal, transverso, oblíquos</div>
-        <ul class="ex-dicas">
+
+        <div class="prancha-timer" data-serie-atual="1" data-serie-total="3" data-segundos="30" role="timer" aria-label="Cronometro de prancha">
+          <div class="timer-serie">Série <span class="serie-num">1</span> de 3</div>
+          <div class="timer-relogio" aria-live="polite">00:30</div>
+          <div class="timer-progress"><div class="timer-progress-bar"></div></div>
+          <div class="timer-controls">
+            <button class="timer-btn timer-btn-start" type="button">▶ Iniciar</button>
+            <button class="timer-btn timer-btn-pause" type="button" hidden>⏸ Pausar</button>
+            <button class="timer-btn timer-btn-next" type="button" hidden>Próxima série ▶</button>
+            <button class="timer-btn timer-btn-reset" type="button">↻ Resetar</button>
+          </div>
+          <div class="timer-series">
+            <span class="serie-dot active" title="Serie 1"></span>
+            <span class="serie-dot" title="Serie 2"></span>
+            <span class="serie-dot" title="Serie 3"></span>
+          </div>
+        </div>
+
+        <ul class="ex-dicas" style="margin-top:14px">
           <li class="ok">Corpo em linha reta: cabeça → ombros → quadril → joelhos → calcanhares</li>
           <li class="ok">Contraia glúteo + abdômen o tempo todo</li>
           <li class="ok">Cotovelos DEBAIXO dos ombros (90°)</li>
@@ -355,7 +408,25 @@
       </div>
       <div>
         <div class="ex-grupo">Core: reto abdominal, transverso, oblíquos</div>
-        <ul class="ex-dicas">
+
+        <div class="prancha-timer" data-serie-atual="1" data-serie-total="3" data-segundos="30" role="timer" aria-label="Cronometro de prancha">
+          <div class="timer-serie">Série <span class="serie-num">1</span> de 3</div>
+          <div class="timer-relogio" aria-live="polite">00:30</div>
+          <div class="timer-progress"><div class="timer-progress-bar"></div></div>
+          <div class="timer-controls">
+            <button class="timer-btn timer-btn-start" type="button">▶ Iniciar</button>
+            <button class="timer-btn timer-btn-pause" type="button" hidden>⏸ Pausar</button>
+            <button class="timer-btn timer-btn-next" type="button" hidden>Próxima série ▶</button>
+            <button class="timer-btn timer-btn-reset" type="button">↻ Resetar</button>
+          </div>
+          <div class="timer-series">
+            <span class="serie-dot active" title="Serie 1"></span>
+            <span class="serie-dot" title="Serie 2"></span>
+            <span class="serie-dot" title="Serie 3"></span>
+          </div>
+        </div>
+
+        <ul class="ex-dicas" style="margin-top:14px">
           <li class="ok">Corpo em linha reta: cabeça → ombros → quadril → joelhos → calcanhares</li>
           <li class="ok">Contraia glúteo + abdômen o tempo todo</li>
           <li class="ok">Cotovelos DEBAIXO dos ombros (90°)</li>
@@ -544,11 +615,30 @@
       </div>
       <div>
         <div class="ex-grupo">Core: reto abdominal, transverso, oblíquos</div>
-        <ul class="ex-dicas">
+
+        <div class="prancha-timer" data-serie-atual="1" data-serie-total="3" data-segundos="30" role="timer" aria-label="Cronometro de prancha">
+          <div class="timer-serie">Série <span class="serie-num">1</span> de 3</div>
+          <div class="timer-relogio" aria-live="polite">00:30</div>
+          <div class="timer-progress"><div class="timer-progress-bar"></div></div>
+          <div class="timer-controls">
+            <button class="timer-btn timer-btn-start" type="button">▶ Iniciar</button>
+            <button class="timer-btn timer-btn-pause" type="button" hidden>⏸ Pausar</button>
+            <button class="timer-btn timer-btn-next" type="button" hidden>Próxima série ▶</button>
+            <button class="timer-btn timer-btn-reset" type="button">↻ Resetar</button>
+          </div>
+          <div class="timer-series">
+            <span class="serie-dot active" title="Serie 1"></span>
+            <span class="serie-dot" title="Serie 2"></span>
+            <span class="serie-dot" title="Serie 3"></span>
+          </div>
+        </div>
+
+        <ul class="ex-dicas" style="margin-top:14px">
           <li class="ok">Corpo em linha reta: cabeça → ombros → quadril → joelhos → calcanhares</li>
-          <li class="ok">Contraia glúteo + abdômen</li>
-          <li class="no">NÃO deixe quadril cair</li>
-          <li class="no">NÃO suba quadril</li>
+          <li class="ok">Contraia glúteo + abdômen o tempo todo</li>
+          <li class="ok">Cotovelos DEBAIXO dos ombros (90°)</li>
+          <li class="no">NÃO deixe quadril cair (compensa lombar → dor)</li>
+          <li class="no">NÃO suba quadril (diminui trabalho do core)</li>
         </ul>
         <div class="ex-respira"><strong>Respiração:</strong> lenta, nunca prender ar.</div>
       </div>
@@ -743,9 +833,30 @@
       </div>
       <div>
         <div class="ex-grupo">Core: reto abdominal, transverso, oblíquos</div>
-        <ul class="ex-dicas">
-          <li class="ok">Corpo em linha reta, abdômen e glúteo contraídos</li>
-          <li class="no">NÃO quadril cair ou subir</li>
+
+        <div class="prancha-timer" data-serie-atual="1" data-serie-total="3" data-segundos="30" role="timer" aria-label="Cronometro de prancha">
+          <div class="timer-serie">Série <span class="serie-num">1</span> de 3</div>
+          <div class="timer-relogio" aria-live="polite">00:30</div>
+          <div class="timer-progress"><div class="timer-progress-bar"></div></div>
+          <div class="timer-controls">
+            <button class="timer-btn timer-btn-start" type="button">▶ Iniciar</button>
+            <button class="timer-btn timer-btn-pause" type="button" hidden>⏸ Pausar</button>
+            <button class="timer-btn timer-btn-next" type="button" hidden>Próxima série ▶</button>
+            <button class="timer-btn timer-btn-reset" type="button">↻ Resetar</button>
+          </div>
+          <div class="timer-series">
+            <span class="serie-dot active" title="Serie 1"></span>
+            <span class="serie-dot" title="Serie 2"></span>
+            <span class="serie-dot" title="Serie 3"></span>
+          </div>
+        </div>
+
+        <ul class="ex-dicas" style="margin-top:14px">
+          <li class="ok">Corpo em linha reta: cabeça → ombros → quadril → joelhos → calcanhares</li>
+          <li class="ok">Contraia glúteo + abdômen o tempo todo</li>
+          <li class="ok">Cotovelos DEBAIXO dos ombros (90°)</li>
+          <li class="no">NÃO deixe quadril cair (compensa lombar → dor)</li>
+          <li class="no">NÃO suba quadril (diminui trabalho do core)</li>
         </ul>
         <div class="ex-respira"><strong>Respiração:</strong> lenta, nunca prender ar.</div>
       </div>
@@ -917,5 +1028,133 @@
   });
 </script>
 
+<script>
+// Service Worker (PWA offline)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      console.log('SW registrado:', reg.scope);
+    }).catch(err => console.log('SW falhou:', err));
+  });
+}
+
+// Timer da Prancha (4 ocorrencias nos treinos)
+function setupPranchaTimer() {
+  document.querySelectorAll('.prancha-timer').forEach(t => {
+    const segundos = parseInt(t.dataset.segundos) || 30;
+    const totalSeries = parseInt(t.dataset.serieTotal) || 3;
+    let serieAtual = 1, restante = segundos, intervalId = null, pausado = false;
+    let audioCtx = null;
+
+    const $ = sel => t.querySelector(sel);
+    const elRelogio = $('.timer-relogio');
+    const elSerieNum = $('.serie-num');
+    const elBar = $('.timer-progress-bar');
+    const elStart = $('.timer-btn-start');
+    const elPause = $('.timer-btn-pause');
+    const elNext = $('.timer-btn-next');
+    const elReset = $('.timer-btn-reset');
+    const elDots = t.querySelectorAll('.serie-dot');
+
+    const fmt = s => String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+    const beep = (freq, dur) => {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur/1000);
+        osc.start(); osc.stop(audioCtx.currentTime + dur/1000);
+      } catch (e) {}
+    };
+    const vibrar = p => { if ('vibrate' in navigator) try { navigator.vibrate(p); } catch(e) {} };
+
+    const render = () => {
+      elRelogio.textContent = fmt(restante);
+      elSerieNum.textContent = serieAtual;
+      elBar.style.width = ((1 - restante / segundos) * 100) + '%';
+    };
+    const setEstado = classe => {
+      t.classList.remove('rodando', 'pausado', 'pronto', 'completo');
+      if (classe) t.classList.add(classe);
+    };
+
+    const iniciar = () => {
+      if (!audioCtx) beep(0, 1);
+      pausado = false;
+      setEstado('rodando');
+      elStart.hidden = true;
+      elPause.hidden = false;
+      elPause.textContent = '⏸ Pausar';
+      intervalId = setInterval(() => {
+        restante--;
+        render();
+        if (restante <= 3 && restante > 0) beep(660, 100);
+        if (restante <= 0) {
+          clearInterval(intervalId); intervalId = null;
+          beep(1200, 500);
+          vibrar([200, 100, 200]);
+          elDots[serieAtual - 1].classList.remove('active');
+          elDots[serieAtual - 1].classList.add('done');
+          if (serieAtual < totalSeries) {
+            elPause.hidden = true;
+            elNext.hidden = false;
+            setEstado('pronto');
+            setTimeout(() => { if (!elNext.hidden) proxima(); }, 5000);
+          } else {
+            elPause.hidden = true;
+            elNext.hidden = true;
+            setEstado('completo');
+            elRelogio.textContent = '\u2713';
+            elBar.style.width = '100%';
+            vibrar([100, 50, 100, 50, 200]);
+          }
+        }
+      }, 1000);
+    };
+
+    const pausar = () => {
+      if (intervalId) {
+        clearInterval(intervalId); intervalId = null;
+        pausado = true;
+        setEstado('pausado');
+        elPause.textContent = '▶ Retomar';
+        beep(440, 100);
+      } else if (pausado) {
+        iniciar();
+      }
+    };
+
+    const resetar = () => {
+      if (intervalId) clearInterval(intervalId);
+      intervalId = null; pausado = false;
+      serieAtual = 1; restante = segundos;
+      setEstado(null);
+      elStart.hidden = false;
+      elPause.hidden = true;
+      elNext.hidden = true;
+      elDots.forEach(d => d.classList.remove('active', 'done'));
+      elDots[0].classList.add('active');
+      render();
+    };
+
+    const proxima = () => {
+      serieAtual++;
+      restante = segundos;
+      elNext.hidden = true;
+      render();
+      iniciar();
+    };
+
+    elStart.addEventListener('click', iniciar);
+    elPause.addEventListener('click', pausar);
+    elReset.addEventListener('click', resetar);
+    elNext.addEventListener('click', proxima);
+    render();
+  });
+}
+setupPranchaTimer();
+</script>
 </body>
 </html>
