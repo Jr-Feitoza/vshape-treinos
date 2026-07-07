@@ -175,6 +175,25 @@
   @keyframes pulse-win{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
   .prancha-timer.completo .timer-relogio{animation:pulse-win .6s 3}
 
+  /* carga rotulada (combos/super-série) */
+  .peso-track .pt-nome{font-size:12px;color:var(--accent);font-weight:700;flex:1 0 100%;margin-bottom:2px}
+  /* frequência + previsão */
+  .freq-sel{padding:8px 10px;background:var(--bg-soft);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-size:13px;font-weight:600;font-family:inherit}
+  .prev-info{font-size:12px;color:var(--fg-dim);margin-top:3px}
+  .prev-info b{color:var(--fg)}
+  .prev-atraso{color:var(--warn);font-weight:600}
+  /* modal lembrete */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:24px;z-index:100;animation:fadeIn .2s}
+  .modal-box{background:var(--bg-card);border:1px solid var(--accent);border-radius:16px;padding:24px 22px;max-width:340px;width:100%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+  .modal-emoji{font-size:38px;line-height:1;margin-bottom:6px}
+  .modal-box h3{font-size:18px;margin-bottom:8px}
+  .modal-box p{font-size:14px;color:var(--fg-dim);margin-bottom:18px}
+  .modal-box p b{color:var(--fg)}
+  .modal-actions{display:flex;flex-direction:column;gap:8px}
+  .modal-btn{padding:12px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+  .modal-btn-ok{background:var(--ok);color:#04210f;border-color:var(--ok)}
+  .modal-btn-ir{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .modal-btn-off{background:transparent;color:var(--fg-dim)}
   footer{padding:24px 20px;text-align:center;font-size:11px;color:var(--fg-mute);border-top:1px solid var(--border);margin-top:30px}
   footer a{color:var(--accent);text-decoration:none}
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--bg-card);border:1px solid var(--accent);color:var(--fg);padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.5)}
@@ -202,8 +221,17 @@
 <section class="painel">
   <h3>📊 Meu progresso</h3>
   <div class="painel-row">
-    <div class="proximo-box">Próximo treino:<span class="proximo-tag" id="proximoTag">A2</span></div>
+    <div class="proximo-box">Próximo treino:<span class="proximo-tag" id="proximoTag">A2</span><div class="prev-info" id="previsaoInfo"></div></div>
     <button class="rest-btn" id="irProximo" style="padding:8px 14px">Ir para o treino ▶</button>
+  </div>
+
+  <div class="painel-row" style="margin-top:12px">
+    <label class="semana-label" style="margin:0">Frequência prevista</label>
+    <select id="freqSel" class="freq-sel">
+      <option value="1">Todo dia</option>
+      <option value="2">A cada 2 dias</option>
+      <option value="3">A cada 3 dias</option>
+    </select>
   </div>
 
   <div class="semana-wrap">
@@ -227,6 +255,20 @@
   <input type="file" id="fileImport" accept="application/json" hidden>
   <div class="hist-line" id="histLine"></div>
 </section>
+
+<!-- ===== Modal lembrete de treino ===== -->
+<div class="modal-overlay" id="modalLembrete" hidden>
+  <div class="modal-box">
+    <div class="modal-emoji">💪</div>
+    <h3>Treino de hoje</h3>
+    <p id="modalTxt"></p>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-ok" id="modalMarcar" type="button">✓ Já treinei — marcar feito</button>
+      <button class="modal-btn modal-btn-ir" id="modalIr" type="button">Abrir o treino ▶</button>
+      <button class="modal-btn modal-btn-off" id="modalDepois" type="button">Depois</button>
+    </div>
+  </div>
+</div>
 
 <nav class="tabs" role="tablist" id="tabs"></nav>
 
@@ -401,14 +443,16 @@ const LS = {
   pesos:'vshape_f2_pesos',
   semana:'vshape_f2_semana',
   rotacao:'vshape_f2_rotacao',
-  feitoHoje:'vshape_f2_feitohoje'
+  feitoHoje:'vshape_f2_feitohoje',
+  freq:'vshape_f2_freq'
 };
 const load = (k,def)=>{ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } };
 const save = (k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} };
 
 let pesos   = load(LS.pesos, {});                       // {"A2-2":{atual:40,anterior:35}}
 let semana  = load(LS.semana, 1);                       // 1..4
-let rotacao = load(LS.rotacao, {proximo:'A2', hist:[]});// {proximo, hist:[{t,d}]}
+let rotacao = load(LS.rotacao, {proximo:'A2', hist:[]});// {proximo, hist, dataPrevista, atrasadoDe}
+let freq    = load(LS.freq, 1);                         // dias entre treinos previstos
 
 const DELOAD_FATOR = 0.5; // deload = 50% do peso atual
 
@@ -418,6 +462,24 @@ const DELOAD_FATOR = 0.5; // deload = 50% do peso atual
 const el = (tag,cls,html)=>{ const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
 const hoje = ()=> new Date().toISOString().slice(0,10);
 const fmtData = iso => { const [y,m,d]=iso.split('-'); return `${d}/${m}`; };
+const addDias = (iso,n)=>{ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
+
+// Agendamento: garante dataPrevista e "rola" pra hoje se estiver vencida
+function ajustarPrevisao(){
+  let mudou=false;
+  if(!rotacao.dataPrevista){ rotacao.dataPrevista=hoje(); mudou=true; }
+  if(rotacao.dataPrevista < hoje()){ rotacao.atrasadoDe=rotacao.atrasadoDe||rotacao.dataPrevista; rotacao.dataPrevista=hoje(); mudou=true; }
+  if(rotacao.dataPrevista > hoje() && rotacao.atrasadoDe){ rotacao.atrasadoDe=null; mudou=true; }
+  if(mudou) save(LS.rotacao,rotacao);
+}
+function textoPrevisao(){
+  const dp=rotacao.dataPrevista;
+  if(!dp) return '';
+  if(dp===hoje()) return rotacao.atrasadoDe
+    ? `previsto <b>hoje</b> · <span class="prev-atraso">atrasado desde ${fmtData(rotacao.atrasadoDe)}</span>`
+    : `previsto <b>hoje</b>`;
+  return `previsto p/ ${fmtData(dp)}`;
+}
 
 function toast(msg){
   const t=document.getElementById('toast');
@@ -451,18 +513,22 @@ function pranchaHTML(seg){
   </div>`;
 }
 
-function pesoTrackHTML(key, restSeg){
+function pesoTrackHTML(key, label){
+  const lbl = label ? `<label class="pt-nome">${label}</label>` : `<label>Carga:</label>`;
   return `<div class="peso-track" data-key="${key}">
     <div class="pt-top">
-      <label>Carga:</label>
+      ${lbl}
       <input type="number" inputmode="decimal" step="0.5" min="0" class="peso-input" placeholder="—">
       <span class="un">kg</span>
       <button class="peso-save" type="button">salvar</button>
     </div>
     <div class="peso-info"></div>
     <div class="peso-deload" hidden></div>
-  </div>
-  <div class="rest-timer">
+  </div>`;
+}
+
+function restTimerHTML(restSeg){
+  return `<div class="rest-timer">
     <span class="rt-label">Descanso:</span>
     <button class="rest-btn" type="button" data-rest="${restSeg}">${restSeg}s</button>
     <button class="rest-btn" type="button" data-rest="60">1 min</button>
@@ -530,6 +596,11 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
   const adapt = ex.adapt ? `<div class="ex-adapt">🔄 <strong>Adaptação (sua academia):</strong> ${ex.adapt}</div>` : '';
   const finalizar = ex.finalizar ? `<div class="ex-aviso">🏁 <strong>Finalizar o treino:</strong> + 10 min de escada, bike ou transport.</div>` : '';
 
+  // Combo (super-série) = 2 cargas rotuladas; exercício simples = 1 carga
+  const pesoBlock = (ex.combo && ex.combo.length===2)
+    ? pesoTrackHTML(key+'-a', 'A) '+ex.combo[0]) + pesoTrackHTML(key+'-b', 'B) '+ex.combo[1])
+    : pesoTrackHTML(key);
+
   return `<details class="exercicio">
     <summary><span class="ex-num">${numVisual}</span><span class="ex-nome">${ex.nome}${badge}</span><span class="ex-serie">${ex.serie}</span><span class="ex-toggle">▾</span></summary>
     <div class="ex-conteudo">
@@ -537,7 +608,8 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
       <div>
         <div class="ex-grupo">${ex.grupo}</div>
         ${tecBox}
-        ${pesoTrackHTML(key, restSeg)}
+        ${pesoBlock}
+        ${restTimerHTML(restSeg)}
         <ul class="ex-dicas">${dicas}</ul>
         <div class="ex-respira"><strong>Respiração:</strong> ${RESPIRA_PADRAO}</div>
         ${adapt}
@@ -576,6 +648,7 @@ function render(){
   wirePesos();
   wireRest();
   wireFeito();
+  wireAccordion();
   setupPranchaTimer();
   aplicarPesosSalvos();
   atualizarPainel();
@@ -584,6 +657,17 @@ function render(){
 /* =========================================================
    WIRING
    ========================================================= */
+// Acordeão: ao abrir um exercício, fecha os outros abertos do mesmo treino
+function wireAccordion(){
+  document.querySelectorAll('details.exercicio').forEach(d=>{
+    d.addEventListener('toggle',()=>{
+      if(!d.open) return;
+      const sec=d.closest('.tab-content')||document;
+      sec.querySelectorAll('details.exercicio[open]').forEach(o=>{ if(o!==d) o.open=false; });
+    });
+  });
+}
+
 function wireTabs(){
   document.querySelectorAll('nav.tabs button').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -710,24 +794,27 @@ function wireRest(){
 }
 
 /* ---- Marcar treino feito / rotação ---- */
+function marcarTreino(id){
+  const feitos=load(LS.feitoHoje,{});
+  // registra no histórico
+  rotacao.hist=rotacao.hist||[];
+  rotacao.hist.unshift({t:id,d:hoje()});
+  rotacao.hist=rotacao.hist.slice(0,12);
+  // avança a rotação: próximo = seguinte a ESTE treino
+  rotacao.proximo=ORDEM[(ORDEM.indexOf(id)+1)%ORDEM.length];
+  // agenda o próximo pela frequência e limpa atraso
+  rotacao.dataPrevista=addDias(hoje(),freq);
+  rotacao.atrasadoDe=null;
+  save(LS.rotacao,rotacao);
+  feitos[id]=hoje(); save(LS.feitoHoje,feitos);
+  const quando = rotacao.dataPrevista===hoje() ? 'hoje' : fmtData(rotacao.dataPrevista);
+  toast(`${id} concluído! Próximo: ${rotacao.proximo} (${quando})`);
+  vibrar([100,50,100]);
+  atualizarPainel();
+}
 function wireFeito(){
   document.querySelectorAll('[data-feito]').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      const id=btn.dataset.feito;
-      const feitos=load(LS.feitoHoje,{});
-      // registra no histórico
-      rotacao.hist=rotacao.hist||[];
-      rotacao.hist.unshift({t:id,d:hoje()});
-      rotacao.hist=rotacao.hist.slice(0,12);
-      // avança a rotação: próximo = seguinte a ESTE treino
-      const nextIdx=(ORDEM.indexOf(id)+1)%ORDEM.length;
-      rotacao.proximo=ORDEM[nextIdx];
-      save(LS.rotacao,rotacao);
-      feitos[id]=hoje(); save(LS.feitoHoje,feitos);
-      toast(`${id} concluído! Próximo: ${rotacao.proximo}`);
-      vibrar([100,50,100]);
-      atualizarPainel();
-    });
+    btn.addEventListener('click',()=>marcarTreino(btn.dataset.feito));
   });
 }
 
@@ -735,7 +822,10 @@ function wireFeito(){
    PAINEL
    ========================================================= */
 function atualizarPainel(){
+  ajustarPrevisao();
   document.getElementById('proximoTag').textContent=rotacao.proximo;
+  document.getElementById('previsaoInfo').innerHTML=textoPrevisao();
+  const fs=document.getElementById('freqSel'); if(fs) fs.value=String(freq);
   // semana buttons
   document.querySelectorAll('#semanaBtns button').forEach(b=>{
     b.classList.toggle('on', parseInt(b.dataset.sem)===semana);
@@ -772,6 +862,10 @@ function wirePainel(){
     b.addEventListener('click',()=>{ semana=parseInt(b.dataset.sem); save(LS.semana,semana); atualizarPainel(); toast('Semana '+semana+(semana===4?' · DELOAD':'')); });
   });
   document.getElementById('irProximo').addEventListener('click',irParaProximo);
+  document.getElementById('freqSel').addEventListener('change',e=>{
+    freq=parseInt(e.target.value)||1; save(LS.freq,freq);
+    toast('Frequência: '+(freq===1?'todo dia':'a cada '+freq+' dias'));
+  });
   document.getElementById('btnReset').addEventListener('click',()=>{
     if(!confirm('Resetar a rotação e o histórico? (As cargas salvas serão mantidas)')) return;
     rotacao={proximo:'A2',hist:[]}; save(LS.rotacao,rotacao);
@@ -779,7 +873,7 @@ function wirePainel(){
     atualizarPainel(); toast('Rotação resetada — começa no A2');
   });
   document.getElementById('btnExportar').addEventListener('click',()=>{
-    const dump={pesos,semana,rotacao,feitoHoje:load(LS.feitoHoje,{}),_exportado:hoje()};
+    const dump={pesos,semana,rotacao,freq,feitoHoje:load(LS.feitoHoje,{}),_exportado:hoje()};
     const blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
@@ -797,6 +891,7 @@ function wirePainel(){
         if(d.pesos){ pesos=d.pesos; save(LS.pesos,pesos); }
         if(d.semana){ semana=d.semana; save(LS.semana,semana); }
         if(d.rotacao){ rotacao=d.rotacao; save(LS.rotacao,rotacao); }
+        if(d.freq){ freq=d.freq; save(LS.freq,freq); }
         if(d.feitoHoje){ save(LS.feitoHoje,d.feitoHoje); }
         aplicarPesosSalvos(); atualizarPainel();
         toast('Backup importado ✓');
@@ -805,6 +900,27 @@ function wirePainel(){
     r.readAsText(f);
     e.target.value='';
   });
+
+  // Modal lembrete
+  const modal=document.getElementById('modalLembrete');
+  const fechar=()=>{ modal.hidden=true; };
+  document.getElementById('modalMarcar').addEventListener('click',()=>{ marcarTreino(rotacao.proximo); fechar(); });
+  document.getElementById('modalIr').addEventListener('click',()=>{ fechar(); irParaProximo(); });
+  document.getElementById('modalDepois').addEventListener('click',fechar);
+  modal.addEventListener('click',e=>{ if(e.target===modal) fechar(); });
+}
+
+// Aviso ao abrir: se há treino previsto pra hoje (ou atrasado) e não marcado
+function checarLembrete(){
+  ajustarPrevisao();
+  const feitos=load(LS.feitoHoje,{});
+  const vencido = rotacao.dataPrevista <= hoje();
+  const jaFeitoHoje = feitos[rotacao.proximo]===hoje();
+  if(vencido && !jaFeitoHoje){
+    document.getElementById('modalTxt').innerHTML =
+      `Está previsto o treino <b>${rotacao.proximo}</b> pra hoje${rotacao.atrasadoDe?` <span class="prev-atraso">(atrasado desde ${fmtData(rotacao.atrasadoDe)})</span>`:''}. Já treinou?`;
+    document.getElementById('modalLembrete').hidden=false;
+  }
 }
 
 /* =========================================================
@@ -815,7 +931,8 @@ function setupPranchaTimer(){
     if(t._wired) return; t._wired=true;
     const segundos=parseInt(t.dataset.segundos)||30;
     const totalSeries=parseInt(t.dataset.serieTotal)||3;
-    let serieAtual=1, restante=segundos, intervalId=null, pausado=false;
+    let serieAtual=1, restante=segundos, intervalId=null, pausado=false, descansoIv=null;
+    const REST_ENTRE_SERIES=15; // segundos de descanso visível entre séries da prancha
     const $=sel=>t.querySelector(sel);
     const elRelogio=$('.timer-relogio'), elSerieNum=$('.serie-num'), elBar=$('.timer-progress-bar');
     const elStart=$('.timer-btn-start'), elPause=$('.timer-btn-pause'), elNext=$('.timer-btn-next'), elReset=$('.timer-btn-reset');
@@ -832,14 +949,23 @@ function setupPranchaTimer(){
         if(restante<=0){
           clearInterval(intervalId); intervalId=null; beep(1200,500); vibrar([200,100,200]);
           elDots[serieAtual-1].classList.remove('active'); elDots[serieAtual-1].classList.add('done');
-          if(serieAtual<totalSeries){ elPause.hidden=true; elNext.hidden=false; setEstado('pronto'); setTimeout(()=>{ if(!elNext.hidden) proxima(); },5000); }
+          if(serieAtual<totalSeries){
+            elPause.hidden=true; elNext.hidden=false; elNext.textContent='Pular descanso ▶'; setEstado('pronto');
+            let d=REST_ENTRE_SERIES; elBar.style.width='0%'; elRelogio.textContent='⏱ '+d+'s';
+            descansoIv=setInterval(()=>{
+              d--;
+              if(d<=3&&d>0) beep(660,90);
+              if(d<=0){ clearInterval(descansoIv); descansoIv=null; proxima(); return; }
+              elRelogio.textContent='⏱ '+d+'s';
+            },1000);
+          }
           else{ elPause.hidden=true; elNext.hidden=true; setEstado('completo'); elRelogio.textContent='✓'; elBar.style.width='100%'; vibrar([100,50,100,50,200]); }
         }
       },1000);
     };
     const pausar=()=>{ if(intervalId){ clearInterval(intervalId); intervalId=null; pausado=true; setEstado('pausado'); elPause.textContent='▶ Retomar'; beep(440,100); } else if(pausado){ iniciar(); } };
-    const resetar=()=>{ if(intervalId)clearInterval(intervalId); intervalId=null; pausado=false; serieAtual=1; restante=segundos; setEstado(null); elStart.hidden=false; elPause.hidden=true; elNext.hidden=true; elDots.forEach(d=>d.classList.remove('active','done')); elDots[0].classList.add('active'); render(); };
-    const proxima=()=>{ serieAtual++; restante=segundos; elNext.hidden=true; render(); iniciar(); };
+    const resetar=()=>{ if(intervalId)clearInterval(intervalId); if(descansoIv){clearInterval(descansoIv);descansoIv=null;} intervalId=null; pausado=false; serieAtual=1; restante=segundos; setEstado(null); elStart.hidden=false; elPause.hidden=true; elNext.hidden=true; elNext.textContent='Próxima série ▶'; elDots.forEach(d=>d.classList.remove('active','done')); elDots[0].classList.add('active'); render(); };
+    const proxima=()=>{ if(descansoIv){clearInterval(descansoIv);descansoIv=null;} serieAtual++; restante=segundos; elNext.hidden=true; elNext.textContent='Próxima série ▶'; render(); iniciar(); };
     elStart.addEventListener('click',iniciar); elPause.addEventListener('click',pausar); elReset.addEventListener('click',resetar); elNext.addEventListener('click',proxima);
     render();
   });
@@ -853,6 +979,7 @@ if('serviceWorker' in navigator){
 }
 render();
 wirePainel();
+checarLembrete();
 </script>
 </body>
 </html>
