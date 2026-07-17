@@ -1,3 +1,7 @@
+<!-- [2026-07-17] Protocolo "Blinda Lombar": adicionados Cat-Cow Segmentar (2x8-10)
+     e Dead Bug com Controle (2x6-10/lado) no aquecimento dos dias Lower (B/D).
+     Motivo: prevenção lombar pós-distensão (repouso médico 5 dias + medicação).
+     Liberação médica necessária antes de executar. -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -195,6 +199,10 @@
   .modal-btn-ok{background:var(--ok);color:#04210f;border-color:var(--ok)}
   .modal-btn-ir{background:var(--accent);color:#fff;border-color:var(--accent)}
   .modal-btn-off{background:transparent;color:var(--fg-dim)}
+  .ex-aviso-medico{margin-top:10px;padding:10px 12px;background:rgba(239,68,68,.12);border-left:3px solid var(--danger);border-radius:4px;font-size:12px;color:#fecaca}
+  .ex-aviso-medico strong{color:var(--danger)}
+  .ex-placeholder-vid{display:flex;align-items:center;justify-content:center;background:var(--bg-soft);aspect-ratio:9/16;max-width:280px;margin:0 auto;border-radius:8px;border:1px dashed var(--border);padding:16px;text-align:center}
+  .ex-placeholder-vid span{color:var(--fg-mute);font-size:12px;line-height:1.5}
   footer{padding:24px 20px;text-align:center;font-size:11px;color:var(--fg-mute);border-top:1px solid var(--border);margin-top:30px}
   footer a{color:var(--accent);text-decoration:none}
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--bg-card);border:1px solid var(--accent);color:var(--fg);padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.5)}
@@ -347,6 +355,16 @@ const TREINOS = {
     ex:[
       {tipo:'bike'},
       {tipo:'prancha', serie:'3x30s', seg:30, vid:'uxPlAbWFUDs', dicas:PRANCHA_DICAS, respira:'lenta, nunca prender o ar.'},
+      {nome:'Cat-Cow Segmentar', serie:'2x8-10', vid:[''],
+        grupo:'Mobilidade lombar (multífidos, eretores da espinha)',
+        dicas:[['Posição de 4 apoios: mãos sob ombros, joelhos sob quadril','ok'],['Inspira arqueando (cow), expira arredondando (cat) — DEVAGAR','ok'],['Segmenta o movimento: lombar → torácica → cervical','ok'],['NÃO faça rápido — o objetivo é mobilidade segmentar','no']],
+        respira:'inspirar na extensão (cow), expirar na flexão (cat).',
+        avisoMedico:'🩺 <strong>Liberação médica pendente:</strong> NÃO execute até confirmação de alta (distensão lombar 17/07/2026). Protocolo Blinda Lombar.'},
+      {nome:'Dead Bug com Controle', serie:'2x6-10 /lado', vid:[''],
+        grupo:'Estabilidade segmentar / core profundo (transverso, oblíquos, multífidos)',
+        dicas:[['Deitado de costas, braços estendidos pro teto, joelhos a 90°','ok'],['Estenda braço oposto + perna oposta SEM a lombar descolar do chão','ok'],['Volta devagar e alterna — 1 rep = 1 lado','ok'],['NÃO deixe a lombar arquear (pressione o chão o tempo todo)','no']],
+        respira:'expirar ao estender braço+perna, inspirar ao voltar.',
+        avisoMedico:'🩺 <strong>Liberação médica pendente:</strong> NÃO execute até confirmação de alta (distensão lombar 17/07/2026). Protocolo Blinda Lombar.'},
       {nome:'Cadeira extensora', serie:'3x12', vid:['PzIfB9MiiX8'],
         grupo:'Quadríceps (reto femoral, vastos)',
         dicas:[['Eixo da máquina alinhado com o joelho','ok'],['Costas bem apoiadas, cinto afivelado se tiver','ok'],['Sobe controlado, 2s em cima contraindo o quadríceps','ok'],['Desce devagar (3-4s)','ok'],['NÃO travar o joelho na extensão total','no'],['NÃO fazer rápido','no']],
@@ -421,6 +439,16 @@ const TREINOS = {
     ex:[
       {tipo:'bike'},
       {tipo:'prancha', serie:'3x30s', seg:30, vid:'uxPlAbWFUDs', dicas:PRANCHA_DICAS, respira:'lenta, nunca prender o ar.'},
+      {nome:'Cat-Cow Segmentar', serie:'2x8-10', vid:[''],
+        grupo:'Mobilidade lombar (multífidos, eretores da espinha)',
+        dicas:[['Posição de 4 apoios: mãos sob ombros, joelhos sob quadril','ok'],['Inspira arqueando (cow), expira arredondando (cat) — DEVAGAR','ok'],['Segmenta o movimento: lombar → torácica → cervical','ok'],['NÃO faça rápido — o objetivo é mobilidade segmentar','no']],
+        respira:'inspirar na extensão (cow), expirar na flexão (cat).',
+        avisoMedico:'🩺 <strong>Liberação médica pendente:</strong> NÃO execute até confirmação de alta (distensão lombar 17/07/2026). Protocolo Blinda Lombar.'},
+      {nome:'Dead Bug com Controle', serie:'2x6-10 /lado', vid:[''],
+        grupo:'Estabilidade segmentar / core profundo (transverso, oblíquos, multífidos)',
+        dicas:[['Deitado de costas, braços estendidos pro teto, joelhos a 90°','ok'],['Estenda braço oposto + perna oposta SEM a lombar descolar do chão','ok'],['Volta devagar e alterna — 1 rep = 1 lado','ok'],['NÃO deixe a lombar arquear (pressione o chão o tempo todo)','no']],
+        respira:'expirar ao estender braço+perna, inspirar ao voltar.',
+        avisoMedico:'🩺 <strong>Liberação médica pendente:</strong> NÃO execute até confirmação de alta (distensão lombar 17/07/2026). Protocolo Blinda Lombar.'},
       {nome:'Cadeira flexora', serie:'3x12', vid:['T46yKiz8laY'],
         grupo:'Posteriores de coxa',
         dicas:[['Eixo alinhado com o joelho','ok'],['Almofada ACIMA do tornozelo','ok'],['Puxa o calcanhar ao glúteo, 2s em cima','ok'],['Desce devagar','ok'],['NÃO levantar o quadril do banco','no']],
@@ -600,6 +628,8 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
       <div class="combo-video"><h4>A) ${ex.combo[0]}</h4>${videoPosterHTML(ex.vid[0],ex.combo[0])}<a class="yt-mini" href="https://www.youtube.com/watch?v=${ex.vid[0]}" target="_blank" rel="noopener">↗ YouTube</a></div>
       <div class="combo-video"><h4>B) ${ex.combo[1]}</h4>${videoPosterHTML(ex.vid[1],ex.combo[1])}<a class="yt-mini" href="https://www.youtube.com/watch?v=${ex.vid[1]}" target="_blank" rel="noopener">↗ YouTube</a></div>
     </div>`;
+  } else if(!ex.vid[0]){
+    videoBlock = `<div class="ex-placeholder-vid"><span>Vídeo pendente — busque "${ex.nome}" no YouTube</span></div>`;
   } else {
     videoBlock = `<div class="ex-video">${videoPosterHTML(ex.vid[0],ex.nome)}<a class="yt-link" href="https://www.youtube.com/watch?v=${ex.vid[0]}" target="_blank" rel="noopener">↗ Abrir no YouTube</a></div>`;
   }
@@ -607,6 +637,7 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
   const dicas = ex.dicas.map(d=>`<li class="${d[1]}">${d[0]}</li>`).join('');
   const adapt = ex.adapt ? `<div class="ex-adapt">🔄 <strong>Adaptação (sua academia):</strong> ${ex.adapt}</div>` : '';
   const avisoBox = ex.aviso ? `<div class="ex-aviso">⚠️ ${ex.aviso}</div>` : '';
+  const avisoMedicoBox = ex.avisoMedico ? `<div class="ex-aviso-medico">${ex.avisoMedico}</div>` : '';
   const finalizar = ex.finalizar ? `<div class="ex-aviso">🏁 <strong>Finalizar o treino:</strong> + 10 min de escada, bike ou transport.</div>` : '';
 
   // Combo (super-série) = 2 cargas rotuladas; exercício simples = 1 carga
@@ -627,6 +658,7 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
         <div class="ex-respira"><strong>Respiração:</strong> ${ex.respira||RESPIRA_PADRAO}</div>
         ${adapt}
         ${avisoBox}
+        ${avisoMedicoBox}
         ${finalizar}
       </div>
     </div>
