@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-07-17 — Fix: prancha 30s→45s na Fase 2 + vídeos Cat-Cow/Dead Bug
+
+**Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2)
+
+### Corrigido
+
+- Prancha isométrica dos treinos B2, C2 e D2 estava com 30s ao invés de 45s (coreSeg + serie + seg)
+- Cat-Cow e Dead Bug estavam sem vídeo (placeholder `vid:['']`)
+
+### Como
+
+- B2/C2/D2: `coreSeg:30` → `45`, `serie:'3x30s'` → `'3x45s'`, `seg:30` → `45`
+- Cat-Cow: `vid:['GhJNN8OKrR4']` (8 ocorrências: 4 em cada arquivo)
+- Dead Bug: `vid:['uwta311b4Ek']` (8 ocorrências: 4 em cada arquivo)
+
+---
+
 ## 2026-07-17 — Fix: peso tracker em exercícios sem carga
 
 **Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2)
