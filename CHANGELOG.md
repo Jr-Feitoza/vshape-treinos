@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-07-17 — Fix: peso tracker em exercícios sem carga
+
+**Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2)
+
+### Corrigido
+
+- Exercícios de ativação (Cat-Cow, Dead Bug) exibiam campo de peso e timer de descanso desnecessários
+- Inserção desses exercícios deslocava as chaves de localStorage dos exercícios seguintes, perdendo pesos salvos
+
+### Como
+
+- Adicionada flag `semCarga: true` nos 8 objetos de ativação
+- `exercicioHTML()` agora pula `pesoTrackHTML` e `restTimerHTML` quando `semCarga` é verdadeiro
+
+---
+
 ## 2026-07-17 — Protocolo "Blinda Lombar"
 
 **Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2)

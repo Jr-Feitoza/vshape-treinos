@@ -351,12 +351,12 @@ const TREINOS = {
     ex:[
       {tipo:'bike'},
       {tipo:'prancha', serie:'3x30s', seg:30},
-      {nome:'Cat-Cow Segmentar', serie:'2x8-10', vid:[''],
+      {nome:'Cat-Cow Segmentar', serie:'2x8-10', vid:[''], semCarga:true,
         grupo:'Mobilidade lombar (multífidos, eretores da espinha)',
         dicas:[['Posição de 4 apoios: mãos sob ombros, joelhos sob quadril','ok'],['Inspira arqueando (cow), expira arredondando (cat) — DEVAGAR','ok'],['Segmenta o movimento: lombar → torácica → cervical','ok'],['NÃO faça rápido — o objetivo é mobilidade segmentar','no']],
         respira:'inspirar na extensão (cow), expirar na flexão (cat).',
         avisoMedico:'🩺 <strong>Liberação médica pendente:</strong> NÃO execute até confirmação de alta (distensão lombar 17/07/2026). Protocolo Blinda Lombar.'},
-      {nome:'Dead Bug com Controle', serie:'2x6-10 /lado', vid:[''],
+      {nome:'Dead Bug com Controle', serie:'2x6-10 /lado', vid:[''], semCarga:true,
         grupo:'Estabilidade segmentar / core profundo (transverso, oblíquos, multífidos)',
         dicas:[['Deitado de costas, braços estendidos pro teto, joelhos a 90°','ok'],['Estenda braço oposto + perna oposta SEM a lombar descolar do chão','ok'],['Volta devagar e alterna — 1 rep = 1 lado','ok'],['NÃO deixe a lombar arquear (pressione o chão o tempo todo)','no']],
         respira:'expirar ao estender braço+perna, inspirar ao voltar.',
@@ -428,12 +428,12 @@ const TREINOS = {
     ex:[
       {tipo:'bike'},
       {tipo:'prancha', serie:'3x30s', seg:30},
-      {nome:'Cat-Cow Segmentar', serie:'2x8-10', vid:[''],
+      {nome:'Cat-Cow Segmentar', serie:'2x8-10', vid:[''], semCarga:true,
         grupo:'Mobilidade lombar (multífidos, eretores da espinha)',
         dicas:[['Posição de 4 apoios: mãos sob ombros, joelhos sob quadril','ok'],['Inspira arqueando (cow), expira arredondando (cat) — DEVAGAR','ok'],['Segmenta o movimento: lombar → torácica → cervical','ok'],['NÃO faça rápido — o objetivo é mobilidade segmentar','no']],
         respira:'inspirar na extensão (cow), expirar na flexão (cat).',
         avisoMedico:'🩺 <strong>Liberação médica pendente:</strong> NÃO execute até confirmação de alta (distensão lombar 17/07/2026). Protocolo Blinda Lombar.'},
-      {nome:'Dead Bug com Controle', serie:'2x6-10 /lado', vid:[''],
+      {nome:'Dead Bug com Controle', serie:'2x6-10 /lado', vid:[''], semCarga:true,
         grupo:'Estabilidade segmentar / core profundo (transverso, oblíquos, multífidos)',
         dicas:[['Deitado de costas, braços estendidos pro teto, joelhos a 90°','ok'],['Estenda braço oposto + perna oposta SEM a lombar descolar do chão','ok'],['Volta devagar e alterna — 1 rep = 1 lado','ok'],['NÃO deixe a lombar arquear (pressione o chão o tempo todo)','no']],
         respira:'expirar ao estender braço+perna, inspirar ao voltar.',
@@ -629,7 +629,7 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
   const finalizar = ex.finalizar ? `<div class="ex-aviso">🏁 <strong>Finalizar o treino:</strong> + 10 min de escada, bike ou transport.</div>` : '';
 
   // Combo (super-série) = 2 cargas rotuladas; exercício simples = 1 carga
-  const pesoBlock = (ex.combo && ex.combo.length===2)
+  const pesoBlock = ex.semCarga ? '' : (ex.combo && ex.combo.length===2)
     ? pesoTrackHTML(key+'-a', 'A) '+ex.combo[0]) + pesoTrackHTML(key+'-b', 'B) '+ex.combo[1])
     : pesoTrackHTML(key);
 
@@ -641,7 +641,7 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
         <div class="ex-grupo">${ex.grupo}</div>
         ${tecBox}
         ${pesoBlock}
-        ${restTimerHTML(restSeg)}
+        ${ex.semCarga ? '' : restTimerHTML(restSeg)}
         <ul class="ex-dicas">${dicas}</ul>
         <div class="ex-respira"><strong>Respiração:</strong> ${RESPIRA_PADRAO}</div>
         ${adapt}
