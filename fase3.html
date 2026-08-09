@@ -1,18 +1,14 @@
-<!-- [2026-07-17] Protocolo "Blinda Lombar": adicionados Cat-Cow Segmentar (2x8-10)
-     e Dead Bug com Controle (2x6-10/lado) no aquecimento dos dias Lower (B2/D2).
-     Motivo: prevenção lombar pós-distensão (repouso médico 5 dias + medicação).
-     Liberação médica necessária antes de executar. -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>V-Shape Fase 2 — Intensificação</title>
-<meta name="theme-color" content="#3b82f6">
+<title>V-Shape Fase 3 — Definição</title>
+<meta name="theme-color" content="#a855f7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="V-Shape F2">
+<meta name="apple-mobile-web-app-title" content="V-Shape F3">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -20,7 +16,7 @@
   :root{
     --bg:#0e0e10; --bg-card:#1a1a1f; --bg-soft:#25252b;
     --fg:#ececef; --fg-dim:#9a9aa3; --fg-mute:#6b6b75;
-    --accent:#3b82f6; --accent-soft:#1e3a5f;
+    --accent:#a855f7; --accent-soft:#2a1a3e;
     --warn:#f59e0b; --warn-soft:#3a2a0e;
     --danger:#ef4444; --ok:#22c55e;
     --roxo:#a855f7; --roxo-soft:#2a1a3e;
@@ -51,9 +47,6 @@
   .semana-btns{display:flex;gap:6px}
   .semana-btns button{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg-soft);color:var(--fg-dim);font-size:13px;font-weight:700;cursor:pointer}
   .semana-btns button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .semana-btns button.deload.on{background:var(--warn);color:#000;border-color:var(--warn)}
-  .deload-banner{margin-top:12px;padding:11px 13px;background:var(--warn-soft);border:1px solid var(--warn);border-radius:8px;font-size:13px;color:#fde68a}
-  .deload-banner strong{color:var(--warn)}
   .painel-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
   .painel-actions button{flex:1;min-width:130px;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-soft);color:var(--fg);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
   .painel-actions button:hover{border-color:var(--accent)}
@@ -80,6 +73,7 @@
   .btn-feito:hover{background:rgba(34,197,94,.18)}
   .btn-feito.done{background:var(--ok);color:#04210f}
 
+  /* ===== Exercício normal + Triset ===== */
   details.exercicio{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;transition:border-color .15s}
   details.exercicio[open]{border-color:var(--accent)}
   details.exercicio summary{padding:14px 16px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;font-size:14px;font-weight:500;user-select:none}
@@ -103,16 +97,25 @@
   .ex-video .yt-link{display:block;text-align:center;padding:8px;background:var(--bg-soft);color:var(--accent);font-size:12px;text-decoration:none;font-weight:600}
   .ex-video .yt-link:hover{background:var(--accent-soft)}
 
-  .combo-videos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .combo-videos .combo-video{background:var(--bg-soft);border-radius:8px;padding:8px}
-  .combo-videos .combo-video h4{font-size:11px;color:var(--fg-dim);margin-bottom:6px;text-align:center;text-transform:uppercase;letter-spacing:.05em}
-  .combo-videos .combo-video .video-poster{position:relative;display:block;width:100%;aspect-ratio:9/16;border-radius:6px;background:#000;overflow:hidden;cursor:pointer}
-  .combo-videos .combo-video .video-poster img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s}
-  .combo-videos .combo-video .video-poster:hover img{opacity:.8}
-  .combo-videos .combo-video .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;background:rgba(255,255,255,.95);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:16px;padding-left:3px;box-shadow:0 2px 6px rgba(0,0,0,.4);transition:transform .15s}
-  .combo-videos .combo-video .video-poster:hover .play-btn{transform:translate(-50%,-50%) scale(1.1)}
-  .combo-videos .combo-video .video-poster iframe{position:absolute;inset:0;width:100%;height:100%;border-radius:6px;border:0;display:block}
-  .combo-videos .combo-video a.yt-mini{display:block;margin-top:4px;padding:3px 6px;background:var(--bg-card);color:var(--accent);text-align:center;text-decoration:none;font-size:10px;border-radius:4px;font-weight:600}
+  /* ===== Triset: 3 exercícios em grid ===== */
+  .triset-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:14px}
+  @media(min-width:760px){.triset-grid{grid-template-columns:1fr 1fr 1fr}}
+  .triset-ex{background:var(--bg-soft);border-radius:10px;padding:12px;border:1px solid var(--border)}
+  .triset-ex-nome{font-size:13px;font-weight:700;color:var(--fg);margin-bottom:4px}
+  .triset-ex-grupo{font-size:11px;color:var(--fg-dim);font-style:italic;margin-bottom:8px}
+  .triset-ex-video{background:#000;border-radius:8px;overflow:hidden;position:relative;aspect-ratio:9/16;max-width:240px;margin:0 auto 8px}
+  .triset-ex-video .video-poster{position:relative;display:block;width:100%;height:100%;background:#000;cursor:pointer;overflow:hidden}
+  .triset-ex-video .video-poster img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s}
+  .triset-ex-video .video-poster:hover img{opacity:.8}
+  .triset-ex-video .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;background:rgba(255,255,255,.95);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:18px;padding-left:3px;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+  .triset-ex-dicas{list-style:none;font-size:11px}
+  .triset-ex-dicas li{padding:2px 0 2px 18px;position:relative;color:var(--fg-dim)}
+  .triset-ex-dicas li::before{position:absolute;left:0;top:2px;font-size:11px;font-weight:700}
+  .triset-ex-dicas li.ok::before{content:"✓";color:var(--ok)}
+  .triset-ex-dicas li.no::before{content:"✗";color:var(--danger)}
+  .triset-ex-video .yt-mini{display:block;margin-top:4px;padding:3px 6px;background:var(--bg-card);color:var(--accent);text-align:center;text-decoration:none;font-size:10px;border-radius:4px;font-weight:600}
+  .triset-placeholder{display:flex;align-items:center;justify-content:center;background:var(--bg-soft);aspect-ratio:9/16;max-width:240px;margin:0 auto 8px;border-radius:8px;border:1px dashed var(--border);padding:12px;text-align:center}
+  .triset-placeholder span{color:var(--fg-mute);font-size:11px;line-height:1.4}
 
   .ex-grupo{font-size:12px;color:var(--fg-dim);font-style:italic;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
   .ex-dicas{list-style:none;font-size:13px}
@@ -125,11 +128,6 @@
   .ex-aviso{margin-top:10px;padding:8px 10px;background:var(--warn-soft);border-left:2px solid var(--warn);border-radius:4px;font-size:12px;color:#fde68a}
   .ex-adapt{margin-top:10px;padding:8px 10px;background:var(--accent-soft);border-left:2px solid var(--accent);border-radius:4px;font-size:12px;color:#bfdbfe}
   .ex-adapt strong{color:#fff}
-
-  /* ===== Técnica badge + explicação ===== */
-  .tec-badge{display:inline-block;background:var(--roxo-soft);color:#e9d5ff;border:1px solid var(--roxo);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
-  .tec-box{margin-bottom:12px;padding:9px 12px;background:var(--roxo-soft);border-left:2px solid var(--roxo);border-radius:6px;font-size:12px;color:#e9d5ff}
-  .tec-box b{color:#fff}
 
   /* ===== Peso tracker ===== */
   .peso-track{margin-bottom:12px;padding:11px 12px;background:var(--bg-soft);border-radius:8px;border:1px solid var(--border)}
@@ -144,7 +142,6 @@
   .peso-info .prog-up{color:var(--ok);font-weight:700}
   .peso-info .prog-same{color:var(--fg-dim)}
   .peso-info .prog-down{color:var(--warn);font-weight:700}
-  .peso-deload{margin-top:6px;font-size:12px;color:#fde68a;font-weight:600}
 
   /* ===== Rest timer inline ===== */
   .rest-timer{margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -154,7 +151,7 @@
   .rest-btn.rodando{background:var(--accent);color:#fff;border-color:var(--accent)}
   .rest-btn.fim{background:var(--ok);color:#04210f;border-color:var(--ok)}
 
-  /* ===== Prancha timer (reuso Fase 1) ===== */
+  /* ===== Prancha timer ===== */
   .prancha-timer{background:var(--bg-soft);border-radius:12px;padding:18px;margin-bottom:14px;text-align:center;border:2px solid var(--border);transition:border-color .2s}
   .prancha-timer.rodando{border-color:var(--accent)}
   .prancha-timer.pausado{border-color:var(--warn)}
@@ -174,18 +171,20 @@
   .timer-btn-next{background:var(--accent);color:#fff;border-color:var(--accent)}
   .timer-series{display:flex;gap:8px;justify-content:center;margin-top:14px}
   .serie-dot{width:11px;height:11px;border-radius:50%;background:var(--border);transition:all .2s}
-  .serie-dot.active{background:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.25)}
+  .serie-dot.active{background:var(--accent);box-shadow:0 0 0 3px rgba(168,85,247,.25)}
   .serie-dot.done{background:var(--ok)}
   @keyframes pulse-win{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
   .prancha-timer.completo .timer-relogio{animation:pulse-win .6s 3}
 
-  /* carga rotulada (combos/super-série) */
+  /* carga rotulada */
   .peso-track .pt-nome{font-size:12px;color:var(--accent);font-weight:700;flex:1 0 100%;margin-bottom:2px}
+
   /* frequência + previsão */
   .freq-sel{padding:8px 10px;background:var(--bg-soft);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-size:13px;font-weight:600;font-family:inherit}
   .prev-info{font-size:12px;color:var(--fg-dim);margin-top:3px}
   .prev-info b{color:var(--fg)}
   .prev-atraso{color:var(--warn);font-weight:600}
+
   /* modal lembrete */
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:24px;z-index:100;animation:fadeIn .2s}
   .modal-overlay[hidden]{display:none}
@@ -199,10 +198,20 @@
   .modal-btn-ok{background:var(--ok);color:#04210f;border-color:var(--ok)}
   .modal-btn-ir{background:var(--accent);color:#fff;border-color:var(--accent)}
   .modal-btn-off{background:transparent;color:var(--fg-dim)}
-  .ex-aviso-medico{margin-top:10px;padding:10px 12px;background:rgba(239,68,68,.12);border-left:3px solid var(--danger);border-radius:4px;font-size:12px;color:#fecaca}
-  .ex-aviso-medico strong{color:var(--danger)}
   .ex-placeholder-vid{display:flex;align-items:center;justify-content:center;background:var(--bg-soft);aspect-ratio:9/16;max-width:280px;margin:0 auto;border-radius:8px;border:1px dashed var(--border);padding:16px;text-align:center}
   .ex-placeholder-vid span{color:var(--fg-mute);font-size:12px;line-height:1.5}
+
+  /* ===== Triset rest / flow ===== */
+  .triset-flow{margin-top:10px;padding:10px 12px;background:var(--bg-soft);border-radius:8px;border:1px solid var(--border)}
+  .triset-flow .tf-title{font-size:12px;color:var(--accent);font-weight:700;margin-bottom:6px}
+  .triset-flow ol{margin:0;padding-left:20px;font-size:12px;color:var(--fg-dim)}
+  .triset-flow ol li{margin-bottom:2px}
+
+  /* HIIT / Cardio box */
+  .cardio-box{margin-top:16px;padding:12px 14px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;font-size:13px;color:#e9d5ff}
+  .cardio-box strong{color:var(--roxo)}
+  .cardio-box p{margin-top:4px;color:var(--fg-dim)}
+
   footer{padding:24px 20px;text-align:center;font-size:11px;color:var(--fg-mute);border-top:1px solid var(--border);margin-top:30px}
   footer a{color:var(--accent);text-decoration:none}
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--bg-card);border:1px solid var(--accent);color:var(--fg);padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.5)}
@@ -212,15 +221,15 @@
 <body>
 
 <header>
-  <h1>🏋️ V-Shape · Fase 2 — Intensificação</h1>
-  <div class="sub">Categoria C (Sobrepeso) · Semanas 5 a 8 · rotação A2 → B2 → C2 → D2</div>
+  <h1>🔥 V-Shape · Fase 3 — Definição</h1>
+  <div class="sub">Categoria C (Sobrepeso) · Semanas 9 a 12 · rotação A3 → B3 → C3 → D3</div>
   <div class="fase-switch">
     <a href="./index.html">Fase 1</a>
-    <a href="./fase2.html" class="on">Fase 2</a>
-    <a href="./fase3.html">Fase 3</a>
+    <a href="./fase2.html">Fase 2</a>
+    <a href="./fase3.html" class="on">Fase 3</a>
   </div>
   <div class="alerta">
-    <strong>Metodologia F2:</strong> entram <strong>drop set, cluster, pirâmide e super-série</strong> só nos exercícios marcados. Quebre recorde primeiro nos <strong>compostos</strong> (agachamento, supino, remada). Isoladores = execução limpa.
+    <strong>Reta final.</strong> Oito semanas de construção te trouxeram até aqui. Agora é lapidação — comprimir a cintura, revelar o V, fechar o ciclo. <strong>Circuitos de alta densidade, volume alto, descanso curto.</strong> Foco em INTENSIDADE, não carga.
   </div>
   <div class="sinais">
     🚨 <strong>Sinais de alerta:</strong> tontura persistente · fraqueza/tremor · vômito repetido (&gt;2x) · dor articular &gt;2 dias → pare e me avisa no Telegram.
@@ -231,7 +240,7 @@
 <section class="painel">
   <h3>📊 Meu progresso</h3>
   <div class="painel-row">
-    <div class="proximo-box">Próximo treino:<span class="proximo-tag" id="proximoTag">A2</span><div class="prev-info" id="previsaoInfo"></div></div>
+    <div class="proximo-box">Próximo treino:<span class="proximo-tag" id="proximoTag">A3</span><div class="prev-info" id="previsaoInfo"></div></div>
     <button class="rest-btn" id="irProximo" style="padding:8px 14px">Ir para o treino ▶</button>
   </div>
 
@@ -245,15 +254,12 @@
   </div>
 
   <div class="semana-wrap">
-    <span class="semana-label">Semana do ciclo (deload na 4ª)</span>
+    <span class="semana-label">Semana do ciclo (9 a 12)</span>
     <div class="semana-btns" id="semanaBtns">
-      <button data-sem="1">Sem 1</button>
-      <button data-sem="2">Sem 2</button>
-      <button data-sem="3">Sem 3</button>
-      <button data-sem="4" class="deload">Sem 4 · Deload</button>
-    </div>
-    <div class="deload-banner" id="deloadBanner" hidden>
-      ⚠️ <strong>SEMANA DE DELOAD.</strong> Reduza a carga pra ~50% do seu peso atual (mostrado em cada exercício). Mantenha as repetições, foque em execução perfeita. É recuperação — não force.
+      <button data-sem="1">Sem 9</button>
+      <button data-sem="2">Sem 10</button>
+      <button data-sem="3">Sem 11</button>
+      <button data-sem="4">Sem 12</button>
     </div>
   </div>
 
@@ -269,7 +275,7 @@
 <!-- ===== Modal lembrete de treino ===== -->
 <div class="modal-overlay" id="modalLembrete" hidden>
   <div class="modal-box">
-    <div class="modal-emoji">💪</div>
+    <div class="modal-emoji">🔥</div>
     <h3>Treino de hoje</h3>
     <p id="modalTxt"></p>
     <div class="modal-actions">
@@ -285,8 +291,8 @@
 <main id="main"></main>
 
 <footer>
-  <p>V-Shape <strong>Fase 2</strong> — Intensificação · Categoria C (Sobrepeso) · A2/B2/C2/D2</p>
-  <p>Vídeos oficiais do programa · progresso salvo no seu aparelho (localStorage)</p>
+  <p>V-Shape <strong>Fase 3</strong> — Definição · Categoria C (Sobrepeso) · A3/B3/C3/D3</p>
+  <p>Circuitos triset de alta densidade · progresso salvo no seu aparelho (localStorage)</p>
   <p>🚨 Em caso de tontura, fraqueza, vômito repetido ou dor &gt;2 dias durante/após o treino, pare e me avise.</p>
 </footer>
 
@@ -294,174 +300,202 @@
 
 <script>
 /* =========================================================
-   DADOS DA FASE 2  (extraídos do PDF oficial FASE2.pdf)
+   DADOS DA FASE 3 — DEFINIÇÃO (PDF oficial)
+   Categoria C (Sobrepeso) · Semanas 9 a 12
+   Circuitos triset · 10 reps cada · descanso 1 min
    ========================================================= */
-const ORDEM = ['A2','B2','C2','D2'];
+const ORDEM = ['A3','B3','C3','D3'];
 
-// Técnicas de intensificação (explicação p/ tooltip/box)
-const TEC = {
-  drop:    {t:'DROP +8',  d:'<b>Drop set:</b> na <b>última série</b>, ao chegar na falha, reduza a carga na hora e faça <b>+8 repetições</b> sem descanso.'},
-  cluster: {t:'CLUSTER',  d:'<b>Cluster 4+4+4:</b> com carga alta faça 4 reps, pause ~15s, +4 reps, pause ~15s, +4 reps. Conta como 1 série.'},
-  piramide:{t:'PIRÂMIDE', d:'<b>Pirâmide 12/10/8:</b> aumente a carga a cada série reduzindo as reps — 12, depois 10, depois 8.'},
-  super:   {t:'SUPER-SÉRIE', d:'<b>Super-série:</b> os dois exercícios em sequência, <b>sem descanso</b> entre eles. Descanse só ao fim do bloco.'}
-};
+const RESPIRA_PADRAO = 'expirar na força, inspirar na volta.';
 
-const RESPIRA_PADRAO = 'expirar na fase de força (contração), inspirar na volta.';
+// Dicas universais da prancha (reuso)
+const PRANCHA_DICAS = [
+  ['Corpo em linha reta: cabeça → ombros → quadril → calcanhares','ok'],
+  ['Contraia glúteo + abdômen o tempo todo','ok'],
+  ['Cotovelos DEBAIXO dos ombros (90°)','ok'],
+  ['NÃO deixe o quadril cair (compensa lombar → dor)','no'],
+  ['NÃO suba o quadril (diminui o trabalho do core)','no']
+];
+
+/*
+  Cada treino tem:
+  - nome, foco, dia, dur, reps, descanso
+  - aquecimento (texto)
+  - coreSeg (segundos da prancha)
+  - ex: array de exercícios
+    - bike → aquecimento
+    - prancha → timer isométrico
+    - triset → { tipo:'triset', nome, exs: [{nome,vid,guias,dicas}], reps, descanso }
+    - finalizador → exercício final com texto de finalização
+*/
 
 const TREINOS = {
-  A2:{
-    nome:'Treino A2 — Upper 1', foco:'Costas + ombro + bíceps + peito + core',
-    dia:'Rotação · dia 1', dur:'~55 min', reps:'3x12', descanso:'1 min',
-    aquecimento:'20 min bike', coreSeg:45,
+  A3:{
+    nome:'Treino A3 — Upper 1', foco:'Costas (dorsais, romboides) + deltoide + peito + core',
+    dia:'Rotação · dia 1', dur:'~50 min', reps:'Trisets 1x10', descanso:'1 min entre triset',
+    aquecimento:'20 min caminhada rápida', coreSeg:60,
     ex:[
-      {tipo:'bike'},
-      {tipo:'prancha', serie:'3x45s', seg:45},
-      {nome:'Puxada aberta frente', serie:'3x12', tec:'drop', vid:['KXYRiP_crFU'],
-        grupo:'Dorsais (latíssimo), romboides, bíceps',
-        dicas:[['Cotovelos pra BAIXO e pra trás, peito na barra','ok'],['Costas apoiadas, sem impulso de tronco','ok'],['NÃO jogar a cabeça pra trás','no']]},
-      {nome:'Remada aberta máquina', serie:'3x12', vid:['yZtFixy6_ek'],
-        grupo:'Dorsais, romboides, trapézio médio',
-        dicas:[['Peito encostado no apoio o tempo todo','ok'],['Contrai escapular (junta omoplatas) 1-2s','ok'],['NÃO encolher ombro nas orelhas','no']],
-        adapt:'Sem a máquina aberta? Use <strong>remada baixa na polia</strong> (mesma pegada aberta).'},
-      {nome:'Remada serrote', serie:'3x12', tec:'piramide', vid:['G2gbM0N2ey8'],
-        grupo:'Dorsais, trapézio, deltoide posterior',
-        dicas:[['1 halter/apoio no banco, costas paralelas ao chão','ok'],['Puxa cotovelo pra trás, colado ao tronco','ok'],['NÃO rotacionar o tronco','no']]},
-      {nome:'Rosca banco inclinado + rosca martelo', serie:'3x12', tec:'super', combo:['Rosca banco inclinado','Rosca martelo em pé'], vid:['c5Rqh3yOcjc','GJsi_Yw1TPo'],
-        grupo:'Bíceps (cabeça longa + braquial)',
-        dicas:[['A) Inclinado: braços atrás do corpo alongam o bíceps — controla a descida','ok'],['B) Martelo: pegada neutra (polegar pra cima), sem balançar','ok'],['NÃO usar impulso de ombro/lombar','no']]},
-      {nome:'Desenvolvimento máquina', serie:'3x12', tec:'cluster', vid:['_PowJh0LnFY'],
-        grupo:'Deltoide (anterior/medial), tríceps',
-        dicas:[['Costas apoiadas, sobe sem travar o cotovelo','ok'],['Desce controlado até altura das orelhas','ok']],
-        adapt:'Sem a máquina? <strong>Desenvolvimento com halteres sentado</strong> (apoio nas costas).'},
-      {nome:'Elevação lateral + crucifixo máquina', serie:'3x12', tec:'super', combo:['Elevação lateral','Crucifixo máquina'], vid:['qIq5thMEws0','ni3iMtBy4o8'],
-        grupo:'Deltoide medial + peitoral',
-        dicas:[['A) Lateral: sobe até o ombro (não acima), polegar pra cima','ok'],['B) Crucifixo: amplitude completa, sem travar cotovelo','ok'],['Carga LEVE — foco é pump, não força','ok']]},
-      {nome:'Supino máquina', serie:'3x12', tec:'drop', vid:['DlpheiULcH0'],
-        grupo:'Peitoral maior, deltoide anterior, tríceps',
-        dicas:[['Alças na altura do peito, escápulas retraídas','ok'],['Empurra sem travar cotovelo','ok']],
-        adapt:'Sem a máquina? <strong>Supino reto com halter ou barra</strong>.'},
-      {nome:'Abdominal remador', serie:'3x12', vid:['Au9VMxWm7jE'], finalizar:true,
-        grupo:'Reto abdominal, oblíquos, flexores do quadril',
-        dicas:[['Flexiona o quadril levando joelhos ao peito','ok'],['Contrai o abdômen 1s no fim','ok'],['NÃO puxar com os braços — motor é o core','no']]}
+      {tipo:'caminhada'},
+      {tipo:'prancha', serie:'3x1 min', seg:60},
+      {tipo:'triset', nome:'TRISET 1 — Puxada + Elevação', exs:[
+        {nome:'Puxada frente aberta', vid:['KXYRiP_crFU'],
+         grupo:'Dorsais (latíssimo do dorso), romboides, bíceps',
+         dicas:[['Pegada um pouco mais aberta que a largura dos ombros','ok'],['Puxa cotovelos PRA BAIXO E PRA TRÁS','ok'],['Peito "vai na barra" — 1-2s de contração no final','ok'],['NÃO jogar a cabeça pra trás (machuca cervical)','no'],['NÃO usar impulso do tronco','no']]},
+        {nome:'Puxada frente supinada', vid:['Uj58KaUkEEQ'],
+         grupo:'Dorsais, bíceps (ênfase em braquial)',
+         dicas:[['Pegada supinada (palmas pra você), largura dos ombros','ok'],['Cotovelos pra baixo e pra trás, peito na barra','ok'],['NÃO usar impulso','no']]},
+        {nome:'Elevação lateral com halteres', vid:['qIq5thMEws0'],
+         grupo:'Deltoide medial',
+         dicas:[['Halteres sobem até a altura do ombro (não acima)','ok'],['Polegar pra cima, cotovelos levemente flexionados','ok'],['Carga LEVE — foco é pump, não força','ok'],['NÃO subir acima do ombro (manguito)','no']]}
+      ], reps:'1x10 cada', descanso:'1 min'},
+      {tipo:'triset', nome:'TRISET 2 — Desenvolvimento + Supino + Remada', exs:[
+        {nome:'Desenvolvimento halteres', vid:['5I7ogOjvdnc'],
+         grupo:'Deltoide (anterior e medial), tríceps',
+         dicas:[['Sentado no banco com apoio lombar','ok'],['Halteres na altura dos ombros no início','ok'],['Sobe até o topo sem bater os halteres','ok'],['NÃO travar o cotovelo no topo','no'],['NÃO jogar a lombar pra trás','no']]},
+        {nome:'Supino inclinado com halteres', vid:['lmwCGtNJmw0'],
+         grupo:'Peitoral clavicular, deltoide anterior, tríceps',
+         dicas:[['Banco a 30-45°, pés firmes no chão','ok'],['Escápulas retraídas e debaixo do banco','ok'],['Halteres descem na linha do peitoral','ok'],['NÃO bater os halteres no topo','no']]},
+        {nome:'Remada curvada com halteres', vid:['G2gbM0N2ey8'],
+         grupo:'Dorsais, trapézio, deltoide posterior, bíceps',
+         dicas:[['Tronco inclinado ~45°, costas retas','ok'],['Puxa cotovelos pra trás, próximos do tronco','ok'],['Contrai escapular no fim do movimento','ok'],['NÃO arredondar as costas','no']]}
+      ], reps:'1x10 cada', descanso:'1 min'},
+      {tipo:'triset', nome:'TRISET 3 — Flexão + Abdominal', exs:[
+        {nome:'Flexão de braço joelho apoiado', vid:[null],
+         grupo:'Peitoral, deltoide anterior, tríceps, core',
+         dicas:[['Joelhos no chão, mãos na largura dos ombros','ok'],['Corpo em linha reta dos joelhos aos ombros','ok'],['Desce controlado, cotovelos a ~45°','ok'],['NÃO deixar o quadril cair','no']]},
+        {nome:'Abdominal remador', vid:['Au9VMxWm7jE'],
+         grupo:'Reto abdominal, oblíquos, flexores do quadril',
+         dicas:[['Antebraços nos estofados, mãos nas alças','ok'],['Flexiona joelhos em direção ao peito','ok'],['Contrai abdômen 1s no fim, volta devagar','ok'],['NÃO puxar com os braços — motor é o core','no']]},
+        {nome:'Abdominal curto', vid:[null],
+         grupo:'Reto abdominal (porção superior)',
+         dicas:[['Deitado, joelhos flexionados, mãos atrás da cabeça','ok'],['Sobe só as escápulas do chão (amplitude curta)','ok'],['Contrai no topo 1s, desce devagar','ok'],['NÃO puxar o pescoço com as mãos','no']]}
+      ], reps:'1x10 cada', descanso:'1 min', finalizar:true}
     ]
   },
-  B2:{
-    nome:'Treino B2 — Lower 1', foco:'Quadríceps + posterior + glúteo + adutores/abdutores',
-    dia:'Rotação · dia 2', dur:'~55 min', reps:'3x15', descanso:'45 seg',
-    aquecimento:'20 min bike', coreSeg:45,
+  B3:{
+    nome:'Treino B3 — Lower 1', foco:'Quadríceps + posterior + glúteo + adutores/abdutores',
+    dia:'Rotação · dia 2', dur:'~55 min', reps:'Trisets 1x10', descanso:'1 min entre triset',
+    aquecimento:'20 min caminhada rápida', coreSeg:60,
     ex:[
-      {tipo:'bike'},
-      {tipo:'prancha', serie:'3x45s', seg:45},
-      {nome:'Cat-Cow Segmentar', serie:'2x8-10', vid:['GhJNN8OKrR4'], semCarga:true,
-        grupo:'Mobilidade lombar (multífidos, eretores da espinha)',
-        dicas:[['Posição de 4 apoios: mãos sob ombros, joelhos sob quadril','ok'],['Inspira arqueando (cow), expira arredondando (cat) — DEVAGAR','ok'],['Segmenta o movimento: lombar → torácica → cervical','ok'],['NÃO faça rápido — o objetivo é mobilidade segmentar','no']],
-        respira:'inspirar na extensão (cow), expirar na flexão (cat).',
-        avisoMedico:'🩺 <strong>Liberação médica pendente:</strong> NÃO execute até confirmação de alta (distensão lombar 17/07/2026). Protocolo Blinda Lombar.'},
-      {nome:'Dead Bug com Controle', serie:'2x6-10 /lado', vid:['uwta311b4Ek'], semCarga:true,
-        grupo:'Estabilidade segmentar / core profundo (transverso, oblíquos, multífidos)',
-        dicas:[['Deitado de costas, braços estendidos pro teto, joelhos a 90°','ok'],['Estenda braço oposto + perna oposta SEM a lombar descolar do chão','ok'],['Volta devagar e alterna — 1 rep = 1 lado','ok'],['NÃO deixe a lombar arquear (pressione o chão o tempo todo)','no']],
-        respira:'expirar ao estender braço+perna, inspirar ao voltar.',
-        avisoMedico:'🩺 <strong>Liberação médica pendente:</strong> NÃO execute até confirmação de alta (distensão lombar 17/07/2026). Protocolo Blinda Lombar.'},
-      {nome:'Cadeira extensora', serie:'3x15', tec:'drop', vid:['BHxNa16VQ7A'],
-        grupo:'Quadríceps',
-        dicas:[['Eixo da máquina alinhado com o joelho','ok'],['Sobe controlada, 2s em cima; desce devagar','ok'],['NÃO travar o joelho na extensão total','no']]},
-      {nome:'Leg press 45° (pés afastados)', serie:'3x15', tec:'cluster', vid:['k4T_Ono5UN4'],
-        grupo:'Quadríceps, glúteo, posterior',
-        dicas:[['Lombar TOTALMENTE colada no banco','ok'],['Desce até ~90° confortável, empurra com quadríceps+glúteo','ok'],['NÃO tirar o quadril do banco','no']]},
-      {nome:'Agachamento Smith', serie:'3x15', vid:['Khe0kubkg-8'],
-        grupo:'Quadríceps, glúteos, posterior, core',
-        dicas:[['Barra no trapézio (não no pescoço)','ok'],['Lombar neutra, peito aberto','ok'],['NÃO arredondar as costas','no']],
-        adapt:'Sem Smith? Faça <strong>leg horizontal</strong> (opção oficial) ou <strong>agachamento com halter</strong>.'},
-      {nome:'Cadeira flexora', serie:'3x15', tec:'drop', vid:['cuWo-F7HDhY'],
-        grupo:'Posteriores de coxa',
-        dicas:[['Almofada ACIMA do tornozelo','ok'],['Puxa o calcanhar ao glúteo, 2s em cima','ok'],['NÃO levantar o quadril do banco','no']]},
-      {nome:'Cadeira abdutora', serie:'3x15', vid:['cMtyzQPGTkM'],
-        grupo:'Glúteo médio, TFL',
-        dicas:[['Costas apoiadas, abre controlando, 2s no fim','ok'],['NÃO rotacionar o quadril','no']]},
-      {nome:'Cadeira adutora', serie:'3x15', vid:['LPwZtIv2b6g'],
-        grupo:'Adutores',
-        dicas:[['Fecha controlando, 2s no fim','ok'],['NÃO forçar amplitude máxima no início','no']]},
-      {nome:'Extensão de coluna banco 45°', serie:'3x15', vid:['4Tae_14FVeQ'], finalizar:true,
-        grupo:'Lombar (eretores), glúteo, posterior',
-        dicas:[['Sobe até alinhar tronco-pernas (sem hiperextender)','ok'],['Movimento pela dobra do quadril, não pela lombar','ok']],
-        adapt:'Sem o banco 45°? Faça <strong>hiperextensão reversa no chão</strong> (ou no banco reto).'}
+      {tipo:'caminhada'},
+      {tipo:'prancha', serie:'3x1 min', seg:60},
+      {tipo:'triset', nome:'TRISET 1 — Extensora + Agachamento + Afundo', exs:[
+        {nome:'Cadeira extensora', vid:['BHxNa16VQ7A'],
+         grupo:'Quadríceps (reto femoral, vastos)',
+         dicas:[['Eixo da máquina alinhado com o joelho','ok'],['Costas bem apoiadas, sobe controlado','ok'],['2s em cima contraindo, desce devagar','ok'],['NÃO travar o joelho na extensão total','no']]},
+        {nome:'Agachamento livre', vid:[null],
+         grupo:'Quadríceps, glúteos, posteriores, core',
+         dicas:[['Pés na largura dos ombros, pontas levemente pra fora','ok'],['Lombar neutra, peito aberto, olhar pra frente','ok'],['Desce até ~90°, joelhos alinhados com os pés','ok'],['NÃO arredondar as costas','no'],['NÃO deixar os joelhos caírem pra dentro','no']]},
+        {nome:'Afundo alternado livre', vid:[null],
+         grupo:'Quadríceps, glúteos, posteriores, estabilizadores',
+         dicas:[['Passo à frente, joelho de trás quase toca o chão','ok'],['Joelho da frente não ultrapassa a ponta do pé','ok'],['Tronco ereto, core firme','ok'],['NÃO inclinar o tronco pra frente','no']]}
+      ], reps:'1x10 cada', descanso:'1 min'},
+      {tipo:'triset', nome:'TRISET 2 — Abdutora + Stiff + Sumo', exs:[
+        {nome:'Cadeira abdutora', vid:['cMtyzQPGTkM'],
+         grupo:'Glúteo médio, TFL',
+         dicas:[['Costas apoiadas, abdômen contraído','ok'],['Abre controlando, 2s no final','ok'],['NÃO rotacionar o quadril','no']]},
+        {nome:'Stiff com halteres', vid:[null],
+         grupo:'Posteriores de coxa, glúteos, lombar',
+         dicas:[['Joelhos levemente flexionados, costas RETAS','ok'],['Halteres descem rente às pernas até sentir alongar posterior','ok'],['Sobe contraindo glúteo no final','ok'],['NÃO arredondar a lombar','no']]},
+        {nome:'Agachamento sumo com halteres', vid:[null],
+         grupo:'Quadríceps, adutores, glúteos',
+         dicas:[['Pés bem afastados, pontas pra fora (45°)','ok'],['Segura 1 halter à frente do corpo','ok'],['Desce até as coxas ficarem paralelas ao chão','ok'],['NÃO deixar os joelhos caírem pra dentro','no']]}
+      ], reps:'1x10 cada', descanso:'1 min'},
+      {tipo:'triset', nome:'TRISET 3 — Adutora + Panturrilha + Ponte', exs:[
+        {nome:'Cadeira adutora', vid:['LPwZtIv2b6g'],
+         grupo:'Adutores',
+         dicas:[['Costas apoiadas, abdômen contraído','ok'],['Fecha controlando, 2s no final','ok'],['NÃO forçar amplitude máxima se o quadril reclamar','no']]},
+        {nome:'Panturrilha livre', vid:[null],
+         grupo:'Gastrocnêmio, sóleo',
+         dicas:[['Em pé, pés na largura do quadril','ok'],['Sobe na ponta dos pés o máximo possível','ok'],['2s no topo, desce devagar até o calcanhar quase tocar','ok'],['NÃO fazer rápido (perde tensão)','no']]},
+        {nome:'Ponte glútea', vid:[null],
+         grupo:'Glúteo máximo, posteriores, core',
+         dicas:[['Deitado, joelhos flexionados, pés no chão','ok'],['Sobe o quadril contraindo glúteo FORTE','ok'],['2s no topo, desce devagar','ok'],['NÃO empurrar pela lombar','no']]}
+      ], reps:'1x10 cada', descanso:'1 min', finalizar:true}
     ]
   },
-  C2:{
-    nome:'Treino C2 — Upper 2', foco:'Peito + tríceps + ombro + costas',
-    dia:'Rotação · dia 3', dur:'~55 min', reps:'3x15', descanso:'45 seg',
-    aquecimento:'20 min bike', coreSeg:45,
+  C3:{
+    nome:'Treino C3 — Upper 2', foco:'Peito + tríceps + ombro + costas',
+    dia:'Rotação · dia 3', dur:'~50 min', reps:'Trisets 1x10', descanso:'1 min entre triset',
+    aquecimento:'20 min caminhada rápida', coreSeg:60,
     ex:[
-      {tipo:'bike'},
-      {tipo:'prancha', serie:'3x45s', seg:45},
-      {nome:'Supino inclinado com halteres', serie:'3x15', tec:'piramide', vid:['lmwCGtNJmw0'],
-        grupo:'Peitoral clavicular, deltoide anterior, tríceps',
-        dicas:[['Banco 30-45°, escápulas retraídas','ok'],['Halteres descem na linha do peitoral','ok'],['NÃO bater os halteres no topo','no']]},
-      {nome:'Supino máquina', serie:'3x15', tec:'drop', vid:['_4KDAZ59jkw'],
-        grupo:'Peitoral maior, deltoide anterior, tríceps',
-        dicas:[['Alças na altura do peito, escápulas retraídas','ok'],['Empurra sem travar cotovelo','ok']],
-        adapt:'Sem a máquina? <strong>Supino reto com halter ou barra</strong>.'},
-      {nome:'Supino reto no Smith', serie:'3x15', vid:['Ww5u_DAJZ2Y'],
-        grupo:'Peitoral (fibras esternais), deltoide anterior, tríceps',
-        dicas:[['Barra passa na linha do peitoral (não do pescoço)','ok'],['Controla a descida, sem impacto','ok']]},
-      {nome:'Tríceps testa barra W', serie:'3x15', vid:['dsmG8aMjdog'],
-        grupo:'Tríceps (cabeças longa e lateral)',
-        dicas:[['Cotovelos apontando pro teto, fixos','ok'],['Desce a barra até perto da testa, controlado','ok'],['NÃO abrir os cotovelos pros lados','no']]},
-      {nome:'Desenvolvimento máquina', serie:'3x15', vid:['_PowJh0LnFY'],
-        grupo:'Deltoide (anterior/medial), tríceps',
-        dicas:[['Costas apoiadas, sobe sem travar o cotovelo','ok'],['Desce controlado até altura das orelhas','ok']],
-        adapt:'Sem a máquina? <strong>Desenvolvimento com halteres sentado</strong>.'},
-      {nome:'Elevação lateral + puxada frente supinada', serie:'3x15', tec:'super', combo:['Elevação lateral','Puxada frente supinada'], vid:['qIq5thMEws0','Uj58KaUkEEQ'],
-        grupo:'Deltoide medial + dorsais',
-        dicas:[['A) Lateral: sobe até o ombro, polegar pra cima','ok'],['B) Supinada: palmas pra você, foco em dorsais','ok'],['Carga LEVE na lateral','ok']]},
-      {nome:'Remada máquina neutra', serie:'3x15', tec:'drop', vid:['KqxuuZ9-4vs'],
-        grupo:'Dorsais, romboides, trapézio, bíceps',
-        dicas:[['Pegada neutra (palmas se encarando)','ok'],['Puxa cotovelos pra trás e pra baixo, contrai escapular','ok'],['NÃO encolher ombro','no']]},
-      {nome:'Abdominal remador', serie:'3x15', vid:['Au9VMxWm7jE'], finalizar:true,
-        grupo:'Reto abdominal, oblíquos, flexores do quadril',
-        dicas:[['Flexiona o quadril levando joelhos ao peito','ok'],['Contrai o abdômen 1s no fim','ok'],['NÃO usar impulso','no']]}
+      {tipo:'caminhada'},
+      {tipo:'prancha', serie:'3x1 min', seg:60},
+      {tipo:'triset', nome:'TRISET 1 — Supinos + Tríceps', exs:[
+        {nome:'Supino inclinado com halteres', vid:['lmwCGtNJmw0'],
+         grupo:'Peitoral clavicular, deltoide anterior, tríceps',
+         dicas:[['Banco a 30-45°, pés firmes no chão','ok'],['Escápulas retraídas, halteres na linha do peitoral','ok'],['Cotovelos a ~45° do tronco','ok'],['NÃO bater os halteres no topo','no']]},
+        {nome:'Supino reto com halteres', vid:[null],
+         grupo:'Peitoral maior, deltoide anterior, tríceps',
+         dicas:[['Deitado no banco reto, pés firmes','ok'],['Escápulas retraídas, halteres na linha do peitoral','ok'],['Empurra sem travar cotovelo, controla a descida','ok'],['NÃO arquear a lombar em excesso','no']]},
+        {nome:'Tríceps testa com halteres', vid:[null],
+         grupo:'Tríceps (cabeças longa e lateral)',
+         dicas:[['Deitado no banco, halteres acima do peito','ok'],['Cotovelos fixos apontando pro teto','ok'],['Desce os halteres até perto das orelhas','ok'],['NÃO abrir os cotovelos pros lados','no']]}
+      ], reps:'1x10 cada', descanso:'1 min'},
+      {tipo:'triset', nome:'TRISET 2 — Remada + Rosca + Pulldown', exs:[
+        {nome:'Remada alta no cabo', vid:[null],
+         grupo:'Trapézio, deltoide posterior, romboides',
+         dicas:[['Barra reta ou corda, pegada pronada','ok'],['Puxa em direção ao peito, cotovelos ALTOS','ok'],['Contrai escapular no fim, volta controlado','ok'],['NÃO encolher os ombros nas orelhas','no']]},
+        {nome:'Rosca direta no cabo', vid:[null],
+         grupo:'Bíceps (cabeças longa e curta)',
+         dicas:[['Barra reta, pegada supinada na largura dos ombros','ok'],['Cotovelos fixos ao lado do tronco','ok'],['Sobe controlado, contrai no topo 1s','ok'],['NÃO balançar o tronco','no']]},
+        {nome:'Pulldown no cabo', vid:[null],
+         grupo:'Tríceps (ênfase cabeça lateral)',
+         dicas:[['Barra reta ou corda na polia alta','ok'],['Cotovelos fixos ao lado do tronco','ok'],['Empurra pra baixo até estender, contrai 1s','ok'],['NÃO abrir os cotovelos','no']]}
+      ], reps:'1x10 cada', descanso:'1 min'},
+      {tipo:'triset', nome:'TRISET 3 — Supinada + Lateral + Crucifixo Inverso', exs:[
+        {nome:'Puxada frente supinada', vid:['Uj58KaUkEEQ'],
+         grupo:'Dorsais, bíceps',
+         dicas:[['Pegada supinada na largura dos ombros','ok'],['Cotovelos pra baixo e pra trás','ok'],['Peito na barra, contrai dorsais 1-2s','ok'],['NÃO usar impulso','no']]},
+        {nome:'Elevação lateral', vid:['qIq5thMEws0'],
+         grupo:'Deltoide medial',
+         dicas:[['Sobe até a altura do ombro, polegar pra cima','ok'],['Cotovelos levemente flexionados','ok'],['Desce controlado, carga LEVE','ok'],['NÃO subir acima do ombro','no']]},
+        {nome:'Crucifixo inverso', vid:[null],
+         grupo:'Deltoide posterior, romboides, trapézio',
+         dicas:[['Tronco inclinado ou na máquina de peck deck invertido','ok'],['Abre os braços até alinhar com os ombros','ok'],['Contrai escapular no fim, volta controlado','ok'],['NÃO usar impulso do tronco','no']]}
+      ], reps:'1x10 cada', descanso:'1 min', finalizar:true}
     ]
   },
-  D2:{
-    nome:'Treino D2 — Lower 2', foco:'Posterior + glúteo + quadríceps + lombar',
-    dia:'Rotação · dia 4', dur:'~55 min', reps:'3x15', descanso:'45 seg',
-    aquecimento:'20 min bike', coreSeg:45,
+  D3:{
+    nome:'Treino D3 — Lower 2', foco:'Posterior de coxa + glúteo + quadríceps + quadril',
+    dia:'Rotação · dia 4', dur:'~55 min', reps:'Trisets 1x10', descanso:'1 min entre triset',
+    aquecimento:'20 min caminhada rápida', coreSeg:60,
     ex:[
-      {tipo:'bike'},
-      {tipo:'prancha', serie:'3x45s', seg:45},
-      {nome:'Cat-Cow Segmentar', serie:'2x8-10', vid:['GhJNN8OKrR4'], semCarga:true,
-        grupo:'Mobilidade lombar (multífidos, eretores da espinha)',
-        dicas:[['Posição de 4 apoios: mãos sob ombros, joelhos sob quadril','ok'],['Inspira arqueando (cow), expira arredondando (cat) — DEVAGAR','ok'],['Segmenta o movimento: lombar → torácica → cervical','ok'],['NÃO faça rápido — o objetivo é mobilidade segmentar','no']],
-        respira:'inspirar na extensão (cow), expirar na flexão (cat).',
-        avisoMedico:'🩺 <strong>Liberação médica pendente:</strong> NÃO execute até confirmação de alta (distensão lombar 17/07/2026). Protocolo Blinda Lombar.'},
-      {nome:'Dead Bug com Controle', serie:'2x6-10 /lado', vid:['uwta311b4Ek'], semCarga:true,
-        grupo:'Estabilidade segmentar / core profundo (transverso, oblíquos, multífidos)',
-        dicas:[['Deitado de costas, braços estendidos pro teto, joelhos a 90°','ok'],['Estenda braço oposto + perna oposta SEM a lombar descolar do chão','ok'],['Volta devagar e alterna — 1 rep = 1 lado','ok'],['NÃO deixe a lombar arquear (pressione o chão o tempo todo)','no']],
-        respira:'expirar ao estender braço+perna, inspirar ao voltar.',
-        avisoMedico:'🩺 <strong>Liberação médica pendente:</strong> NÃO execute até confirmação de alta (distensão lombar 17/07/2026). Protocolo Blinda Lombar.'},
-      {nome:'Cadeira flexora', serie:'3x15', tec:'drop', vid:['cuWo-F7HDhY'],
-        grupo:'Posteriores de coxa',
-        dicas:[['Almofada ACIMA do tornozelo','ok'],['Puxa o calcanhar ao glúteo, 2s em cima','ok'],['NÃO levantar o quadril do banco','no']]},
-      {nome:'Elevação pélvica', serie:'3x15', vid:['JSRjx5pB5aM'],
-        grupo:'Glúteo máximo, posterior',
-        dicas:[['Costas no banco, pés firmes na largura do quadril','ok'],['Contrai glúteo FORTE no topo, 2s; desce devagar','ok'],['NÃO empurrar pela lombar','no']]},
-      {nome:'Agachamento Smith', serie:'3x15', tec:'piramide', vid:['Khe0kubkg-8'],
-        grupo:'Quadríceps, glúteos, posterior',
-        dicas:[['Barra no trapézio, lombar neutra','ok'],['Pés um pouco à frente (Smith fixa a barra)','ok'],['NÃO travar a barra em cima','no']],
-        adapt:'Sem Smith? Faça <strong>leg horizontal</strong> (opção oficial) ou <strong>agachamento com halter</strong>.'},
-      {nome:'Cadeira extensora', serie:'3x15', tec:'drop', vid:['BHxNa16VQ7A'],
-        grupo:'Quadríceps',
-        dicas:[['Eixo alinhado com o joelho, 2s em cima','ok'],['NÃO travar o joelho na extensão total','no']]},
-      {nome:'Cadeira abdutora', serie:'3x15', vid:['cMtyzQPGTkM'],
-        grupo:'Glúteo médio, TFL',
-        dicas:[['Abre controlando, 2s no fim','ok'],['NÃO rotacionar o quadril','no']]},
-      {nome:'Cadeira adutora', serie:'3x15', vid:['LPwZtIv2b6g'],
-        grupo:'Adutores',
-        dicas:[['Fecha controlando, 2s no fim','ok'],['NÃO forçar amplitude máxima no início','no']]},
-      {nome:'Extensão de coluna banco 45°', serie:'3x15', vid:['4Tae_14FVeQ'], finalizar:true,
-        grupo:'Lombar (eretores), glúteo, posterior',
-        dicas:[['Sobe até alinhar tronco-pernas (sem hiperextender)','ok'],['Movimento pela dobra do quadril, não pela lombar','ok']],
-        adapt:'Sem o banco 45°? Faça <strong>hiperextensão reversa no chão</strong> (ou no banco reto).'}
+      {tipo:'caminhada'},
+      {tipo:'prancha', serie:'3x1 min', seg:60},
+      {tipo:'triset', nome:'TRISET 1 — Flexora + Stiff + Sumo', exs:[
+        {nome:'Cadeira flexora', vid:['cuWo-F7HDhY'],
+         grupo:'Posteriores de coxa',
+         dicas:[['Eixo alinhado com o joelho','ok'],['Almofada ACIMA do tornozelo','ok'],['Puxa o calcanhar ao glúteo, 2s em cima','ok'],['NÃO levantar o quadril do banco','no']]},
+        {nome:'Stiff com halteres', vid:[null],
+         grupo:'Posteriores de coxa, glúteos, lombar',
+         dicas:[['Joelhos levemente flexionados, costas RETAS','ok'],['Halteres descem rente às pernas','ok'],['Sobe contraindo glúteo no final','ok'],['NÃO arredondar a lombar','no']]},
+        {nome:'Agachamento sumo com halteres', vid:[null],
+         grupo:'Quadríceps, adutores, glúteos',
+         dicas:[['Pés bem afastados, pontas pra fora (45°)','ok'],['1 halter à frente, desce até coxas paralelas','ok'],['NÃO deixar joelhos caírem pra dentro','no']]}
+      ], reps:'1x10 cada', descanso:'1 min'},
+      {tipo:'triset', nome:'TRISET 2 — Leg Press + Stiff Sumo', exs:[
+        {nome:'Leg press 45°', vid:['k4T_Ono5UN4'],
+         grupo:'Quadríceps, glúteo máximo, posteriores',
+         dicas:[['Pés na largura do quadril, pontas levemente pra fora','ok'],['Lombar TOTALMENTE colada no banco','ok'],['Desce até ~90° (profundidade confortável)','ok'],['NÃO tirar o quadril do banco','no']]},
+        {nome:'Leg press 45° — pés abertos', vid:['k4T_Ono5UN4'],
+         grupo:'Quadríceps, adutores, glúteos',
+         dicas:[['Pés mais afastados e mais altos na plataforma','ok'],['Mesma segurança de lombar do leg normal','ok'],['Ênfase maior em adutores e glúteos','ok'],['NÃO travar o joelho em cima','no']]},
+        {nome:'Stiff sumo', vid:[null],
+         grupo:'Posteriores (ênfase adutores), glúteos',
+         dicas:[['Pés bem afastados, pontas pra fora','ok'],['1 halter entre as pernas, costas retas','ok'],['Desce até sentir alongar posterior e adutores','ok'],['NÃO arredondar a lombar','no']]}
+      ], reps:'1x10 cada', descanso:'1 min'},
+      {tipo:'triset', nome:'TRISET 3 — Adutora + Panturrilha + Ponte', exs:[
+        {nome:'Cadeira adutora', vid:['LPwZtIv2b6g'],
+         grupo:'Adutores',
+         dicas:[['Costas apoiadas, abdômen contraído','ok'],['Fecha controlando, 2s no final','ok'],['NÃO forçar amplitude máxima no início','no']]},
+        {nome:'Panturrilha livre', vid:[null],
+         grupo:'Gastrocnêmio, sóleo',
+         dicas:[['Em pé, sobe na ponta dos pés, 2s no topo','ok'],['Desce devagar até alongar','ok'],['NÃO fazer rápido','no']]},
+        {nome:'Ponte glútea', vid:[null],
+         grupo:'Glúteo máximo, posteriores, core',
+         dicas:[['Deitado, joelhos flexionados, pés no chão','ok'],['Sobe o quadril contraindo glúteo FORTE','ok'],['2s no topo, desce devagar','ok'],['NÃO empurrar pela lombar','no']]}
+      ], reps:'1x10 cada', descanso:'1 min', finalizar:true}
     ]
   }
 };
@@ -470,21 +504,17 @@ const TREINOS = {
    ESTADO (localStorage)
    ========================================================= */
 const LS = {
-  pesos:'vshape_f2_pesos',
-  semana:'vshape_f2_semana',
-  rotacao:'vshape_f2_rotacao',
-  feitoHoje:'vshape_f2_feitohoje',
-  freq:'vshape_f2_freq'
+  pesos:'vshape_f3_pesos',
+  rotacao:'vshape_f3_rotacao',
+  feitoHoje:'vshape_f3_feitohoje',
+  freq:'vshape_f3_freq'
 };
 const load = (k,def)=>{ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):def; }catch(e){ return def; } };
 const save = (k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} };
 
-let pesos   = load(LS.pesos, {});                       // {"A2-2":{atual:40,anterior:35}}
-let semana  = load(LS.semana, 1);                       // 1..4
-let rotacao = load(LS.rotacao, {proximo:'A2', hist:[]});// {proximo, hist, dataPrevista, atrasadoDe}
-let freq    = load(LS.freq, 1);                         // dias entre treinos previstos
-
-const DELOAD_FATOR = 0.5; // deload = 50% do peso atual
+let pesos   = load(LS.pesos, {});
+let rotacao = load(LS.rotacao, {proximo:'A3', hist:[]});
+let freq    = load(LS.freq, 1);
 
 /* =========================================================
    HELPERS
@@ -494,7 +524,6 @@ const hoje = ()=> new Date().toISOString().slice(0,10);
 const fmtData = iso => { const [y,m,d]=iso.split('-'); return `${d}/${m}`; };
 const addDias = (iso,n)=>{ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
 
-// Agendamento: garante dataPrevista e "rola" pra hoje se estiver vencida
 function ajustarPrevisao(){
   let mudou=false;
   if(!rotacao.dataPrevista){ rotacao.dataPrevista=hoje(); mudou=true; }
@@ -525,7 +554,7 @@ function videoPosterHTML(id, alt){
    RENDER
    ========================================================= */
 function pranchaHTML(seg){
-  return `<div class="prancha-timer" data-serie-atual="1" data-serie-total="3" data-segundos="${seg}" role="timer" aria-label="Cronometro de prancha">
+  return `<div class="prancha-timer" data-serie-atual="1" data-serie-total="3" data-segundos="${seg}" role="timer" aria-label="Cronômetro de prancha">
     <div class="timer-serie">Série <span class="serie-num">1</span> de 3</div>
     <div class="timer-relogio" aria-live="polite">${String(Math.floor(seg/60)).padStart(2,'0')}:${String(seg%60).padStart(2,'0')}</div>
     <div class="timer-progress"><div class="timer-progress-bar"></div></div>
@@ -536,9 +565,9 @@ function pranchaHTML(seg){
       <button class="timer-btn timer-btn-reset" type="button">↻ Resetar</button>
     </div>
     <div class="timer-series">
-      <span class="serie-dot active" title="Serie 1"></span>
-      <span class="serie-dot" title="Serie 2"></span>
-      <span class="serie-dot" title="Serie 3"></span>
+      <span class="serie-dot active" title="Série 1"></span>
+      <span class="serie-dot" title="Série 2"></span>
+      <span class="serie-dot" title="Série 3"></span>
     </div>
   </div>`;
 }
@@ -553,30 +582,33 @@ function pesoTrackHTML(key, label){
       <button class="peso-save" type="button">salvar</button>
     </div>
     <div class="peso-info"></div>
-    <div class="peso-deload" hidden></div>
   </div>`;
 }
 
-function restTimerHTML(restSeg){
+function restTimerHTML(restSeg, label){
   return `<div class="rest-timer">
-    <span class="rt-label">Descanso:</span>
+    <span class="rt-label">${label||'Descanso:'}</span>
     <button class="rest-btn" type="button" data-rest="${restSeg}">${restSeg}s</button>
-    <button class="rest-btn" type="button" data-rest="60">1 min</button>
   </div>`;
+}
+
+function trisetVideoHTML(vid, nome){
+  if(!vid) return `<div class="triset-placeholder"><span>🎬 Busque "${nome}" no YouTube</span></div>`;
+  return `<div class="triset-ex-video">${videoPosterHTML(vid,nome)}<a class="yt-mini" href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener">↗ YouTube</a></div>`;
 }
 
 function exercicioHTML(treinoId, idx, ex, restSeg){
-  // Bike aquecimento
-  if(ex.tipo==='bike'){
+  // Aquecimento (caminhada)
+  if(ex.tipo==='caminhada'){
     const t=TREINOS[treinoId];
     return `<details class="exercicio">
-      <summary><span class="ex-num">0</span><span class="ex-nome">Bike (aquecimento)</span><span class="ex-serie">${t.aquecimento.replace(' bike','')}</span><span class="ex-toggle">▾</span></summary>
+      <summary><span class="ex-num">0</span><span class="ex-nome">Caminhada rápida (aquecimento)</span><span class="ex-serie">${t.aquecimento.replace(' caminhada rápida','')}</span><span class="ex-toggle">▾</span></summary>
       <div class="ex-conteudo">
-        <div class="ex-video">${videoPosterHTML('v_h7lHYsV_U','Bike aquecimento')}<a class="yt-link" href="https://www.youtube.com/shorts/v_h7lHYsV_U" target="_blank" rel="noopener">↗ Abrir no YouTube</a></div>
+        <div class="ex-placeholder-vid"><span>🚶 ${t.aquecimento}<br>Ritmo moderado — objetivo é aquecer, não cansar.</span></div>
         <div>
-          <div class="ex-grupo">Cardiovascular / aquecimento geral (${t.aquecimento})</div>
+          <div class="ex-grupo">Cardiovascular / aquecimento geral</div>
           <ul class="ex-dicas">
-            <li class="ok">Cadência ~70-80 rpm, resistência baixa</li>
+            <li class="ok">Ritmo moderado, respiração nasal confortável</li>
             <li class="ok">Aproveita pra hidratar (300-400ml)</li>
             <li class="no">Não é HIIT — objetivo é aquecer, não cansar</li>
           </ul>
@@ -584,8 +616,10 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
       </div>
     </details>`;
   }
+
   // Prancha (core)
   if(ex.tipo==='prancha'){
+    const pdicas=(ex.dicas||PRANCHA_DICAS).map(d=>`<li class="${d[1]}">${d[0]}</li>`).join('');
     return `<details class="exercicio">
       <summary><span class="ex-num">1</span><span class="ex-nome">Prancha isométrica</span><span class="ex-serie">${ex.serie}</span><span class="ex-toggle">▾</span></summary>
       <div class="ex-conteudo">
@@ -593,64 +627,57 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
         <div>
           <div class="ex-grupo">Core: reto abdominal, transverso, oblíquos</div>
           ${pranchaHTML(ex.seg)}
-          <ul class="ex-dicas" style="margin-top:14px">
-            <li class="ok">Corpo em linha reta: cabeça → ombros → quadril → calcanhares</li>
-            <li class="ok">Contrai glúteo + abdômen o tempo todo</li>
-            <li class="no">NÃO deixar o quadril cair (dor lombar)</li>
-          </ul>
+          <ul class="ex-dicas" style="margin-top:14px">${pdicas}</ul>
           <div class="ex-respira"><strong>Respiração:</strong> lenta, nunca prender o ar.</div>
         </div>
       </div>
     </details>`;
   }
 
-  // Exercício normal
-  const key=`${treinoId}-${idx}`;
-  const numVisual = idx; // bike=0, prancha=1, exercícios a partir de 2
-  const tec = ex.tec ? TEC[ex.tec] : null;
-  const badge = tec ? `<span class="tec-badge">${tec.t}</span>` : '';
-  const tecBox = tec ? `<div class="tec-box">🔥 ${tec.d}</div>` : '';
+  // Triset
+  if(ex.tipo==='triset'){
+    const exsHTML = ex.exs.map((e,i)=>{
+      const letra = String.fromCharCode(65+i); // A, B, C
+      const dicas = e.dicas.map(d=>`<li class="${d[1]}">${d[0]}</li>`).join('');
+      return `<div class="triset-ex">
+        <div class="triset-ex-nome">${letra}) ${e.nome}</div>
+        <div class="triset-ex-grupo">${e.grupo}</div>
+        ${trisetVideoHTML(e.vid?e.vid[0]:null, e.nome)}
+        <ul class="triset-ex-dicas">${dicas}</ul>
+      </div>`;
+    }).join('');
+    const keyT = `${treinoId}-triset-${idx}`;
+    const finalizarBloco = ex.finalizar ? `<div class="ex-aviso" style="margin-top:10px">🏁 <strong>Finalizar o treino:</strong> + 10 min de escada, bike ou transport.</div>` : '';
 
-  // vídeo(s)
-  let videoBlock;
-  if(ex.combo && ex.vid.length===2){
-    videoBlock = `<div class="combo-videos">
-      <div class="combo-video"><h4>A) ${ex.combo[0]}</h4>${videoPosterHTML(ex.vid[0],ex.combo[0])}<a class="yt-mini" href="https://www.youtube.com/watch?v=${ex.vid[0]}" target="_blank" rel="noopener">↗ YouTube</a></div>
-      <div class="combo-video"><h4>B) ${ex.combo[1]}</h4>${videoPosterHTML(ex.vid[1],ex.combo[1])}<a class="yt-mini" href="https://www.youtube.com/watch?v=${ex.vid[1]}" target="_blank" rel="noopener">↗ YouTube</a></div>
-    </div>`;
-  } else if(!ex.vid[0]){
-    videoBlock = `<div class="ex-placeholder-vid"><span>Vídeo pendente — busque "${ex.nome}" no YouTube</span></div>`;
-  } else {
-    videoBlock = `<div class="ex-video">${videoPosterHTML(ex.vid[0],ex.nome)}<a class="yt-link" href="https://www.youtube.com/watch?v=${ex.vid[0]}" target="_blank" rel="noopener">↗ Abrir no YouTube</a></div>`;
-  }
-
-  const dicas = ex.dicas.map(d=>`<li class="${d[1]}">${d[0]}</li>`).join('');
-  const adapt = ex.adapt ? `<div class="ex-adapt">🔄 <strong>Adaptação (sua academia):</strong> ${ex.adapt}</div>` : '';
-  const avisoMedicoBox = ex.avisoMedico ? `<div class="ex-aviso-medico">${ex.avisoMedico}</div>` : '';
-  const finalizar = ex.finalizar ? `<div class="ex-aviso">🏁 <strong>Finalizar o treino:</strong> + 10 min de escada, bike ou transport.</div>` : '';
-
-  // Combo (super-série) = 2 cargas rotuladas; exercício simples = 1 carga
-  const pesoBlock = ex.semCarga ? '' : (ex.combo && ex.combo.length===2)
-    ? pesoTrackHTML(key+'-a', 'A) '+ex.combo[0]) + pesoTrackHTML(key+'-b', 'B) '+ex.combo[1])
-    : pesoTrackHTML(key);
-
-  return `<details class="exercicio">
-    <summary><span class="ex-num">${numVisual}</span><span class="ex-nome">${ex.nome}${badge}</span><span class="ex-serie">${ex.serie}</span><span class="ex-toggle">▾</span></summary>
-    <div class="ex-conteudo">
-      ${videoBlock}
-      <div>
-        <div class="ex-grupo">${ex.grupo}</div>
-        ${tecBox}
-        ${pesoBlock}
-        ${ex.semCarga ? '' : restTimerHTML(restSeg)}
-        <ul class="ex-dicas">${dicas}</ul>
-        <div class="ex-respira"><strong>Respiração:</strong> ${RESPIRA_PADRAO}</div>
-        ${adapt}
-        ${avisoMedicoBox}
-        ${finalizar}
+    return `<details class="exercicio">
+      <summary><span class="ex-num">${idx}</span><span class="ex-nome">🔥 ${ex.nome}</span><span class="ex-serie">${ex.reps}</span><span class="ex-toggle">▾</span></summary>
+      <div class="ex-conteudo" style="grid-template-columns:1fr">
+        <div>
+          <div class="triset-flow">
+            <div class="tf-title">📋 Como executar o triset:</div>
+            <ol>
+              <li>Faça os 3 exercícios em sequência, sem descanso entre eles</li>
+              <li>10 repetições de cada (carga moderada/alta)</li>
+              <li>Após completar os 3, descanse 1 minuto</li>
+            </ol>
+          </div>
+          <div class="triset-grid" style="margin-top:14px">${exsHTML}</div>
+          ${pesoTrackHTML(keyT, 'Triset completo')}
+          ${restTimerHTML(restSeg, 'Descanso após triset:')}
+          <div class="ex-respira"><strong>Respiração:</strong> ${RESPIRA_PADRAO}</div>
+          ${finalizarBloco}
+        </div>
       </div>
-    </div>
-  </details>`;
+    </details>`;
+  }
+}
+
+/* ===== Cardio box (HIIT) ===== */
+function cardioBoxHTML(){
+  return `<div class="cardio-box">
+    <strong>🏃 CARDIO DA FASE 3</strong>
+    <p>3x HIIT (15 a 20 min) + 1x caminhada longa por semana. O HIIT é o principal motor da queima nesta fase — o corpo está otimizado pra responder.</p>
+  </div>`;
 }
 
 function render(){
@@ -671,9 +698,9 @@ function render(){
     sec.innerHTML=`<div class="treino-header">
         <h2>${t.nome}</h2>
         <div class="foco">${t.foco}</div>
-        <div class="meta"><span>🔁 ${t.dia}</span><span>⏱ ${t.dur}</span><span>📈 ${t.reps} · ${t.descanso} descanso</span></div>
+        <div class="meta"><span>🔁 ${t.dia}</span><span>⏱ ${t.dur}</span><span>📈 ${t.reps} · ${t.descanso}</span></div>
         <button class="btn-feito" type="button" data-feito="${id}">✓ Marquei este treino hoje</button>
-      </div>${exHTML}`;
+      </div>${exHTML}${cardioBoxHTML()}`;
     main.appendChild(sec);
   });
 
@@ -691,7 +718,6 @@ function render(){
 /* =========================================================
    WIRING
    ========================================================= */
-// Acordeão: ao abrir um exercício, fecha os outros abertos do mesmo treino
 function wireAccordion(){
   document.querySelectorAll('details.exercicio').forEach(d=>{
     d.addEventListener('toggle',()=>{
@@ -757,9 +783,8 @@ function wirePesos(){
 
 function renderPesoInfo(pt,key){
   const info=pt.querySelector('.peso-info');
-  const dl=pt.querySelector('.peso-deload');
   const p=pesos[key];
-  if(!p||p.atual==null){ info.innerHTML='<span class="prog-same">Registre sua carga pra acompanhar a evolução.</span>'; dl.hidden=true; return; }
+  if(!p||p.atual==null){ info.innerHTML='<span class="prog-same">Registre sua carga pra acompanhar a evolução.</span>'; return; }
   let html=`Atual: <b>${p.atual}kg</b>`;
   if(p.anterior!=null){
     const diff=+(p.atual-p.anterior).toFixed(1);
@@ -768,11 +793,6 @@ function renderPesoInfo(pt,key){
     else html+=` · <span class="prog-same">manteve</span>`;
   }
   info.innerHTML=html;
-  // deload
-  if(semana===4){
-    dl.hidden=false;
-    dl.innerHTML=`⚠️ Deload: use ~<b>${Math.round(p.atual*DELOAD_FATOR*2)/2}kg</b> (${Math.round(DELOAD_FATOR*100)}%), mesmas reps.`;
-  } else { dl.hidden=true; }
 }
 
 function aplicarPesosSalvos(){
@@ -803,11 +823,11 @@ function wireRest(){
     const base=parseInt(btn.dataset.rest);
     const label=btn.textContent;
     btn.addEventListener('click',()=>{
-      if(btn._iv){ // parar/resetar
+      if(btn._iv){
         clearInterval(btn._iv); btn._iv=null;
         btn.classList.remove('rodando','fim'); btn.textContent=label; return;
       }
-      beep(0,1); // desbloqueia áudio
+      beep(0,1);
       let s=base;
       btn.classList.add('rodando'); btn.classList.remove('fim');
       btn.textContent=s+'s';
@@ -830,13 +850,10 @@ function wireRest(){
 /* ---- Marcar treino feito / rotação ---- */
 function marcarTreino(id){
   const feitos=load(LS.feitoHoje,{});
-  // registra no histórico
   rotacao.hist=rotacao.hist||[];
   rotacao.hist.unshift({t:id,d:hoje()});
   rotacao.hist=rotacao.hist.slice(0,12);
-  // avança a rotação: próximo = seguinte a ESTE treino
   rotacao.proximo=ORDEM[(ORDEM.indexOf(id)+1)%ORDEM.length];
-  // agenda o próximo pela frequência e limpa atraso
   rotacao.dataPrevista=addDias(hoje(),freq);
   rotacao.atrasadoDe=null;
   save(LS.rotacao,rotacao);
@@ -860,11 +877,6 @@ function atualizarPainel(){
   document.getElementById('proximoTag').textContent=rotacao.proximo;
   document.getElementById('previsaoInfo').innerHTML=textoPrevisao();
   const fs=document.getElementById('freqSel'); if(fs) fs.value=String(freq);
-  // semana buttons
-  document.querySelectorAll('#semanaBtns button').forEach(b=>{
-    b.classList.toggle('on', parseInt(b.dataset.sem)===semana);
-  });
-  document.getElementById('deloadBanner').hidden = (semana!==4);
   // marcar abas feitas hoje
   const feitos=load(LS.feitoHoje,{});
   document.querySelectorAll('nav.tabs button').forEach(b=>{
@@ -880,7 +892,7 @@ function atualizarPainel(){
   if(rotacao.hist&&rotacao.hist.length){
     hl.innerHTML='<span>Últimos:</span> '+rotacao.hist.slice(0,6).map(h=>`${h.t} <span>(${fmtData(h.d)})</span>`).join(' · ');
   } else hl.innerHTML='<span>Nenhum treino registrado ainda.</span>';
-  // atualiza deload em todos os exercícios
+  // atualiza info de todos os pesos
   document.querySelectorAll('.peso-track').forEach(pt=>renderPesoInfo(pt,pt.dataset.key));
 }
 
@@ -893,7 +905,11 @@ function irParaProximo(){
 /* ---- Painel actions ---- */
 function wirePainel(){
   document.querySelectorAll('#semanaBtns button').forEach(b=>{
-    b.addEventListener('click',()=>{ semana=parseInt(b.dataset.sem); save(LS.semana,semana); atualizarPainel(); toast('Semana '+semana+(semana===4?' · DELOAD':'')); });
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('#semanaBtns button').forEach(o=>o.classList.remove('on'));
+      b.classList.add('on');
+      toast('Semana '+b.textContent);
+    });
   });
   document.getElementById('irProximo').addEventListener('click',irParaProximo);
   document.getElementById('freqSel').addEventListener('change',e=>{
@@ -902,16 +918,16 @@ function wirePainel(){
   });
   document.getElementById('btnReset').addEventListener('click',()=>{
     if(!confirm('Resetar a rotação e o histórico? (As cargas salvas serão mantidas)')) return;
-    rotacao={proximo:'A2',hist:[]}; save(LS.rotacao,rotacao);
+    rotacao={proximo:'A3',hist:[]}; save(LS.rotacao,rotacao);
     save(LS.feitoHoje,{});
-    atualizarPainel(); toast('Rotação resetada — começa no A2');
+    atualizarPainel(); toast('Rotação resetada — começa no A3');
   });
   document.getElementById('btnExportar').addEventListener('click',()=>{
-    const dump={pesos,semana,rotacao,freq,feitoHoje:load(LS.feitoHoje,{}),_exportado:hoje()};
+    const dump={pesos,rotacao,freq,feitoHoje:load(LS.feitoHoje,{}),_exportado:hoje()};
     const blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='vshape-fase2-backup-'+hoje()+'.json';
+    a.download='vshape-fase3-backup-'+hoje()+'.json';
     a.click(); URL.revokeObjectURL(a.href);
     toast('Backup exportado');
   });
@@ -923,7 +939,6 @@ function wirePainel(){
       try{
         const d=JSON.parse(r.result);
         if(d.pesos){ pesos=d.pesos; save(LS.pesos,pesos); }
-        if(d.semana){ semana=d.semana; save(LS.semana,semana); }
         if(d.rotacao){ rotacao=d.rotacao; save(LS.rotacao,rotacao); }
         if(d.freq){ freq=d.freq; save(LS.freq,freq); }
         if(d.feitoHoje){ save(LS.feitoHoje,d.feitoHoje); }
@@ -944,7 +959,6 @@ function wirePainel(){
   modal.addEventListener('click',e=>{ if(e.target===modal) fechar(); });
 }
 
-// Aviso ao abrir: se há treino previsto pra hoje (ou atrasado) e não marcado
 function checarLembrete(){
   ajustarPrevisao();
   const feitos=load(LS.feitoHoje,{});
@@ -958,15 +972,15 @@ function checarLembrete(){
 }
 
 /* =========================================================
-   TIMER DA PRANCHA (reuso Fase 1)
+   TIMER DA PRANCHA
    ========================================================= */
 function setupPranchaTimer(){
   document.querySelectorAll('.prancha-timer').forEach(t=>{
     if(t._wired) return; t._wired=true;
-    const segundos=parseInt(t.dataset.segundos)||30;
+    const segundos=parseInt(t.dataset.segundos)||60;
     const totalSeries=parseInt(t.dataset.serieTotal)||3;
     let serieAtual=1, restante=segundos, intervalId=null, pausado=false, descansoIv=null;
-    const REST_ENTRE_SERIES=15; // segundos de descanso visível entre séries da prancha
+    const REST_ENTRE_SERIES=15;
     const $=sel=>t.querySelector(sel);
     const elRelogio=$('.timer-relogio'), elSerieNum=$('.serie-num'), elBar=$('.timer-progress-bar');
     const elStart=$('.timer-btn-start'), elPause=$('.timer-btn-pause'), elNext=$('.timer-btn-next'), elReset=$('.timer-btn-reset');
