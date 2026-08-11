@@ -489,6 +489,7 @@ const DELOAD_FATOR = 0.5; // deload = 50% do peso atual
 /* =========================================================
    HELPERS
    ========================================================= */
+const san = v => String(v==null?"":v).replace(/[<>&]/g,"");
 const el = (tag,cls,html)=>{ const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
 const hoje = ()=> new Date().toISOString().slice(0,10);
 const fmtData = iso => { const [y,m,d]=iso.split('-'); return `${d}/${m}`; };
@@ -724,7 +725,7 @@ function wireVideos(){
       if(!vid||p.querySelector('iframe')) return;
       const iframe=document.createElement('iframe');
       iframe.src='https://www.youtube-nocookie.com/embed/'+vid+'?autoplay=1&rel=0';
-      iframe.allow='autoplay; encrypted-media; picture-in-picture';
+      iframe.allow='autoplay; encrypted-media; picture-in-picture';iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation');
       iframe.allowFullscreen=true;
       iframe.title=p.querySelector('img')?.alt||'Video';
       p.appendChild(iframe);
@@ -760,7 +761,7 @@ function renderPesoInfo(pt,key){
   const dl=pt.querySelector('.peso-deload');
   const p=pesos[key];
   if(!p||p.atual==null){ info.innerHTML='<span class="prog-same">Registre sua carga pra acompanhar a evolução.</span>'; dl.hidden=true; return; }
-  let html=`Atual: <b>${p.atual}kg</b>`;
+  let html=`Atual: <b>${san(p.atual)}kg</b>`;
   if(p.anterior!=null){
     const diff=+(p.atual-p.anterior).toFixed(1);
     if(diff>0) html+=` · anterior ${p.anterior}kg <span class="prog-up">✓ +${diff}kg</span>`;
@@ -771,7 +772,7 @@ function renderPesoInfo(pt,key){
   // deload
   if(semana===4){
     dl.hidden=false;
-    dl.innerHTML=`⚠️ Deload: use ~<b>${Math.round(p.atual*DELOAD_FATOR*2)/2}kg</b> (${Math.round(DELOAD_FATOR*100)}%), mesmas reps.`;
+    dl.innerHTML=`⚠️ Deload: use ~<b>${san(Math.round(p.atual*DELOAD_FATOR*2)/2)}kg</b> (${Math.round(DELOAD_FATOR*100)}%), mesmas reps.`;
   } else { dl.hidden=true; }
 }
 

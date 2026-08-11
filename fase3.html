@@ -519,6 +519,7 @@ let freq    = load(LS.freq, 1);
 /* =========================================================
    HELPERS
    ========================================================= */
+const san = v => String(v==null?"":v).replace(/[<>&]/g,"");
 const el = (tag,cls,html)=>{ const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
 const hoje = ()=> new Date().toISOString().slice(0,10);
 const fmtData = iso => { const [y,m,d]=iso.split('-'); return `${d}/${m}`; };
@@ -750,7 +751,7 @@ function wireVideos(){
       if(!vid||p.querySelector('iframe')) return;
       const iframe=document.createElement('iframe');
       iframe.src='https://www.youtube-nocookie.com/embed/'+vid+'?autoplay=1&rel=0';
-      iframe.allow='autoplay; encrypted-media; picture-in-picture';
+      iframe.allow='autoplay; encrypted-media; picture-in-picture';iframe.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation');
       iframe.allowFullscreen=true;
       iframe.title=p.querySelector('img')?.alt||'Video';
       p.appendChild(iframe);
@@ -785,7 +786,7 @@ function renderPesoInfo(pt,key){
   const info=pt.querySelector('.peso-info');
   const p=pesos[key];
   if(!p||p.atual==null){ info.innerHTML='<span class="prog-same">Registre sua carga pra acompanhar a evolução.</span>'; return; }
-  let html=`Atual: <b>${p.atual}kg</b>`;
+  let html=`Atual: <b>${san(p.atual)}kg</b>`;
   if(p.anterior!=null){
     const diff=+(p.atual-p.anterior).toFixed(1);
     if(diff>0) html+=` · anterior ${p.anterior}kg <span class="prog-up">✓ +${diff}kg</span>`;
