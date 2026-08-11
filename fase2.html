@@ -19,8 +19,8 @@
 <style>
   :root{
     --bg:#0e0e10; --bg-card:#1a1a1f; --bg-soft:#25252b;
-    --fg:#ececef; --fg-dim:#9a9aa3; --fg-mute:#6b6b75;
-    --accent:#3b82f6; --accent-soft:#1e3a5f;
+    --fg:#ececef; --fg-dim:#9a9aa3; --fg-mute:#7e7e8a;
+    --accent:#2563eb; --accent-soft:#1e3a8a;
     --warn:#f59e0b; --warn-soft:#3a2a0e;
     --danger:#ef4444; --ok:#22c55e;
     --roxo:#a855f7; --roxo-soft:#2a1a3e;
@@ -36,7 +36,7 @@
   .fase-switch a{flex:1;text-align:center;padding:9px 8px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--border);color:var(--fg-dim);background:var(--bg-card)}
   .fase-switch a.on{background:var(--accent);color:#fff;border-color:var(--accent)}
   .alerta{margin-top:14px;padding:12px 14px;background:var(--roxo-soft);border-left:3px solid var(--roxo);border-radius:6px;font-size:13px}
-  .alerta strong{color:var(--roxo)}
+  .alerta strong{color:#e9d5ff}
   .sinais{margin-top:10px;padding:10px 14px;background:rgba(239,68,68,.08);border-left:3px solid var(--danger);border-radius:6px;font-size:12px;color:#fecaca}
 
   /* ===== Painel de controle ===== */
@@ -229,7 +229,7 @@
 
 <!-- ===== Painel de controle ===== -->
 <section class="painel">
-  <h3>📊 Meu progresso</h3>
+  <h2>📊 Meu progresso</h2>
   <div class="painel-row">
     <div class="proximo-box">Próximo treino:<span class="proximo-tag" id="proximoTag">A2</span><div class="prev-info" id="previsaoInfo"></div></div>
     <button class="rest-btn" id="irProximo" style="padding:8px 14px">Ir para o treino ▶</button>
