@@ -645,7 +645,7 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
         ${pesoBlock}
         ${ex.semCarga ? '' : restTimerHTML(restSeg)}
         <ul class="ex-dicas">${dicas}</ul>
-        <div class="ex-respira"><strong>Respiração:</strong> ${RESPIRA_PADRAO}</div>
+        <div class="ex-respira"><strong>Respiração:</strong> ${ex.respira||RESPIRA_PADRAO}</div>
         ${adapt}
         ${avisoMedicoBox}
         ${finalizar}
