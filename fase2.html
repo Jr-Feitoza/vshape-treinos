@@ -491,9 +491,9 @@ const DELOAD_FATOR = 0.5; // deload = 50% do peso atual
    ========================================================= */
 const san = v => String(v==null?"":v).replace(/[<>&]/g,"");
 const el = (tag,cls,html)=>{ const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
-const hoje = ()=> new Date().toISOString().slice(0,10);
+const hoje = ()=>{ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
 const fmtData = iso => { const [y,m,d]=iso.split('-'); return `${d}/${m}`; };
-const addDias = (iso,n)=>{ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); };
+const addDias = (iso,n)=>{ const [y,m,d]=iso.split('-').map(Number); const dt=new Date(y,m-1,d+n); return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`; };
 
 // Agendamento: garante dataPrevista e "rola" pra hoje se estiver vencida
 function ajustarPrevisao(){
@@ -879,7 +879,7 @@ function atualizarPainel(){
   // histórico
   const hl=document.getElementById('histLine');
   if(rotacao.hist&&rotacao.hist.length){
-    hl.innerHTML='<span>Últimos:</span> '+rotacao.hist.slice(0,6).map(h=>`${h.t} <span>(${fmtData(h.d)})</span>`).join(' · ');
+    hl.innerHTML='<span>Últimos:</span> '+rotacao.hist.slice(0,6).map(h=>`${san(h.t)} <span>(${san(fmtData(h.d))})</span>`).join(' · ');
   } else hl.innerHTML='<span>Nenhum treino registrado ainda.</span>';
   // atualiza deload em todos os exercícios
   document.querySelectorAll('.peso-track').forEach(pt=>renderPesoInfo(pt,pt.dataset.key));
@@ -953,7 +953,7 @@ function checarLembrete(){
   const jaFeitoHoje = feitos[rotacao.proximo]===hoje();
   if(vencido && !jaFeitoHoje){
     document.getElementById('modalTxt').innerHTML =
-      `Está previsto o treino <b>${rotacao.proximo}</b> pra hoje${rotacao.atrasadoDe?` <span class="prev-atraso">(atrasado desde ${fmtData(rotacao.atrasadoDe)})</span>`:''}. Já treinou?`;
+      `Está previsto o treino <b>${san(rotacao.proximo)}</b> pra hoje${rotacao.atrasadoDe?` <span class="prev-atraso">(atrasado desde ${san(fmtData(rotacao.atrasadoDe))})</span>`:''}. Já treinou?`;
     document.getElementById('modalLembrete').hidden=false;
   }
 }

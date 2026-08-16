@@ -1,11 +1,12 @@
 // Service Worker - V-Shape Treinos PWA
 // Estrategia: cache-first pros assets locais, network-first pro resto
 
-const CACHE_NAME = 'vshape-v6';
+const CACHE_NAME = 'vshape-v7';
 const CORE_ASSETS = [
   './',
   './index.html',
   './fase2.html',
+  './fase3.html',
   './manifest.json',
   './icon.svg',
   './icon-192.png',
