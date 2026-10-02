@@ -1,7 +1,7 @@
 // Service Worker - V-Shape Treinos PWA
-// Estrategia: cache-first pros assets locais, network-first pro resto
+// Estrategia: network-first pras paginas (atualizacao chega sozinha), cache-first pros outros assets locais
 
-const CACHE_NAME = 'vshape-v8';
+const CACHE_NAME = 'vshape-v9';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -41,7 +41,24 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(req.url);
 
-  // Mesmo origin (HTML, manifest, icones): cache-first
+  // Paginas (navegacao): network-first; offline serve a propria pagina do cache
+  if (url.origin === self.location.origin && req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req).then(res => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(req, clone));
+        }
+        return res;
+      }).catch(() =>
+        caches.match(req, { ignoreSearch: true })
+          .then(cached => cached || caches.match('./index.html'))
+      )
+    );
+    return;
+  }
+
+  // Mesmo origin (manifest, icones): cache-first
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(req).then(cached => {

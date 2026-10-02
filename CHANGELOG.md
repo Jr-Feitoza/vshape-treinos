@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-02 — Fix: app instalado recebe atualização sem depender do CACHE_NAME
+
+**Arquivos alterados:** `sw.js`
+
+### Corrigido
+
+- Páginas eram servidas cache-first: versão nova só chegava se o `CACHE_NAME` fosse trocado
+
+### Como
+
+- Navegação (HTML): network-first, atualiza o cache a cada visita; offline serve a página do cache, ignorando `?parâmetros` na URL (`./index.html` só como último recurso)
+- Manifest e ícones continuam cache-first
+- `CACHE_NAME` v8→v9
+
+---
+
 ## 2026-10-02 — Feat: desfazer último registro + confirmação de registro repetido
 
 **Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3)
