@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-10-02 — Refactor: motor comum das 3 fases em `app.js`
+
+**Arquivos alterados:** `app.js` (novo), `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3), `sw.js`
+
+### Por quê
+
+- As 3 páginas carregavam cópias do mesmo motor (286 linhas idênticas + 8 funções que só mudavam um valor); toda correção era feita 3x e bugs ficavam numa fase só (`A2`, respiração)
+
+### Como
+
+- `app.js`: helpers, cargas, timers, painel, rotação, backup, desfazer, Wake Lock e a inicialização. As diferenças entre fases vêm de `FASE` (`n`, `semanaOffset`, `pranchaPadrao`, `metaDescanso`, `extraTreino`), declarado em cada página
+- Cada página mantém só os dados e a montagem própria: `FASE`, `ORDEM`, `TREINOS`, `TEC`, `RESPIRA_PADRAO`, `PRANCHA_*`, `exercicioHTML`, `restTimerHTML`, `trisetVideoHTML`/`cardioBoxHTML` (Fase 3)
+- `sw.js`: `app.js` no pré-cache; `.js`/`.css` network-first (senão o motor ficaria preso no cache); `CACHE_NAME` v9→v10
+- Mesmas chaves de `localStorage` — dados salvos continuam valendo
+
+### Verificação
+
+- HTML gerado idêntico ao anterior nas 3 páginas, exceto acentos em `aria-label`/`title` da prancha nas Fases 1/2 ("Cronômetro", "Série")
+- Screenshots de todas as abas idênticos pixel a pixel
+- Suíte de testes da sessão (timers, XSS, backup, desfazer, cargas, deload, vírgula, SW/offline) sem diferença
+
+---
+
 ## 2026-10-02 — Fix: carga com vírgula era salva 10x maior
 
 **Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3)
