@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-10-02 — Fix: detalhes menores da auditoria
+
+**Arquivos alterados:** `index.html`, `fase2.html`, `fase3.html`, `manifest.json`, `CHANGELOG.md`
+
+### Corrigido
+
+- Título "Meu progresso" virou `<h2>` em 10/08 mas o CSS seguia em `.painel h3` — perdeu o estilo de rótulo
+- Prancha: a bolinha da série seguinte não ficava marcada como ativa
+- Abas sem `role="tab"`/`aria-selected` (o `role="tablist"` já existia)
+- Fase 3: hover dos exercícios e `.ex-adapt` ainda em azul
+- `manifest.json` descrevia só a Fase 1
+- CHANGELOG: entrada de 10/08 estava antes da de 11/08
+
+### Como
+
+- `.painel h3` → `.painel h2`; `proxima()` marca o dot da série atual; `role`/`aria-selected` em `render()`/`wireTabs()`
+- Fase 3: `rgba(147,51,234,.05)` e `#e9d5ff`; descrição nova no manifest (`theme_color` mantido igual ao `<meta>` da Fase 1)
+
+---
+
 ## 2026-10-02 — Fix: semana do ciclo + deload na Fase 3
 
 **Arquivos alterados:** `fase3.html` (Fase 3)
@@ -133,6 +153,17 @@
 
 ---
 
+## 2026-08-11 — Fix: segurança — sanitização innerHTML + iframe sandbox
+
+**Arquivos alterados:** `index.html`, `fase2.html`, `fase3.html`
+
+### Corrigido
+
+- F1 (XSS via localStorage): função `san()` remove `<`, `>`, `&` dos valores antes de `innerHTML` em `renderPesoInfo()` (p.atual e deload)
+- F2 (iframe sandbox): `sandbox="allow-scripts allow-same-origin allow-presentation"` nos iframes do YouTube
+
+---
+
 ## 2026-08-10 — Fix: Impeccable — acessibilidade e contraste (-66% anti-padrões)
 
 **Arquivos alterados:** `index.html`, `fase2.html`, `fase3.html`
@@ -148,17 +179,6 @@
 
 - Impeccable: 47 → 16 findings (-66%)
 - Mantidos intencionalmente: side-tab (callouts segurança), gpt-thin-border-wide-shadow (modal), overused-font (Roboto)
-
----
-
-## 2026-08-11 — Fix: segurança — sanitização innerHTML + iframe sandbox
-
-**Arquivos alterados:** `index.html`, `fase2.html`, `fase3.html`
-
-### Corrigido
-
-- F1 (XSS via localStorage): função `san()` remove `<`, `>`, `&` dos valores antes de `innerHTML` em `renderPesoInfo()` (p.atual e deload)
-- F2 (iframe sandbox): `sandbox="allow-scripts allow-same-origin allow-presentation"` nos iframes do YouTube
 
 ---
 

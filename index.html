@@ -41,7 +41,7 @@
 
   /* ===== Painel de controle ===== */
   .painel{margin:14px 12px 0;padding:14px 14px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px}
-  .painel h3{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg-dim);margin-bottom:10px}
+  .painel h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg-dim);margin-bottom:10px}
   .painel-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
   .proximo-box{font-size:13px;color:var(--fg-dim)}
   .proximo-box b{color:var(--fg);font-size:15px}
@@ -708,6 +708,7 @@ function render(){
     const sub=t.nome.split('—')[1].trim();
     const btn=el('button','tab-btn'+(i===0?' active':''),`${id}<span class="tab-sub">${sub}</span>`);
     btn.dataset.tab=id;
+    btn.setAttribute('role','tab'); btn.setAttribute('aria-selected',String(i===0));
     tabs.appendChild(btn);
 
     const restSeg = t.descanso.includes('1 min') || t.descanso.includes('1min') ? 60 : 45;
@@ -752,9 +753,9 @@ function wireTabs(){
   document.querySelectorAll('nav.tabs button').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const tab=btn.dataset.tab;
-      document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('nav.tabs button').forEach(b=>{ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
       document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-      btn.classList.add('active');
+      btn.classList.add('active'); btn.setAttribute('aria-selected','true');
       document.getElementById('tab-'+tab).classList.add('active');
       window.scrollTo({top:0,behavior:'smooth'});
     });
@@ -1092,7 +1093,7 @@ function setupPranchaTimer(){
     };
     const pausar=()=>{ if(intervalId){ clearInterval(intervalId); intervalId=null; pausado=true; telaAcesa(t,false); setEstado('pausado'); elPause.textContent='▶ Retomar'; beep(440,100); } else if(pausado){ iniciar(); } };
     const resetar=()=>{ if(intervalId)clearInterval(intervalId); if(descansoIv){clearInterval(descansoIv);descansoIv=null;} intervalId=null; pausado=false; telaAcesa(t,false); serieAtual=1; restante=segundos; setEstado(null); elStart.hidden=false; elPause.hidden=true; elNext.hidden=true; elNext.textContent='Próxima série ▶'; elDots.forEach(d=>d.classList.remove('active','done')); elDots[0].classList.add('active'); render(); };
-    const proxima=()=>{ if(descansoIv){clearInterval(descansoIv);descansoIv=null;} serieAtual++; restante=segundos; elNext.hidden=true; elNext.textContent='Próxima série ▶'; render(); iniciar(); };
+    const proxima=()=>{ if(descansoIv){clearInterval(descansoIv);descansoIv=null;} serieAtual++; elDots[serieAtual-1].classList.add('active'); restante=segundos; elNext.hidden=true; elNext.textContent='Próxima série ▶'; render(); iniciar(); };
     elStart.addEventListener('click',iniciar); elPause.addEventListener('click',pausar); elReset.addEventListener('click',resetar); elNext.addEventListener('click',proxima);
     render();
   });

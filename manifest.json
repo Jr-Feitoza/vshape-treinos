@@ -1,7 +1,7 @@
 {
   "name": "V-Shape Treinos",
   "short_name": "V-Shape",
-  "description": "Videos de execucao dos treinos V-Shape Fase 1 (A/B/C/D) com timer de prancha",
+  "description": "Treinos V-Shape Fases 1 a 3: videos de execucao, registro de cargas, timers e rotacao",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
