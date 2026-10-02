@@ -241,7 +241,7 @@ function renderPesoInfo(pt,key){
   }
   info.innerHTML=html;
   // deload
-  if(semana===4){
+  if(semana===FASE.semanaDeload){
     dl.hidden=false;
     dl.innerHTML=`⚠️ Deload: use ~<b>${san(Math.round(p.atual*DELOAD_FATOR*2)/2)}kg</b> (${Math.round(DELOAD_FATOR*100)}%), mesmas reps.`;
   } else { dl.hidden=true; }
@@ -373,7 +373,8 @@ function atualizarPainel(){
   document.querySelectorAll('#semanaBtns button').forEach(b=>{
     b.classList.toggle('on', parseInt(b.dataset.sem)===semana);
   });
-  document.getElementById('deloadBanner').hidden = (semana!==4);
+  const db=document.getElementById('deloadBanner'); if(db) db.hidden = (semana!==FASE.semanaDeload);
+  document.querySelectorAll('[data-semana-nota]').forEach(e=>{ e.hidden = parseInt(e.dataset.semanaNota)!==semana; });
   // marcar abas feitas hoje
   const feitos=load(LS.feitoHoje,{});
   document.querySelectorAll('nav.tabs button').forEach(b=>{
@@ -402,7 +403,7 @@ function irParaProximo(){
 /* ---- Painel actions ---- */
 function wirePainel(){
   document.querySelectorAll('#semanaBtns button').forEach(b=>{
-    b.addEventListener('click',()=>{ semana=parseInt(b.dataset.sem); save(LS.semana,semana); atualizarPainel(); toast('Semana '+(semana+FASE.semanaOffset)+(semana===4?' · DELOAD':'')); });
+    b.addEventListener('click',()=>{ semana=parseInt(b.dataset.sem); save(LS.semana,semana); atualizarPainel(); toast('Semana '+(semana+FASE.semanaOffset)+(semana===FASE.semanaDeload?' · DELOAD':'')); });
   });
   document.getElementById('irProximo').addEventListener('click',irParaProximo);
   document.getElementById('freqSel').addEventListener('change',e=>{

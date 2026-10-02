@@ -43,11 +43,6 @@
   .combo-videos .combo-video a.yt-mini{display:block;margin-top:4px;padding:3px 6px;background:var(--bg-card);color:var(--accent);text-align:center;text-decoration:none;font-size:10px;border-radius:4px;font-weight:600}
   .ex-adapt{margin-top:10px;padding:8px 10px;background:var(--accent-soft);border-left:2px solid var(--accent);border-radius:4px;font-size:12px;color:#bfdbfe}
 
-  /* ===== Técnica badge + explicação ===== */
-  .tec-badge{display:inline-block;background:var(--roxo-soft);color:#e9d5ff;border:1px solid var(--roxo);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
-  .tec-box{margin-bottom:12px;padding:9px 12px;background:var(--roxo-soft);border-left:2px solid var(--roxo);border-radius:6px;font-size:12px;color:#e9d5ff}
-  .tec-box b{color:#fff}
-
   /* ===== Prancha timer (reuso Fase 1) ===== */
   .prancha-timer{background:var(--bg-soft);border-radius:12px;padding:18px;margin-bottom:14px;text-align:center;border:2px solid var(--border);transition:border-color .2s}
   .serie-dot.active{background:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.25)}
@@ -144,7 +139,7 @@
 
 <script>
 /* Diferenças desta fase lidas pelo motor comum (app.js) */
-const FASE = { n:2, semanaOffset:0, pranchaPadrao:30, metaDescanso:' descanso' };
+const FASE = { n:2, semanaDeload:4, semanaOffset:0, pranchaPadrao:30, metaDescanso:' descanso' };
 /* =========================================================
    DADOS DA FASE 2  (extraídos do PDF oficial FASE2.pdf)
    ========================================================= */

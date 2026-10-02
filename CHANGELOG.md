@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-02 — Refactor: motor pronto para a Fase 4
+
+**Arquivos alterados:** `app.js`, `app.css`, `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3)
+
+### Como
+
+- Semana de deload deixa de ser fixa (`semana===4`): vem de `FASE.semanaDeload` (Fases 1–3 = 4)
+- Nota por semana: elementos `[data-semana-nota="N"]` aparecem só na semana N (sem efeito nas Fases 1–3)
+- CSS de técnica (`.tec-*`, Fases 1/2), de triset (`.triset-*`, Fase 3) e do box de cardio (Fase 3) passa para `app.css`
+
+### Verificação
+
+- Fases 1–3: telas idênticas pixel a pixel e HTML gerado idêntico; suíte de testes sem diferença
+
+---
+
 ## 2026-10-02 — Refactor: estilo comum das 3 fases em `app.css`
 
 **Arquivos alterados:** `app.css` (novo), `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3), `sw.js`
