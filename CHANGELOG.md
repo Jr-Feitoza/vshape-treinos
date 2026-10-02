@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-02 — Feat: desfazer último registro + confirmação de registro repetido
+
+**Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3)
+
+### Corrigido
+
+- Marcar um treino sem querer (ou o treino errado) avançava a rotação sem volta; um toque duplo pulava um treino
+
+### Como
+
+- `marcarTreino()` guarda o estado anterior em `rotacao.desfazer` (próximo, data prevista, atraso, ✓ do dia)
+- Botão "↶ Desfazer último registro" no painel: restaura esse estado e tira a entrada do histórico; funciona no dia seguinte; 1 nível
+- Tocar de novo num treino já registrado hoje pede confirmação
+
+---
+
 ## 2026-10-02 — Fix: XSS do backup (sinks restantes) + validação da importação
 
 **Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3)

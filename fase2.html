@@ -57,6 +57,7 @@
   .painel-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
   .painel-actions button{flex:1;min-width:130px;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-soft);color:var(--fg);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
   .painel-actions button:hover{border-color:var(--accent)}
+  .painel-actions button:disabled{opacity:.45;cursor:default;border-color:var(--border)}
   .hist-line{margin-top:10px;font-size:11px;color:var(--fg-mute)}
   .hist-line span{color:var(--fg-dim)}
 
@@ -261,6 +262,7 @@
     <button id="btnExportar">⬇️ Exportar backup</button>
     <button id="btnImportar">⬆️ Importar backup</button>
     <button id="btnReset">↻ Resetar rotação</button>
+    <button id="btnDesfazer">↶ Desfazer último registro</button>
   </div>
   <input type="file" id="fileImport" accept="application/json" hidden>
   <div class="hist-line" id="histLine"></div>
@@ -880,6 +882,8 @@ function wireRest(){
 /* ---- Marcar treino feito / rotação ---- */
 function marcarTreino(id){
   const feitos=load(LS.feitoHoje,{});
+  // guarda o estado anterior pro "Desfazer último registro" (1 nível)
+  rotacao.desfazer={t:id,d:hoje(),proximo:rotacao.proximo,dataPrevista:rotacao.dataPrevista||null,atrasadoDe:rotacao.atrasadoDe||null,feitoAntes:feitos[id]||null};
   // registra no histórico
   rotacao.hist=rotacao.hist||[];
   rotacao.hist.unshift({t:id,d:hoje()});
@@ -896,9 +900,27 @@ function marcarTreino(id){
   vibrar([100,50,100]);
   atualizarPainel();
 }
+function desfazerRegistro(){
+  const u=rotacao.desfazer;
+  if(!u){ toast('Nada pra desfazer'); return; }
+  if(!confirm(`Desfazer o registro de ${u.t} (${fmtData(u.d)})? A rotação volta pra como estava antes.`)) return;
+  const i=(rotacao.hist||[]).findIndex(h=>h.t===u.t&&h.d===u.d);
+  if(i>=0) rotacao.hist.splice(i,1);
+  rotacao.proximo=u.proximo; rotacao.dataPrevista=u.dataPrevista; rotacao.atrasadoDe=u.atrasadoDe;
+  rotacao.desfazer=null; save(LS.rotacao,rotacao);
+  const feitos=load(LS.feitoHoje,{});
+  if(u.feitoAntes) feitos[u.t]=u.feitoAntes; else delete feitos[u.t];
+  save(LS.feitoHoje,feitos);
+  toast(`Registro desfeito — próximo: ${rotacao.proximo}`);
+  atualizarPainel();
+}
 function wireFeito(){
   document.querySelectorAll('[data-feito]').forEach(btn=>{
-    btn.addEventListener('click',()=>marcarTreino(btn.dataset.feito));
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.feito;
+      if(load(LS.feitoHoje,{})[id]===hoje() && !confirm(`${id} já foi registrado hoje. Registrar de novo?`)) return;
+      marcarTreino(id);
+    });
   });
 }
 
@@ -908,6 +930,7 @@ function wireFeito(){
 function atualizarPainel(){
   ajustarPrevisao();
   document.getElementById('proximoTag').textContent=rotacao.proximo;
+  document.getElementById('btnDesfazer').disabled=!rotacao.desfazer;
   document.getElementById('previsaoInfo').innerHTML=textoPrevisao();
   const fs=document.getElementById('freqSel'); if(fs) fs.value=String(freq);
   // semana buttons
@@ -956,6 +979,7 @@ function wirePainel(){
     save(LS.feitoHoje,{});
     atualizarPainel(); toast('Rotação resetada — começa no A2');
   });
+  document.getElementById('btnDesfazer').addEventListener('click',desfazerRegistro);
   document.getElementById('btnExportar').addEventListener('click',()=>{
     const dump={pesos,semana,rotacao,freq,feitoHoje:load(LS.feitoHoje,{}),_exportado:hoje()};
     const blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});
