@@ -47,6 +47,9 @@
   .semana-btns{display:flex;gap:6px}
   .semana-btns button{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg-soft);color:var(--fg-dim);font-size:13px;font-weight:700;cursor:pointer}
   .semana-btns button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .semana-btns button.deload.on{background:var(--warn);color:#000;border-color:var(--warn)}
+  .deload-banner{margin-top:12px;padding:11px 13px;background:var(--warn-soft);border:1px solid var(--warn);border-radius:8px;font-size:13px;color:#fde68a}
+  .deload-banner strong{color:var(--warn)}
   .painel-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
   .painel-actions button{flex:1;min-width:130px;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-soft);color:var(--fg);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
   .painel-actions button:hover{border-color:var(--accent)}
@@ -143,6 +146,7 @@
   .peso-info .prog-up{color:var(--ok);font-weight:700}
   .peso-info .prog-same{color:var(--fg-dim)}
   .peso-info .prog-down{color:var(--warn);font-weight:700}
+  .peso-deload{margin-top:6px;font-size:12px;color:#fde68a;font-weight:600}
 
   /* ===== Rest timer inline ===== */
   .rest-timer{margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -255,12 +259,15 @@
   </div>
 
   <div class="semana-wrap">
-    <span class="semana-label">Semana do ciclo (9 a 12)</span>
+    <span class="semana-label">Semana do ciclo (9 a 12 · deload na 12ª)</span>
     <div class="semana-btns" id="semanaBtns">
       <button data-sem="1">Sem 9</button>
       <button data-sem="2">Sem 10</button>
       <button data-sem="3">Sem 11</button>
-      <button data-sem="4">Sem 12</button>
+      <button data-sem="4" class="deload">Sem 12 · Deload</button>
+    </div>
+    <div class="deload-banner" id="deloadBanner" hidden>
+      ⚠️ <strong>SEMANA DE DELOAD.</strong> Reduza a carga pra ~50% do seu peso atual (mostrado em cada exercício). Mantenha as repetições, foque em execução perfeita. É recuperação — não force.
     </div>
   </div>
 
@@ -508,6 +515,7 @@ const TREINOS = {
 const LS = {
   pesos:'vshape_f3_pesos',
   rotacao:'vshape_f3_rotacao',
+  semana:'vshape_f3_semana',
   feitoHoje:'vshape_f3_feitohoje',
   freq:'vshape_f3_freq'
 };
@@ -517,6 +525,8 @@ const save = (k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){
 let pesos   = load(LS.pesos, {});
 let rotacao = load(LS.rotacao, {proximo:'A3', hist:[]});
 let freq    = load(LS.freq, 1);
+let semana  = load(LS.semana, 1);                       // 1..4 (= semanas 9..12)
+const DELOAD_FATOR = 0.5; // deload = 50% do peso atual
 
 /* =========================================================
    HELPERS
@@ -615,6 +625,7 @@ function pesoTrackHTML(key, label){
       <button class="peso-save" type="button">salvar</button>
     </div>
     <div class="peso-info"></div>
+    <div class="peso-deload" hidden></div>
   </div>`;
 }
 
@@ -817,8 +828,9 @@ function wirePesos(){
 
 function renderPesoInfo(pt,key){
   const info=pt.querySelector('.peso-info');
+  const dl=pt.querySelector('.peso-deload');
   const p=pesos[key];
-  if(!p||p.atual==null){ info.innerHTML='<span class="prog-same">Registre sua carga pra acompanhar a evolução.</span>'; return; }
+  if(!p||p.atual==null){ info.innerHTML='<span class="prog-same">Registre sua carga pra acompanhar a evolução.</span>'; dl.hidden=true; return; }
   let html=`Atual: <b>${san(p.atual)}kg</b>`;
   if(p.anterior!=null){
     const diff=+(p.atual-p.anterior).toFixed(1);
@@ -827,6 +839,11 @@ function renderPesoInfo(pt,key){
     else html+=` · <span class="prog-same">manteve</span>`;
   }
   info.innerHTML=html;
+  // deload
+  if(semana===4){
+    dl.hidden=false;
+    dl.innerHTML=`⚠️ Deload: use ~<b>${san(Math.round(p.atual*DELOAD_FATOR*2)/2)}kg</b> (${Math.round(DELOAD_FATOR*100)}%), mesmas reps.`;
+  } else { dl.hidden=true; }
 }
 
 function aplicarPesosSalvos(){
@@ -951,6 +968,11 @@ function atualizarPainel(){
   document.getElementById('btnDesfazer').disabled=!rotacao.desfazer;
   document.getElementById('previsaoInfo').innerHTML=textoPrevisao();
   const fs=document.getElementById('freqSel'); if(fs) fs.value=String(freq);
+  // semana buttons
+  document.querySelectorAll('#semanaBtns button').forEach(b=>{
+    b.classList.toggle('on', parseInt(b.dataset.sem)===semana);
+  });
+  document.getElementById('deloadBanner').hidden = (semana!==4);
   // marcar abas feitas hoje
   const feitos=load(LS.feitoHoje,{});
   document.querySelectorAll('nav.tabs button').forEach(b=>{
@@ -979,11 +1001,7 @@ function irParaProximo(){
 /* ---- Painel actions ---- */
 function wirePainel(){
   document.querySelectorAll('#semanaBtns button').forEach(b=>{
-    b.addEventListener('click',()=>{
-      document.querySelectorAll('#semanaBtns button').forEach(o=>o.classList.remove('on'));
-      b.classList.add('on');
-      toast('Semana '+b.textContent);
-    });
+    b.addEventListener('click',()=>{ semana=parseInt(b.dataset.sem); save(LS.semana,semana); atualizarPainel(); toast('Semana '+(semana+8)+(semana===4?' · DELOAD':'')); });
   });
   document.getElementById('irProximo').addEventListener('click',irParaProximo);
   document.getElementById('freqSel').addEventListener('change',e=>{
@@ -998,7 +1016,7 @@ function wirePainel(){
   });
   document.getElementById('btnDesfazer').addEventListener('click',desfazerRegistro);
   document.getElementById('btnExportar').addEventListener('click',()=>{
-    const dump={pesos,rotacao,freq,feitoHoje:load(LS.feitoHoje,{}),_exportado:hoje()};
+    const dump={pesos,semana,rotacao,freq,feitoHoje:load(LS.feitoHoje,{}),_exportado:hoje()};
     const blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
@@ -1015,6 +1033,7 @@ function wirePainel(){
         const d=validarBackup(JSON.parse(r.result));
         if(d.pesos){ pesos=d.pesos; save(LS.pesos,pesos); }
         if(d.rotacao){ rotacao=d.rotacao; save(LS.rotacao,rotacao); }
+        if(d.semana){ semana=d.semana; save(LS.semana,semana); }
         if(d.freq){ freq=d.freq; save(LS.freq,freq); }
         if(d.feitoHoje){ save(LS.feitoHoje,d.feitoHoje); }
         aplicarPesosSalvos(); atualizarPainel();

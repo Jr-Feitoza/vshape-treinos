@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-10-02 — Fix: semana do ciclo + deload na Fase 3
+
+**Arquivos alterados:** `fase3.html` (Fase 3)
+
+### Corrigido
+
+- Os botões Sem 9–12 só mostravam um toast: não salvavam, não marcavam ao reabrir e não tinham efeito
+
+### Como
+
+- Mesmo comportamento das Fases 1/2: semana salva em `vshape_f3_semana`, botão marcado, "Sem 12 · Deload" com cor de aviso, banner de deload e ~50% da carga sugerida em cada exercício
+- Semana incluída no backup (exportar/importar)
+
+---
+
 ## 2026-10-02 — Fix: carga por exercício nos trisets da Fase 3
 
 **Arquivos alterados:** `fase3.html` (Fase 3)
