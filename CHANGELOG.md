@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-02 — Fix: carga por exercício nos trisets da Fase 3
+
+**Arquivos alterados:** `fase3.html` (Fase 3)
+
+### Corrigido
+
+- Cada triset tinha um único campo "Triset completo" pra 3 exercícios com cargas diferentes — não dava pra acompanhar a evolução de cada um
+
+### Como
+
+- Um `pesoTrackHTML` por exercício, dentro do card, chave `<treino>-triset-<n>-<0|1|2>`
+- `semCarga:true` (sem campo) nos exercícios com peso do corpo: flexão joelho apoiado, abdominal remador, abdominal curto, panturrilha livre, ponte glútea
+- Carga salva no formato antigo (`<treino>-triset-<n>`) continua no armazenamento e no backup, e aparece como "Registro antigo do triset" no bloco
+
+---
+
 ## 2026-10-02 — Fix: app instalado recebe atualização sem depender do CACHE_NAME
 
 **Arquivos alterados:** `sw.js`

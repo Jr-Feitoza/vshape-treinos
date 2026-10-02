@@ -362,13 +362,13 @@ const TREINOS = {
          dicas:[['Tronco inclinado ~45°, costas retas','ok'],['Puxa cotovelos pra trás, próximos do tronco','ok'],['Contrai escapular no fim do movimento','ok'],['NÃO arredondar as costas','no']]}
       ], reps:'1x10 cada', descanso:'1 min'},
       {tipo:'triset', nome:'TRISET 3 — Flexão + Abdominal', exs:[
-        {nome:'Flexão de braço joelho apoiado', vid:['h5ClL5IYzog'],
+        {nome:'Flexão de braço joelho apoiado', vid:['h5ClL5IYzog'], semCarga:true,
          grupo:'Peitoral, deltoide anterior, tríceps, core',
          dicas:[['Joelhos no chão, mãos na largura dos ombros','ok'],['Corpo em linha reta dos joelhos aos ombros','ok'],['Desce controlado, cotovelos a ~45°','ok'],['NÃO deixar o quadril cair','no']]},
-        {nome:'Abdominal remador', vid:['Au9VMxWm7jE'],
+        {nome:'Abdominal remador', vid:['Au9VMxWm7jE'], semCarga:true,
          grupo:'Reto abdominal, oblíquos, flexores do quadril',
          dicas:[['Antebraços nos estofados, mãos nas alças','ok'],['Flexiona joelhos em direção ao peito','ok'],['Contrai abdômen 1s no fim, volta devagar','ok'],['NÃO puxar com os braços — motor é o core','no']]},
-        {nome:'Abdominal curto', vid:['Ka1g9oaajKg'],
+        {nome:'Abdominal curto', vid:['Ka1g9oaajKg'], semCarga:true,
          grupo:'Reto abdominal (porção superior)',
          dicas:[['Deitado, joelhos flexionados, mãos atrás da cabeça','ok'],['Sobe só as escápulas do chão (amplitude curta)','ok'],['Contrai no topo 1s, desce devagar','ok'],['NÃO puxar o pescoço com as mãos','no']]}
       ], reps:'1x10 cada', descanso:'1 min', finalizar:true}
@@ -407,10 +407,10 @@ const TREINOS = {
         {nome:'Cadeira adutora', vid:['LPwZtIv2b6g'],
          grupo:'Adutores',
          dicas:[['Costas apoiadas, abdômen contraído','ok'],['Fecha controlando, 2s no final','ok'],['NÃO forçar amplitude máxima se o quadril reclamar','no']]},
-        {nome:'Panturrilha livre', vid:['fVGkOlkOrnA'],
+        {nome:'Panturrilha livre', vid:['fVGkOlkOrnA'], semCarga:true,
          grupo:'Gastrocnêmio, sóleo',
          dicas:[['Em pé, pés na largura do quadril','ok'],['Sobe na ponta dos pés o máximo possível','ok'],['2s no topo, desce devagar até o calcanhar quase tocar','ok'],['NÃO fazer rápido (perde tensão)','no']]},
-        {nome:'Ponte glútea', vid:['1satDE63Bwc'],
+        {nome:'Ponte glútea', vid:['1satDE63Bwc'], semCarga:true,
          grupo:'Glúteo máximo, posteriores, core',
          dicas:[['Deitado, joelhos flexionados, pés no chão','ok'],['Sobe o quadril contraindo glúteo FORTE','ok'],['2s no topo, desce devagar','ok'],['NÃO empurrar pela lombar','no']]}
       ], reps:'1x10 cada', descanso:'1 min', finalizar:true}
@@ -491,10 +491,10 @@ const TREINOS = {
         {nome:'Cadeira adutora', vid:['LPwZtIv2b6g'],
          grupo:'Adutores',
          dicas:[['Costas apoiadas, abdômen contraído','ok'],['Fecha controlando, 2s no final','ok'],['NÃO forçar amplitude máxima no início','no']]},
-        {nome:'Panturrilha livre', vid:['fVGkOlkOrnA'],
+        {nome:'Panturrilha livre', vid:['fVGkOlkOrnA'], semCarga:true,
          grupo:'Gastrocnêmio, sóleo',
          dicas:[['Em pé, sobe na ponta dos pés, 2s no topo','ok'],['Desce devagar até alongar','ok'],['NÃO fazer rápido','no']]},
-        {nome:'Ponte glútea', vid:['1satDE63Bwc'],
+        {nome:'Ponte glútea', vid:['1satDE63Bwc'], semCarga:true,
          grupo:'Glúteo máximo, posteriores, core',
          dicas:[['Deitado, joelhos flexionados, pés no chão','ok'],['Sobe o quadril contraindo glúteo FORTE','ok'],['2s no topo, desce devagar','ok'],['NÃO empurrar pela lombar','no']]}
       ], reps:'1x10 cada', descanso:'1 min', finalizar:true}
@@ -676,6 +676,7 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
         <div class="triset-ex-nome">${letra}) ${e.nome}</div>
         <div class="triset-ex-grupo">${e.grupo}</div>
         ${trisetVideoHTML(e.vid?e.vid[0]:null, e.nome)}
+        ${e.semCarga?'':pesoTrackHTML(`${treinoId}-triset-${idx}-${i}`)}
         <ul class="triset-ex-dicas">${dicas}</ul>
       </div>`;
     }).join('');
@@ -695,7 +696,7 @@ function exercicioHTML(treinoId, idx, ex, restSeg){
             </ol>
           </div>
           <div class="triset-grid" style="margin-top:14px">${exsHTML}</div>
-          ${pesoTrackHTML(keyT, 'Triset completo')}
+          ${pesos[keyT]&&pesos[keyT].atual!=null?`<div class="peso-info" style="margin:0 0 12px">Registro antigo do triset (carga única): <b>${san(pesos[keyT].atual)}kg</b></div>`:''}
           ${restTimerHTML(restSeg, 'Descanso após triset:')}
           <div class="ex-respira"><strong>Respiração:</strong> ${RESPIRA_PADRAO}</div>
           ${finalizarBloco}
