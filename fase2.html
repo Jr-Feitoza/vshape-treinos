@@ -798,6 +798,22 @@ function beep(freq,dur){
   }catch(e){}
 }
 function vibrar(p){ if('vibrate' in navigator) try{ navigator.vibrate(p);}catch(e){} }
+// Mantém a tela acesa enquanto algum timer roda (Wake Lock API; sem suporte, não faz nada)
+const _timersAtivos=new Set(); let _wakeLock=null;
+async function pedirWakeLock(){
+  if(!('wakeLock' in navigator) || _wakeLock || document.visibilityState!=='visible') return;
+  try{
+    _wakeLock=await navigator.wakeLock.request('screen');
+    _wakeLock.addEventListener('release',()=>{ _wakeLock=null; });
+    if(!_timersAtivos.size){ _wakeLock.release().catch(()=>{}); _wakeLock=null; }
+  }catch(e){ _wakeLock=null; }
+}
+function telaAcesa(dono,on){
+  if(on) _timersAtivos.add(dono); else _timersAtivos.delete(dono);
+  if(_timersAtivos.size) pedirWakeLock();
+  else if(_wakeLock){ _wakeLock.release().catch(()=>{}); _wakeLock=null; }
+}
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&_timersAtivos.size) pedirWakeLock(); });
 
 function wireRest(){
   document.querySelectorAll('.rest-btn[data-rest]').forEach(btn=>{
@@ -805,25 +821,28 @@ function wireRest(){
     const label=btn.textContent;
     btn.addEventListener('click',()=>{
       if(btn._iv){ // parar/resetar
-        clearInterval(btn._iv); btn._iv=null;
+        clearInterval(btn._iv); btn._iv=null; telaAcesa(btn,false);
         btn.classList.remove('rodando','fim'); btn.textContent=label; return;
       }
       beep(0,1); // desbloqueia áudio
+      const fim=Date.now()+base*1000; // conta pelo relógio: não atrasa com a tela apagada
       let s=base;
       btn.classList.add('rodando'); btn.classList.remove('fim');
-      btn.textContent=s+'s';
+      btn.textContent=s+'s'; telaAcesa(btn,true);
       btn._iv=setInterval(()=>{
-        s--;
+        const novo=Math.ceil((fim-Date.now())/1000);
+        if(novo===s) return;
+        s=novo;
         if(s<=3&&s>0) beep(660,90);
         if(s<=0){
-          clearInterval(btn._iv); btn._iv=null;
+          clearInterval(btn._iv); btn._iv=null; telaAcesa(btn,false);
           beep(1200,450); vibrar([200,100,200]);
           btn.classList.remove('rodando'); btn.classList.add('fim'); btn.textContent='✓ vai!';
           setTimeout(()=>{ btn.classList.remove('fim'); btn.textContent=label; },2500);
           return;
         }
         btn.textContent=s+'s';
-      },1000);
+      },250);
     });
   });
 }
@@ -966,7 +985,7 @@ function setupPranchaTimer(){
     if(t._wired) return; t._wired=true;
     const segundos=parseInt(t.dataset.segundos)||30;
     const totalSeries=parseInt(t.dataset.serieTotal)||3;
-    let serieAtual=1, restante=segundos, intervalId=null, pausado=false, descansoIv=null;
+    let serieAtual=1, restante=segundos, intervalId=null, pausado=false, descansoIv=null, fim=0;
     const REST_ENTRE_SERIES=15; // segundos de descanso visível entre séries da prancha
     const $=sel=>t.querySelector(sel);
     const elRelogio=$('.timer-relogio'), elSerieNum=$('.serie-num'), elBar=$('.timer-progress-bar');
@@ -978,28 +997,34 @@ function setupPranchaTimer(){
     const iniciar=()=>{
       if(!_audioCtx) beep(0,1);
       pausado=false; setEstado('rodando'); elStart.hidden=true; elPause.hidden=false; elPause.textContent='⏸ Pausar';
+      fim=Date.now()+restante*1000; telaAcesa(t,true); // conta pelo relógio: não atrasa com a tela apagada
       intervalId=setInterval(()=>{
-        restante--; render();
+        const novo=Math.max(0,Math.ceil((fim-Date.now())/1000));
+        if(novo===restante) return;
+        restante=novo; render();
         if(restante<=3&&restante>0) beep(660,100);
         if(restante<=0){
           clearInterval(intervalId); intervalId=null; beep(1200,500); vibrar([200,100,200]);
           elDots[serieAtual-1].classList.remove('active'); elDots[serieAtual-1].classList.add('done');
           if(serieAtual<totalSeries){
             elPause.hidden=true; elNext.hidden=false; elNext.textContent='Pular descanso ▶'; setEstado('pronto');
+            const fimDesc=Date.now()+REST_ENTRE_SERIES*1000;
             let d=REST_ENTRE_SERIES; elBar.style.width='0%'; elRelogio.textContent='⏱ '+d+'s';
             descansoIv=setInterval(()=>{
-              d--;
+              const nd=Math.ceil((fimDesc-Date.now())/1000);
+              if(nd===d) return;
+              d=nd;
               if(d<=3&&d>0) beep(660,90);
               if(d<=0){ clearInterval(descansoIv); descansoIv=null; proxima(); return; }
               elRelogio.textContent='⏱ '+d+'s';
-            },1000);
+            },250);
           }
-          else{ elPause.hidden=true; elNext.hidden=true; setEstado('completo'); elRelogio.textContent='✓'; elBar.style.width='100%'; vibrar([100,50,100,50,200]); }
+          else{ elPause.hidden=true; elNext.hidden=true; setEstado('completo'); elRelogio.textContent='✓'; elBar.style.width='100%'; vibrar([100,50,100,50,200]); telaAcesa(t,false); }
         }
-      },1000);
+      },250);
     };
-    const pausar=()=>{ if(intervalId){ clearInterval(intervalId); intervalId=null; pausado=true; setEstado('pausado'); elPause.textContent='▶ Retomar'; beep(440,100); } else if(pausado){ iniciar(); } };
-    const resetar=()=>{ if(intervalId)clearInterval(intervalId); if(descansoIv){clearInterval(descansoIv);descansoIv=null;} intervalId=null; pausado=false; serieAtual=1; restante=segundos; setEstado(null); elStart.hidden=false; elPause.hidden=true; elNext.hidden=true; elNext.textContent='Próxima série ▶'; elDots.forEach(d=>d.classList.remove('active','done')); elDots[0].classList.add('active'); render(); };
+    const pausar=()=>{ if(intervalId){ clearInterval(intervalId); intervalId=null; pausado=true; telaAcesa(t,false); setEstado('pausado'); elPause.textContent='▶ Retomar'; beep(440,100); } else if(pausado){ iniciar(); } };
+    const resetar=()=>{ if(intervalId)clearInterval(intervalId); if(descansoIv){clearInterval(descansoIv);descansoIv=null;} intervalId=null; pausado=false; telaAcesa(t,false); serieAtual=1; restante=segundos; setEstado(null); elStart.hidden=false; elPause.hidden=true; elNext.hidden=true; elNext.textContent='Próxima série ▶'; elDots.forEach(d=>d.classList.remove('active','done')); elDots[0].classList.add('active'); render(); };
     const proxima=()=>{ if(descansoIv){clearInterval(descansoIv);descansoIv=null;} serieAtual++; restante=segundos; elNext.hidden=true; elNext.textContent='Próxima série ▶'; render(); iniciar(); };
     elStart.addEventListener('click',iniciar); elPause.addEventListener('click',pausar); elReset.addEventListener('click',resetar); elNext.addEventListener('click',proxima);
     render();

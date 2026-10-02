@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-10-02 — Fix: timers atrasavam com a tela apagada
+
+**Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3), `sw.js`
+
+### Corrigido
+
+- Descanso entre exercícios, prancha e descanso entre séries da prancha contavam tiques (`s--`) — com tela apagada/app em segundo plano o navegador segura o `setInterval` e o timer congelava (ex.: 40s fora do app → descanso ainda em 59s)
+- A tela apagava sozinha no meio da prancha (ninguém toca no celular)
+
+### Como
+
+- `wireRest()` e `setupPranchaTimer()`: cada contagem guarda o horário de término e recalcula `ceil((fim − agora)/1000)` a cada 250ms; pausar guarda o restante, retomar recalcula o fim
+- Wake Lock API (`pedirWakeLock()`/`telaAcesa()`): tela acesa enquanto algum timer roda, liberada quando todos param; re-pedida ao voltar pra aba; sem suporte, não faz nada
+- `sw.js`: `CACHE_NAME` v7→v8 (força atualização do app instalado)
+
+### Limite conhecido
+
+- Se a tela apagar mesmo assim (navegador sem Wake Lock), o bipe final não toca no bloqueio e as transições da prancha (fim de série → descanso → próxima) contam a partir da volta ao app, não do horário real
+
+---
 ## 2026-08-15 — Fix: top-5 achados da auditoria multi-agente
 
 **Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3), `sw.js`
