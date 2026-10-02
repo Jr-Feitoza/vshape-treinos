@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-02 — Fix: XSS do backup (sinks restantes) + validação da importação
+
+**Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3)
+
+### Corrigido
+
+- A correção de 15/08 deixou 4 sinks sem `san()`: `p.anterior` e `diff` em `renderPesoInfo()`, `dataPrevista` e `atrasadoDe` em `textoPrevisao()`
+- Importação aceitava qualquer JSON — `rotacao.proximo` inválido quebrava o `querySelector` de "Ir para o treino"
+
+### Como
+
+- `san()` nos 4 sinks
+- `validarBackup()`: mantém só o que tem o formato esperado (treino em `ORDEM`, datas `AAAA-MM-DD`, freq 1–3, semana 1–4, cargas numéricas); o resto é descartado
+
+---
+
 ## 2026-10-02 — Fix: timers atrasavam com a tela apagada
 
 **Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3), `sw.js`

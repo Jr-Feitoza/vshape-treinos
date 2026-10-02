@@ -505,6 +505,36 @@ const el = (tag,cls,html)=>{ const e=document.createElement(tag); if(cls)e.class
 const hoje = ()=>{ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
 const fmtData = iso => { const [y,m,d]=iso.split('-'); return `${d}/${m}`; };
 const addDias = (iso,n)=>{ const [y,m,d]=iso.split('-').map(Number); const dt=new Date(y,m-1,d+n); return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`; };
+// Backup importado: mantém só o que tem o formato esperado (o resto é descartado)
+const DATA_RE=/^\d{4}-\d{2}-\d{2}$/;
+const numOk = v => typeof v==='number' && isFinite(v);
+function validarBackup(d){
+  const ok={};
+  if(!d||typeof d!=='object') return ok;
+  if(d.pesos&&typeof d.pesos==='object'){
+    ok.pesos={};
+    Object.entries(d.pesos).forEach(([k,p])=>{
+      if(!p||!numOk(p.atual)) return;
+      ok.pesos[k]=numOk(p.anterior)?{atual:p.atual,anterior:p.anterior}:{atual:p.atual};
+    });
+  }
+  if(d.rotacao&&typeof d.rotacao==='object'){
+    const r=d.rotacao;
+    ok.rotacao={
+      proximo: ORDEM.includes(r.proximo)?r.proximo:ORDEM[0],
+      hist: Array.isArray(r.hist)?r.hist.filter(h=>h&&ORDEM.includes(h.t)&&DATA_RE.test(h.d)).slice(0,12):[]
+    };
+    if(DATA_RE.test(r.dataPrevista)) ok.rotacao.dataPrevista=r.dataPrevista;
+    if(DATA_RE.test(r.atrasadoDe)) ok.rotacao.atrasadoDe=r.atrasadoDe;
+  }
+  if([1,2,3].includes(d.freq)) ok.freq=d.freq;
+  if([1,2,3,4].includes(d.semana)) ok.semana=d.semana;
+  if(d.feitoHoje&&typeof d.feitoHoje==='object'){
+    ok.feitoHoje={};
+    Object.entries(d.feitoHoje).forEach(([k,v])=>{ if(ORDEM.includes(k)&&DATA_RE.test(v)) ok.feitoHoje[k]=v; });
+  }
+  return ok;
+}
 
 // Agendamento: garante dataPrevista e "rola" pra hoje se estiver vencida
 function ajustarPrevisao(){
@@ -518,9 +548,9 @@ function textoPrevisao(){
   const dp=rotacao.dataPrevista;
   if(!dp) return '';
   if(dp===hoje()) return rotacao.atrasadoDe
-    ? `previsto <b>hoje</b> · <span class="prev-atraso">atrasado desde ${fmtData(rotacao.atrasadoDe)}</span>`
+    ? `previsto <b>hoje</b> · <span class="prev-atraso">atrasado desde ${san(fmtData(rotacao.atrasadoDe))}</span>`
     : `previsto <b>hoje</b>`;
-  return `previsto p/ ${fmtData(dp)}`;
+  return `previsto p/ ${san(fmtData(dp))}`;
 }
 
 function toast(msg){
@@ -777,8 +807,8 @@ function renderPesoInfo(pt,key){
   let html=`Atual: <b>${san(p.atual)}kg</b>`;
   if(p.anterior!=null){
     const diff=+(p.atual-p.anterior).toFixed(1);
-    if(diff>0) html+=` · anterior ${p.anterior}kg <span class="prog-up">✓ +${diff}kg</span>`;
-    else if(diff<0) html+=` · anterior ${p.anterior}kg <span class="prog-down">▼ ${diff}kg</span>`;
+    if(diff>0) html+=` · anterior ${san(p.anterior)}kg <span class="prog-up">✓ +${san(diff)}kg</span>`;
+    else if(diff<0) html+=` · anterior ${san(p.anterior)}kg <span class="prog-down">▼ ${san(diff)}kg</span>`;
     else html+=` · <span class="prog-same">manteve</span>`;
   }
   info.innerHTML=html;
@@ -954,7 +984,7 @@ function wirePainel(){
     const r=new FileReader();
     r.onload=()=>{
       try{
-        const d=JSON.parse(r.result);
+        const d=validarBackup(JSON.parse(r.result));
         if(d.pesos){ pesos=d.pesos; save(LS.pesos,pesos); }
         if(d.semana){ semana=d.semana; save(LS.semana,semana); }
         if(d.rotacao){ rotacao=d.rotacao; save(LS.rotacao,rotacao); }
