@@ -16,6 +16,7 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="stylesheet" href="./app.css">
 <style>
   :root{
     --bg:#0e0e10; --bg-card:#1a1a1f; --bg-soft:#25252b;
@@ -26,83 +27,9 @@
     --roxo:#a855f7; --roxo-soft:#2a1a3e;
     --border:#2a2a30;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5}
-  body{padding:0 0 60px;min-height:100vh}
-  header{padding:24px 20px 16px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#181820,var(--bg))}
-  header h1{font-size:22px;letter-spacing:-.01em}
-  header .sub{font-size:13px;color:var(--fg-dim);margin-top:4px}
-  .fase-switch{display:flex;gap:6px;margin-top:14px}
-  .fase-switch a{flex:1;text-align:center;padding:9px 8px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--border);color:var(--fg-dim);background:var(--bg-card)}
-  .fase-switch a.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .alerta{margin-top:14px;padding:12px 14px;background:var(--roxo-soft);border-left:3px solid var(--roxo);border-radius:6px;font-size:13px}
-  .alerta strong{color:#e9d5ff}
-  .sinais{margin-top:10px;padding:10px 14px;background:rgba(239,68,68,.08);border-left:3px solid var(--danger);border-radius:6px;font-size:12px;color:#fecaca}
-
-  /* ===== Painel de controle ===== */
-  .painel{margin:14px 12px 0;padding:14px 14px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px}
-  .painel h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg-dim);margin-bottom:10px}
-  .painel-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
-  .proximo-box{font-size:13px;color:var(--fg-dim)}
-  .proximo-box b{color:var(--fg);font-size:15px}
-  .proximo-tag{display:inline-block;background:var(--accent);color:#fff;font-weight:800;padding:3px 12px;border-radius:20px;font-size:15px;margin-left:6px}
-  .semana-wrap{margin-top:14px}
-  .semana-label{font-size:12px;color:var(--fg-dim);margin-bottom:6px;display:block}
-  .semana-btns{display:flex;gap:6px}
-  .semana-btns button{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:var(--bg-soft);color:var(--fg-dim);font-size:13px;font-weight:700;cursor:pointer}
-  .semana-btns button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .semana-btns button.deload.on{background:var(--warn);color:#000;border-color:var(--warn)}
-  .deload-banner{margin-top:12px;padding:11px 13px;background:var(--warn-soft);border:1px solid var(--warn);border-radius:8px;font-size:13px;color:#fde68a}
-  .deload-banner strong{color:var(--warn)}
-  .painel-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-  .painel-actions button{flex:1;min-width:130px;padding:9px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-soft);color:var(--fg);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
-  .painel-actions button:hover{border-color:var(--accent)}
-  .painel-actions button:disabled{opacity:.45;cursor:default;border-color:var(--border)}
-  .hist-line{margin-top:10px;font-size:11px;color:var(--fg-mute)}
-  .hist-line span{color:var(--fg-dim)}
-
-  nav.tabs{display:flex;gap:6px;padding:16px 12px;background:var(--bg);position:sticky;top:0;z-index:10;border-bottom:1px solid var(--border);overflow-x:auto}
-  nav.tabs button{flex:1;min-width:90px;padding:10px 8px;background:var(--bg-card);color:var(--fg-dim);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s}
-  nav.tabs button:hover{border-color:var(--accent);color:var(--fg)}
-  nav.tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-  nav.tabs button.feito::after{content:"✓";margin-left:5px;color:var(--ok);font-weight:800}
-  nav.tabs button.active.feito::after{color:#fff}
-  nav.tabs .tab-sub{display:block;font-size:10px;font-weight:400;opacity:.85;margin-top:2px}
-  main{padding:16px 12px}
-  .tab-content{display:none;animation:fadeIn .2s}
-  .tab-content.active{display:block}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-  .treino-header{padding:14px 16px;background:var(--bg-card);border-radius:10px;margin-bottom:14px;border:1px solid var(--border)}
-  .treino-header h2{font-size:17px;margin-bottom:4px}
-  .treino-header .foco{font-size:12px;color:var(--fg-dim)}
-  .treino-header .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-  .treino-header .meta span{font-size:11px;padding:3px 8px;background:var(--bg-soft);border-radius:10px;color:var(--fg-dim)}
-  .btn-feito{margin-top:12px;width:100%;padding:11px;border-radius:9px;border:1px solid var(--ok);background:rgba(34,197,94,.1);color:var(--ok);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
-  .btn-feito:hover{background:rgba(34,197,94,.18)}
-  .btn-feito.done{background:var(--ok);color:#04210f}
 
   details.exercicio{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;transition:border-color .15s}
-  details.exercicio[open]{border-color:var(--accent)}
-  details.exercicio summary{padding:14px 16px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:12px;font-size:14px;font-weight:500;user-select:none}
-  details.exercicio summary::-webkit-details-marker{display:none}
   details.exercicio summary:hover{background:rgba(59,130,246,.05)}
-  .ex-num{flex:0 0 28px;height:28px;background:var(--bg-soft);color:var(--fg-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
-  details.exercicio[open] .ex-num{background:var(--accent);color:#fff}
-  .ex-nome{flex:1;font-weight:600}
-  .ex-serie{font-size:11px;padding:3px 8px;background:var(--bg-soft);color:var(--fg-dim);border-radius:10px;font-weight:600;white-space:nowrap}
-  .ex-toggle{flex:0 0 18px;color:var(--fg-dim);font-size:14px;transition:transform .2s}
-  details.exercicio[open] .ex-toggle{transform:rotate(180deg)}
-  .ex-conteudo{padding:0 16px 16px;display:grid;grid-template-columns:1fr;gap:14px}
-  @media(min-width:760px){.ex-conteudo{grid-template-columns:340px 1fr}}
-  .ex-video{background:#000;border-radius:8px;overflow:hidden;position:relative;aspect-ratio:9/16;max-width:280px;margin:0 auto}
-  .ex-video .video-poster{position:relative;display:block;width:100%;height:100%;background:#000;cursor:pointer;overflow:hidden}
-  .ex-video .video-poster img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s}
-  .ex-video .video-poster:hover img{opacity:.8}
-  .ex-video .play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;background:rgba(255,255,255,.95);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#000;font-size:24px;padding-left:4px;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:transform .15s}
-  .ex-video .video-poster:hover .play-btn{transform:translate(-50%,-50%) scale(1.1)}
-  .ex-video .video-poster iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
-  .ex-video .yt-link{display:block;text-align:center;padding:8px;background:var(--bg-soft);color:var(--accent);font-size:12px;text-decoration:none;font-weight:600}
-  .ex-video .yt-link:hover{background:var(--accent-soft)}
 
   .combo-videos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .combo-videos .combo-video{background:var(--bg-soft);border-radius:8px;padding:8px}
@@ -114,100 +41,21 @@
   .combo-videos .combo-video .video-poster:hover .play-btn{transform:translate(-50%,-50%) scale(1.1)}
   .combo-videos .combo-video .video-poster iframe{position:absolute;inset:0;width:100%;height:100%;border-radius:6px;border:0;display:block}
   .combo-videos .combo-video a.yt-mini{display:block;margin-top:4px;padding:3px 6px;background:var(--bg-card);color:var(--accent);text-align:center;text-decoration:none;font-size:10px;border-radius:4px;font-weight:600}
-
-  .ex-grupo{font-size:12px;color:var(--fg-dim);font-style:italic;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-  .ex-dicas{list-style:none;font-size:13px}
-  .ex-dicas li{padding:5px 0 5px 22px;position:relative;color:var(--fg)}
-  .ex-dicas li::before{position:absolute;left:0;top:5px;font-size:13px;font-weight:700}
-  .ex-dicas li.ok::before{content:"✓";color:var(--ok)}
-  .ex-dicas li.no::before{content:"✗";color:var(--danger)}
-  .ex-respira{margin-top:10px;padding:8px 10px;background:var(--bg-soft);border-radius:6px;font-size:12px;color:var(--fg-dim)}
-  .ex-respira strong{color:var(--fg)}
-  .ex-aviso{margin-top:10px;padding:8px 10px;background:var(--warn-soft);border-left:2px solid var(--warn);border-radius:4px;font-size:12px;color:#fde68a}
   .ex-adapt{margin-top:10px;padding:8px 10px;background:var(--accent-soft);border-left:2px solid var(--accent);border-radius:4px;font-size:12px;color:#bfdbfe}
-  .ex-adapt strong{color:#fff}
 
   /* ===== Técnica badge + explicação ===== */
   .tec-badge{display:inline-block;background:var(--roxo-soft);color:#e9d5ff;border:1px solid var(--roxo);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
   .tec-box{margin-bottom:12px;padding:9px 12px;background:var(--roxo-soft);border-left:2px solid var(--roxo);border-radius:6px;font-size:12px;color:#e9d5ff}
   .tec-box b{color:#fff}
 
-  /* ===== Peso tracker ===== */
-  .peso-track{margin-bottom:12px;padding:11px 12px;background:var(--bg-soft);border-radius:8px;border:1px solid var(--border)}
-  .peso-track .pt-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .peso-track label{font-size:11px;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.05em}
-  .peso-track input{width:78px;padding:8px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:7px;color:var(--fg);font-size:16px;font-weight:700;text-align:center;font-family:inherit}
-  .peso-track input:focus{outline:none;border-color:var(--accent)}
-  .peso-track .un{font-size:13px;color:var(--fg-dim)}
-  .peso-save{padding:8px 14px;background:var(--accent);color:#fff;border:0;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
-  .peso-save:active{transform:scale(.97)}
-  .peso-info{margin-top:8px;font-size:12px;color:var(--fg-dim);min-height:16px}
-  .peso-info .prog-up{color:var(--ok);font-weight:700}
-  .peso-info .prog-same{color:var(--fg-dim)}
-  .peso-info .prog-down{color:var(--warn);font-weight:700}
-  .peso-deload{margin-top:6px;font-size:12px;color:#fde68a;font-weight:600}
-
-  /* ===== Rest timer inline ===== */
-  .rest-timer{margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .rest-timer .rt-label{font-size:11px;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.05em}
-  .rest-btn{padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--fg);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;font-variant-numeric:tabular-nums}
-  .rest-btn:hover{border-color:var(--accent)}
-  .rest-btn.rodando{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .rest-btn.fim{background:var(--ok);color:#04210f;border-color:var(--ok)}
-
   /* ===== Prancha timer (reuso Fase 1) ===== */
   .prancha-timer{background:var(--bg-soft);border-radius:12px;padding:18px;margin-bottom:14px;text-align:center;border:2px solid var(--border);transition:border-color .2s}
-  .prancha-timer.rodando{border-color:var(--accent)}
-  .prancha-timer.pausado{border-color:var(--warn)}
-  .prancha-timer.pronto{border-color:var(--ok)}
-  .prancha-timer.completo{border-color:var(--ok);background:linear-gradient(180deg,var(--bg-soft),rgba(34,197,94,.08))}
-  .timer-serie{font-size:11px;color:var(--fg-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-  .timer-relogio{font-size:54px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1;margin:6px 0 12px}
-  .prancha-timer.completo .timer-relogio{color:var(--ok);font-size:48px}
-  .timer-progress{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:14px}
-  .timer-progress-bar{height:100%;background:var(--accent);width:0%;transition:width 1s linear}
-  .prancha-timer.completo .timer-progress-bar{background:var(--ok);width:100%!important}
-  .timer-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-  .timer-btn{padding:10px 18px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--fg);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
-  .timer-btn:hover{border-color:var(--accent);transform:translateY(-1px)}
-  .timer-btn-start{background:var(--ok);color:#fff;border-color:var(--ok)}
-  .timer-btn-pause{background:var(--warn);color:#000;border-color:var(--warn)}
-  .timer-btn-next{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .timer-series{display:flex;gap:8px;justify-content:center;margin-top:14px}
-  .serie-dot{width:11px;height:11px;border-radius:50%;background:var(--border);transition:all .2s}
   .serie-dot.active{background:var(--accent);box-shadow:0 0 0 3px rgba(59,130,246,.25)}
-  .serie-dot.done{background:var(--ok)}
-  @keyframes pulse-win{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-  .prancha-timer.completo .timer-relogio{animation:pulse-win .6s 3}
 
   /* carga rotulada (combos/super-série) */
   .peso-track .pt-nome{font-size:12px;color:var(--accent);font-weight:700;flex:1 0 100%;margin-bottom:2px}
-  /* frequência + previsão */
-  .freq-sel{padding:8px 10px;background:var(--bg-soft);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-size:13px;font-weight:600;font-family:inherit}
-  .prev-info{font-size:12px;color:var(--fg-dim);margin-top:3px}
-  .prev-info b{color:var(--fg)}
-  .prev-atraso{color:var(--warn);font-weight:600}
-  /* modal lembrete */
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:24px;z-index:100;animation:fadeIn .2s}
-  .modal-overlay[hidden]{display:none}
-  .modal-box{background:var(--bg-card);border:1px solid var(--accent);border-radius:16px;padding:24px 22px;max-width:340px;width:100%;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.6)}
-  .modal-emoji{font-size:38px;line-height:1;margin-bottom:6px}
-  .modal-box h3{font-size:18px;margin-bottom:8px}
-  .modal-box p{font-size:14px;color:var(--fg-dim);margin-bottom:18px}
-  .modal-box p b{color:var(--fg)}
-  .modal-actions{display:flex;flex-direction:column;gap:8px}
-  .modal-btn{padding:12px;border-radius:10px;border:1px solid var(--border);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
-  .modal-btn-ok{background:var(--ok);color:#04210f;border-color:var(--ok)}
-  .modal-btn-ir{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .modal-btn-off{background:transparent;color:var(--fg-dim)}
   .ex-aviso-medico{margin-top:10px;padding:10px 12px;background:rgba(239,68,68,.12);border-left:3px solid var(--danger);border-radius:4px;font-size:12px;color:#fecaca}
   .ex-aviso-medico strong{color:var(--danger)}
-  .ex-placeholder-vid{display:flex;align-items:center;justify-content:center;background:var(--bg-soft);aspect-ratio:9/16;max-width:280px;margin:0 auto;border-radius:8px;border:1px dashed var(--border);padding:16px;text-align:center}
-  .ex-placeholder-vid span{color:var(--fg-mute);font-size:12px;line-height:1.5}
-  footer{padding:24px 20px;text-align:center;font-size:11px;color:var(--fg-mute);border-top:1px solid var(--border);margin-top:30px}
-  footer a{color:var(--accent);text-decoration:none}
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--bg-card);border:1px solid var(--accent);color:var(--fg);padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.5)}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>

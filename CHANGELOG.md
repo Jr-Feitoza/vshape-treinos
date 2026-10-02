@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-02 — Refactor: estilo comum das 3 fases em `app.css`
+
+**Arquivos alterados:** `app.css` (novo), `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3), `sw.js`
+
+### Como
+
+- As 143 regras CSS idênticas nas 3 páginas (mesma ordem) saem para `app.css`, carregado antes do `<style>` de cada página
+- Cada página mantém as cores (`:root`) e as regras próprias; regras iguais mas com comentário diferente acima ficaram na página
+- `sw.js`: `app.css` no pré-cache; `CACHE_NAME` v10→v11
+
+### Verificação
+
+- Screenshots de todas as abas das 3 fases idênticos pixel a pixel à versão anterior à reorganização (`f661839`)
+
+---
+
 ## 2026-10-02 — Refactor: motor comum das 3 fases em `app.js`
 
 **Arquivos alterados:** `app.js` (novo), `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3), `sw.js`
