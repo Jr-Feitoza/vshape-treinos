@@ -620,7 +620,7 @@ function pesoTrackHTML(key, label){
   return `<div class="peso-track" data-key="${key}">
     <div class="pt-top">
       ${lbl}
-      <input type="number" inputmode="decimal" step="0.5" min="0" class="peso-input" placeholder="—">
+      <input type="text" inputmode="decimal" step="0.5" min="0" class="peso-input" placeholder="—">
       <span class="un">kg</span>
       <button class="peso-save" type="button">salvar</button>
     </div>
@@ -812,7 +812,8 @@ function wirePesos(){
     const input=pt.querySelector('.peso-input');
     const btn=pt.querySelector('.peso-save');
     const salvar=()=>{
-      const val=parseFloat(input.value.replace(',','.'));
+      const txt=input.value.trim().replace(',','.'); // aceita vírgula ou ponto
+      const val=/^\d+(\.\d+)?$/.test(txt)?parseFloat(txt):NaN;
       if(isNaN(val)||val<=0){ toast('Digite uma carga válida'); return; }
       const cur=pesos[key]||{};
       if(cur.atual!=null && cur.atual!==val){ cur.anterior=cur.atual; }

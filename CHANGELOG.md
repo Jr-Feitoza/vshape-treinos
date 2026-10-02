@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-10-02 — Fix: carga com vírgula era salva 10x maior
+
+**Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3)
+
+### Corrigido
+
+- Campo `type="number"`: o navegador descartava a vírgula antes do JS — "37,5" virava **375 kg** sem aviso (pt-BR e en-US)
+
+### Como
+
+- `pesoTrackHTML()`: `type="number"` → `type="text"` (`inputmode="decimal"` mantém o teclado numérico no celular)
+- `salvar()`: trim, vírgula → ponto e só aceita `37` / `37.5` / `37,5`; o resto dá "Digite uma carga válida"
+
+### Atenção
+
+- Cargas já salvas com o bug não têm como ser detectadas: conferir se alguma ficou 10x maior
+
+---
+
 ## 2026-10-02 — Fix: detalhes menores da auditoria
 
 **Arquivos alterados:** `index.html`, `fase2.html`, `fase3.html`, `manifest.json`, `CHANGELOG.md`
