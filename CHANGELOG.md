@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-10-03 — Fix: revisão dos vídeos (71 vídeos, 139 usos)
+
+**Arquivos alterados:** `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3)
+
+### Como foi revisado
+
+- Título real de cada vídeo via YouTube oEmbed (todos disponíveis e incorporáveis) + miniaturas (início/meio/fim) nos casos duvidosos
+
+### Corrigido
+
+- F1/F2 aquecimento: bike era propaganda (`v_h7lHYsV_U`) → `EYSBDytp0so` "Como regular a bike na academia"
+- F1 D Elevação pélvica: vídeo de ponte no step (`1gVulBzh43o`) → `JSRjx5pB5aM`
+- F2 A2 Supino máquina: vídeo de supino com barra livre (`DlpheiULcH0`) → `_4KDAZ59jkw` "Supino reto máquina"
+- F2 A2 Remada aberta máquina: vídeo de remada baixa com triângulo (`yZtFixy6_ek`) → `14GcffFimi0` "Remada articulada aberta"
+- F3 A3 Remada curvada com halteres: vídeo de remada serrote (`G2gbM0N2ey8`) → `T0cMo0KJXvs`
+- F3 A3 Abdominal curto: vídeo com halter (`Ka1g9oaajKg`), app manda sem peso → `hZVIstfFsIc` "Abdominal supra solo"
+- F3 C3 "Pulldown no cabo": texto descrevia tríceps, vídeo e execução real são de braço estendido → texto corrigido (nome, músculos e dicas)
+- F3 B3 Agachamento livre: feito só com o peso do corpo (como no vídeo) → sem campo de carga (`semCarga`); carga antiga, se houver, segue no armazenamento/backup
+
+### Mantido (aceitável)
+
+- F1 C Supino máquina mostra a máquina inclinada (texto não especifica); leg press com um vídeo genérico para as variações de pés
+
+---
+
 ## 2026-10-03 — Feat: Fase 4 — Consolidação (Semanas 13-16)
 
 **Arquivos alterados:** `fase4.html` (novo), `index.html`, `fase2.html`, `fase3.html` (link na barra de fases), `sw.js`, `manifest.json`
