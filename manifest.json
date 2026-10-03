@@ -1,7 +1,7 @@
 {
   "name": "V-Shape Treinos",
   "short_name": "V-Shape",
-  "description": "Treinos V-Shape Fases 1 a 3: videos de execucao, registro de cargas, timers e rotacao",
+  "description": "Treinos V-Shape Fases 1 a 4: videos de execucao, registro de cargas, timers e rotacao",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V-Shape Fase 4 — Consolidação</title>
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="V-Shape F4">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="stylesheet" href="./app.css">
+<style>
+  :root{
+    --bg:#0e0e10; --bg-card:#1a1a1f; --bg-soft:#25252b;
+    --fg:#ececef; --fg-dim:#9a9aa3; --fg-mute:#7e7e8a;
+    --accent:#0f766e; --accent-soft:#134e4a;
+    --warn:#f59e0b; --warn-soft:#3a2a0e;
+    --danger:#ef4444; --ok:#22c55e;
+    --roxo:#0f766e; --roxo-soft:#134e4a;
+    --border:#2a2a30;
+  }
+
+  /* ===== Estação (bi-set / triset / exercício único) ===== */
+  details.exercicio{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;transition:border-color .15s}
+  details.exercicio summary:hover{background:rgba(15,118,110,.08)}
+  .ex-adapt{margin-top:10px;padding:8px 10px;background:var(--accent-soft);border-left:2px solid var(--accent);border-radius:4px;font-size:12px;color:#ccfbf1}
+  .alerta strong,.tec-badge,.tec-box,.cardio-box{color:#ccfbf1}
+  .cardio-box strong{color:#5eead4}
+  .triset-ex-reps{font-size:12px;color:#5eead4;font-weight:700;margin-bottom:4px}
+  .triset-flow .tf-title,.ex-video .yt-link,.triset-ex-video .yt-mini,footer a{color:#5eead4}
+  .estacao-nota{margin-top:10px;font-size:12px;color:var(--fg-dim)}
+
+  /* ===== Prancha timer ===== */
+  .prancha-timer{background:var(--bg-soft);border-radius:12px;padding:18px;margin-bottom:14px;text-align:center;border:2px solid var(--border);transition:border-color .2s}
+  .serie-dot.active{background:var(--accent);box-shadow:0 0 0 3px rgba(20,184,166,.25)}
+
+  /* carga rotulada */
+  .peso-track .pt-nome{font-size:12px;color:var(--accent);font-weight:700;flex:1 0 100%;margin-bottom:2px}
+
+  /* ===== Progressão e nota da semana ===== */
+  .progressao{margin-top:10px;padding:12px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--fg-dim)}
+  .progressao strong{color:var(--fg)}
+  .progressao ul{margin:6px 0 0 18px}
+  .progressao li{margin-bottom:3px}
+  .semana-nota{margin-top:12px;padding:11px 13px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:8px;font-size:13px;color:#ccfbf1}
+  .semana-nota strong{color:#fff}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💎 V-Shape · Fase 4 — Consolidação</h1>
+  <div class="sub">Categoria C (Sobrepeso) · Semanas 13 a 16 · rotação A4 → B4 → C4 → D4</div>
+  <div class="fase-switch">
+    <a href="./index.html">Fase 1</a>
+    <a href="./fase2.html">Fase 2</a>
+    <a href="./fase3.html">Fase 3</a>
+    <a href="./fase4.html" class="on">Fase 4</a>
+  </div>
+  <div class="alerta">
+    <strong>Consolidação.</strong> Na Fase 3 a carga ficou parada de propósito. Agora ela volta a subir nos exercícios compostos — é o sinal que segura o músculo enquanto você seca. <strong>Os trisets continuam</strong> pra manter o gasto calórico, e cada estação usa um lugar só da academia.
+  </div>
+  <div class="progressao">
+    <strong>📈 Cargas e progressão</strong>
+    <ul>
+      <li><strong>Compostos (6–8 reps):</strong> cerca de 10–15% a mais do que você usava nos trisets da Fase 3. Termine cada série com 1–2 reps sobrando.</li>
+      <li><strong>Trisets (12 reps):</strong> mesma carga da Fase 3.</li>
+      <li><strong>Quando subir:</strong> completou 8 reps em todas as séries por 2 treinos seguidos → +2 kg nos halteres ou +5 kg nas máquinas.</li>
+    </ul>
+  </div>
+  <div class="sinais">
+    🚨 <strong>Sinais de alerta:</strong> tontura persistente · fraqueza/tremor · vômito repetido (&gt;2x) · dor articular &gt;2 dias → pare e me avisa no Telegram.
+  </div>
+</header>
+
+<!-- ===== Painel de controle ===== -->
+<section class="painel">
+  <h2>📊 Meu progresso</h2>
+  <div class="painel-row">
+    <div class="proximo-box">Próximo treino:<span class="proximo-tag" id="proximoTag">A4</span><div class="prev-info" id="previsaoInfo"></div></div>
+    <button class="rest-btn" id="irProximo" style="padding:8px 14px">Ir para o treino ▶</button>
+  </div>
+
+  <div class="painel-row" style="margin-top:12px">
+    <label class="semana-label" style="margin:0">Frequência prevista</label>
+    <select id="freqSel" class="freq-sel">
+      <option value="1">Todo dia</option>
+      <option value="2">A cada 2 dias</option>
+      <option value="3">A cada 3 dias</option>
+    </select>
+  </div>
+
+  <div class="semana-wrap">
+    <span class="semana-label">Semana do ciclo (13 a 16)</span>
+    <div class="semana-btns" id="semanaBtns">
+      <button data-sem="1">Sem 13</button>
+      <button data-sem="2">Sem 14</button>
+      <button data-sem="3">Sem 15</button>
+      <button data-sem="4">Sem 16</button>
+    </div>
+    <div class="semana-nota" data-semana-nota="1" hidden><strong>Sem 13 · encontrar as cargas novas.</strong> Compostos em 4×8. Trisets com a carga da Fase 3.</div>
+    <div class="semana-nota" data-semana-nota="2" hidden><strong>Sem 14 · subir a carga.</strong> Compostos em 4×6–8.</div>
+    <div class="semana-nota" data-semana-nota="3" hidden><strong>Sem 15 · intensificar.</strong> Rest-pause na última série dos compostos e descanso de 45 s nos trisets.</div>
+    <div class="semana-nota" data-semana-nota="4" hidden><strong>Sem 16 · retestar.</strong> Reteste as cargas dos compostos e meça cintura, peso e fotos.</div>
+  </div>
+
+  <div class="painel-actions">
+    <button id="btnExportar">⬇️ Exportar backup</button>
+    <button id="btnImportar">⬆️ Importar backup</button>
+    <button id="btnReset">↻ Resetar rotação</button>
+    <button id="btnDesfazer">↶ Desfazer último registro</button>
+  </div>
+  <input type="file" id="fileImport" accept="application/json" hidden>
+  <div class="hist-line" id="histLine"></div>
+</section>
+
+<!-- ===== Modal lembrete de treino ===== -->
+<div class="modal-overlay" id="modalLembrete" hidden>
+  <div class="modal-box">
+    <div class="modal-emoji">💎</div>
+    <h3>Treino de hoje</h3>
+    <p id="modalTxt"></p>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-ok" id="modalMarcar" type="button">✓ Já treinei — marcar feito</button>
+      <button class="modal-btn modal-btn-ir" id="modalIr" type="button">Abrir o treino ▶</button>
+      <button class="modal-btn modal-btn-off" id="modalDepois" type="button">Depois</button>
+    </div>
+  </div>
+</div>
+
+<nav class="tabs" role="tablist" id="tabs"></nav>
+
+<main id="main"></main>
+
+<footer>
+  <p>V-Shape <strong>Fase 4</strong> — Consolidação · Categoria C (Sobrepeso) · A4/B4/C4/D4</p>
+  <p>Força nos compostos + trisets por estação · progresso salvo no seu aparelho (localStorage)</p>
+  <p>🚨 Em caso de tontura, fraqueza, vômito repetido ou dor &gt;2 dias durante/após o treino, pare e me avise.</p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* Diferenças desta fase lidas pelo motor comum (app.js) */
+const FASE = { n:4, semanaDeload:0, semanaOffset:12, pranchaPadrao:45, metaDescanso:'', extraTreino:cardioBoxHTML };
+/* =========================================================
+   DADOS DA FASE 4 — CONSOLIDAÇÃO
+   Categoria C (Sobrepeso) · Semanas 13 a 16
+   Bloco de força (4×6–8) + trisets de 12 por estação
+   ========================================================= */
+const ORDEM = ['A4','B4','C4','D4'];
+
+const RESPIRA_PADRAO = 'expirar na força, inspirar na volta.';
+
+const PRANCHA_DICAS = [
+  ['Corpo em linha reta: cabeça → ombros → quadril → calcanhares','ok'],
+  ['Contraia glúteo + abdômen o tempo todo','ok'],
+  ['Cotovelos DEBAIXO dos ombros (90°)','ok'],
+  ['NÃO deixe o quadril cair (compensa lombar → dor)','no'],
+  ['NÃO suba o quadril (diminui o trabalho do core)','no']
+];
+
+const TEC = {
+  restpause:{t:'REST-PAUSE · SEM 15', d:'<b>Rest-pause (Sem 15):</b> na <b>última série</b>, ao chegar perto da falha, pause 10–15 s e faça mais 2–4 reps com a mesma carga. Conta como 1 série.'},
+  drop:     {t:'DROP', d:'<b>Drop-set:</b> na <b>última série</b>, ao chegar na falha, reduza a carga na hora e continue até a falha de novo, sem descanso.'}
+};
+
+// descansos: força 90 s (Hack 2 min); trisets 60 s, 45 s na Sem 15
+const D_FORCA = [{seg:90, txt:'90s'}];
+const D_HACK  = [{seg:120, txt:'2 min'}];
+const D_TRI   = [{seg:60, txt:'60s'}, {seg:45, txt:'45s · Sem 15'}];
+const D_BI    = [{seg:60, txt:'60s'}];
+
+/*
+  Cada treino: bike + prancha + 3 estações.
+  Estação → { tipo:'estacao', modo:'unico'|'biset'|'triset', nome, series, descansos, tec:[], nota, exs:[{nome,reps,vid,grupo,dicas,semCarga}] }
+*/
+const TREINOS = {
+  A4:{
+    nome:'Treino A4 — Empurrar', foco:'Peito + ombro + tríceps',
+    dia:'Rotação · dia 1', dur:'~60 min', reps:'Força 4×6–8 + trisets 3×12', descanso:'90 s força · 60 s trisets',
+    ex:[
+      {tipo:'bike'},
+      {tipo:'prancha', serie:'3x45s', seg:45},
+      {tipo:'estacao', modo:'biset', nome:'Estação 1 · banco ajustável + halteres', series:'4 séries', descansos:D_FORCA, tec:['restpause'],
+       nota:'É só levantar o encosto do banco entre um e outro.', exs:[
+        {nome:'Supino inclinado com halteres', reps:'6–8', vid:['lmwCGtNJmw0'],
+         grupo:'Peitoral clavicular, deltoide anterior, tríceps',
+         dicas:[['Banco a 30-45°, pés firmes no chão','ok'],['Escápulas retraídas e debaixo do banco','ok'],['Halteres descem na linha do peitoral','ok'],['NÃO bater os halteres no topo','no']]},
+        {nome:'Desenvolvimento sentado com halteres', reps:'8', vid:['5I7ogOjvdnc'],
+         grupo:'Deltoide (anterior e medial), tríceps',
+         dicas:[['Sentado no banco com apoio lombar','ok'],['Halteres na altura dos ombros no início','ok'],['Sobe até o topo sem bater os halteres','ok'],['NÃO travar o cotovelo no topo','no'],['NÃO jogar a lombar pra trás','no']]}
+      ]},
+      {tipo:'estacao', modo:'triset', nome:'Estação 2 · mesmo banco', series:'3 voltas', descansos:D_TRI, exs:[
+        {nome:'Supino reto com halteres', reps:'12', vid:['y0UsxH8bKgg'],
+         grupo:'Peitoral maior, deltoide anterior, tríceps',
+         dicas:[['Deitado no banco reto, pés firmes','ok'],['Escápulas retraídas, halteres na linha do peitoral','ok'],['Empurra sem travar cotovelo, controla a descida','ok'],['NÃO arquear a lombar em excesso','no']]},
+        {nome:'Elevação lateral com halteres', reps:'15', vid:['qIq5thMEws0'],
+         grupo:'Deltoide medial',
+         dicas:[['Halteres sobem até a altura do ombro (não acima)','ok'],['Polegar pra cima, cotovelos levemente flexionados','ok'],['Carga LEVE — foco é pump, não força','ok'],['NÃO subir acima do ombro (manguito)','no']]},
+        {nome:'Tríceps testa com halteres', reps:'12', vid:['Cd0-tP9utgM'],
+         grupo:'Tríceps (cabeças longa e lateral)',
+         dicas:[['Deitado no banco, halteres acima do peito','ok'],['Cotovelos fixos apontando pro teto','ok'],['Desce os halteres até perto das orelhas','ok'],['NÃO abrir os cotovelos pros lados','no']]}
+      ]},
+      {tipo:'estacao', modo:'biset', nome:'Estação 3 · banco + halteres', series:'3 séries', descansos:D_BI, tec:['drop'],
+       nota:'Carga do crucifixo: cerca de metade da do supino com halteres.', finalizar:true, exs:[
+        {nome:'Crucifixo inclinado com halteres', reps:'12', vid:['oQARSPqhvs8'],
+         grupo:'Peitoral (ênfase clavicular), deltoide anterior',
+         dicas:[['Banco a 30°','ok'],['Cotovelos levemente flexionados e fixos durante todo o movimento','ok'],['Desce até sentir o peitoral alongar, sem passar da linha do ombro','ok'],['Sobe "abraçando uma árvore" e para antes de os halteres se encostarem','ok']]},
+        {nome:'Tríceps francês com halter (sentado)', reps:'15', vid:['9EkGm94Q2Ms'],
+         grupo:'Tríceps (ênfase cabeça longa)',
+         dicas:[['Sentado no banco com apoio nas costas, halter seguro com as duas mãos atrás da cabeça','ok'],['Cotovelos apontando pra cima e próximos da cabeça','ok'],['Estende os braços até em cima, desce controlado','ok'],['NÃO abrir os cotovelos pros lados','no'],['NÃO arquear a lombar pra compensar','no']]}
+      ]}
+    ]
+  },
+  B4:{
+    nome:'Treino B4 — Perna (quadríceps)', foco:'Quadríceps + glúteo + panturrilha',
+    dia:'Rotação · dia 2', dur:'~60 min', reps:'Força 4×6–8 + trisets 3×12', descanso:'2 min Hack · 60 s trisets',
+    ex:[
+      {tipo:'bike'},
+      {tipo:'prancha', serie:'3x45s', seg:45},
+      {tipo:'estacao', modo:'unico', nome:'Estação 1 · Hack', series:'4 séries', descansos:D_HACK, tec:['restpause'],
+       nota:'É o exercício mais pesado do ciclo.', exs:[
+        {nome:'Agachamento no Hack', reps:'6–8', vid:['Whp712OHPl8'],
+         grupo:'Quadríceps, glúteos',
+         dicas:[['Costas e quadril colados no encosto o tempo todo','ok'],['Pés na largura dos ombros, no meio da plataforma','ok'],['Desce controlado até ~90° (sem descolar a lombar)','ok'],['NÃO travar o joelho em cima','no'],['NÃO deixar os joelhos caírem pra dentro','no']]}
+      ]},
+      {tipo:'estacao', modo:'triset', nome:'Estação 2 · Leg Press 45° (triset na própria máquina)', series:'3 voltas', descansos:D_TRI, exs:[
+        {nome:'Leg press 45° — pés baixos e juntos', reps:'12', vid:['k4T_Ono5UN4'],
+         grupo:'Quadríceps (ênfase vasto lateral)',
+         dicas:[['Pés na parte baixa da plataforma, na largura do quadril','ok'],['Lombar TOTALMENTE colada no banco','ok'],['Desce até onde o calcanhar não descola','ok'],['NÃO tirar o quadril do banco','no']]},
+        {nome:'Leg press 45° — pés abertos', reps:'12', vid:['k4T_Ono5UN4'],
+         grupo:'Quadríceps, adutores, glúteos',
+         dicas:[['Pés mais afastados e mais altos na plataforma','ok'],['Mesma segurança de lombar do leg normal','ok'],['Ênfase maior em adutores e glúteos','ok'],['NÃO travar o joelho em cima','no']]},
+        {nome:'Panturrilha no leg press', reps:'20', vid:['mL23-bJ8J4o'],
+         grupo:'Gastrocnêmio, sóleo',
+         dicas:[['Trava de segurança da máquina SEMPRE engatada','ok'],['Só a ponta dos pés na borda de baixo da plataforma','ok'],['Joelhos estendidos (sem travar), amplitude total','ok'],['NÃO dobrar os joelhos pra ajudar','no']]}
+      ]},
+      {tipo:'estacao', modo:'triset', nome:'Estação 3 · halteres', series:'3 voltas', descansos:D_TRI, finalizar:true, hiit:true, exs:[
+        {nome:'Afundo alternado com halteres', reps:'10 por perna', vid:['fu_y_h3X7xE'],
+         grupo:'Quadríceps, glúteos, posteriores, estabilizadores',
+         dicas:[['Passo à frente, joelho de trás quase toca o chão','ok'],['Joelho da frente não ultrapassa a ponta do pé','ok'],['Tronco ereto, core firme','ok'],['NÃO inclinar o tronco pra frente','no']]},
+        {nome:'Agachamento sumo com halteres', reps:'12', vid:['Aan8qfVv7l0'],
+         grupo:'Quadríceps, adutores, glúteos',
+         dicas:[['Pés bem afastados, pontas pra fora (45°)','ok'],['Segura 1 halter à frente do corpo','ok'],['Desce até as coxas ficarem paralelas ao chão','ok'],['NÃO deixar os joelhos caírem pra dentro','no']]},
+        {nome:'Panturrilha livre', reps:'20', vid:['fVGkOlkOrnA'], semCarga:true,
+         grupo:'Gastrocnêmio, sóleo',
+         dicas:[['Em pé, pés na largura do quadril','ok'],['Sobe na ponta dos pés o máximo possível','ok'],['2s no topo, desce devagar até o calcanhar quase tocar','ok'],['NÃO fazer rápido (perde tensão)','no']]}
+      ]}
+    ]
+  },
+  C4:{
+    nome:'Treino C4 — Puxar', foco:'Costas (o foco do V) + ombro posterior + bíceps',
+    dia:'Rotação · dia 3', dur:'~60 min', reps:'Força 4×6–8 + trisets 3×12', descanso:'90 s força · 60 s trisets',
+    ex:[
+      {tipo:'bike'},
+      {tipo:'prancha', serie:'3x45s', seg:45},
+      {tipo:'estacao', modo:'biset', nome:'Estação 1 · puxador', series:'4 séries', descansos:D_FORCA, tec:['restpause'],
+       nota:'Só troca a pegada entre um e outro.', exs:[
+        {nome:'Puxada frente aberta', reps:'6–8', vid:['KXYRiP_crFU'],
+         grupo:'Dorsais (latíssimo do dorso), romboides, bíceps',
+         dicas:[['Pegada um pouco mais aberta que a largura dos ombros','ok'],['Puxa cotovelos PRA BAIXO E PRA TRÁS','ok'],['Peito "vai na barra" — 1-2s de contração no final','ok'],['NÃO jogar a cabeça pra trás (machuca cervical)','no'],['NÃO usar impulso do tronco','no']]},
+        {nome:'Puxada frente supinada', reps:'8', vid:['Uj58KaUkEEQ'],
+         grupo:'Dorsais, bíceps (ênfase em braquial)',
+         dicas:[['Pegada supinada (palmas pra você), largura dos ombros','ok'],['Cotovelos pra baixo e pra trás, peito na barra','ok'],['NÃO usar impulso','no']]}
+      ]},
+      {tipo:'estacao', modo:'triset', nome:'Estação 2 · banco + halteres', series:'3 voltas', descansos:D_TRI, exs:[
+        {nome:'Remada serrote', reps:'10 por lado', vid:['G2gbM0N2ey8'],
+         grupo:'Dorsais, romboides, deltoide posterior, bíceps',
+         dicas:[['Joelho e mão do mesmo lado apoiados no banco, costas retas','ok'],['Puxa o halter em direção ao quadril, cotovelo rente ao corpo','ok'],['Contrai a escápula no fim, desce controlado','ok'],['NÃO girar o tronco pra subir o peso','no']]},
+        {nome:'Crucifixo inverso com halteres', reps:'15', vid:['neiVTL2U5Qo'],
+         grupo:'Deltoide posterior, romboides, trapézio',
+         dicas:[['Peito apoiado no banco inclinado','ok'],['Abre os braços até a linha dos ombros, cotovelos levemente flexionados','ok'],['Carga LEVE, contrai a escápula no fim','ok'],['NÃO encolher os ombros nas orelhas','no']]},
+        {nome:'Rosca martelo', reps:'12', vid:['GJsi_Yw1TPo'],
+         grupo:'Braquial, braquiorradial, bíceps',
+         dicas:[['Pegada neutra (polegar pra cima)','ok'],['Cotovelos fixos ao lado do tronco','ok'],['Sobe controlado, contrai no topo 1s','ok'],['NÃO balançar o tronco','no']]}
+      ]},
+      {tipo:'estacao', modo:'triset', nome:'Estação 3 · polia', series:'3 voltas', descansos:D_TRI, finalizar:true, exs:[
+        {nome:'Remada alta no cabo', reps:'12', vid:['rs56tSeqOiA'],
+         grupo:'Trapézio, deltoide posterior, romboides',
+         dicas:[['Barra reta ou corda, pegada pronada','ok'],['Puxa em direção ao peito, cotovelos ALTOS','ok'],['Contrai escapular no fim, volta controlado','ok'],['NÃO encolher os ombros nas orelhas','no']]},
+        {nome:'Rosca direta no cabo', reps:'12', vid:['x6JCKfdzPJE'],
+         grupo:'Bíceps (cabeças longa e curta)',
+         dicas:[['Barra reta, pegada supinada na largura dos ombros','ok'],['Cotovelos fixos ao lado do tronco','ok'],['Sobe controlado, contrai no topo 1s','ok'],['NÃO balançar o tronco','no']]},
+        {nome:'Pulldown com braço estendido', reps:'15', vid:['Lgr9JqdRp3M'],
+         grupo:'Dorsais (latíssimo do dorso), redondo maior',
+         dicas:[['Polia alta, barra reta, tronco levemente inclinado à frente','ok'],['Braços quase retos (cotovelos levemente flexionados) o tempo todo','ok'],['Leva a barra da altura da cabeça até as coxas contraindo as costas','ok'],['NÃO dobrar os cotovelos (vira tríceps)','no'],['NÃO usar impulso do tronco','no']]}
+      ]}
+    ]
+  },
+  D4:{
+    nome:'Treino D4 — Perna (posterior + glúteo)', foco:'Posterior de coxa + glúteo + panturrilha + core',
+    dia:'Rotação · dia 4', dur:'~60 min', reps:'Força 4×8 + bi-set 4×12 + triset', descanso:'90 s força · 60 s demais',
+    ex:[
+      {tipo:'bike'},
+      {tipo:'prancha', serie:'3x45s', seg:45},
+      {tipo:'estacao', modo:'biset', nome:'Estação 1 · halteres + banco', series:'4 séries', descansos:D_FORCA, tec:['restpause'], exs:[
+        {nome:'Stiff com halteres', reps:'8', vid:['SRVkwwXk7I4'],
+         grupo:'Posteriores de coxa, glúteos, lombar',
+         dicas:[['Joelhos levemente flexionados, costas RETAS','ok'],['Halteres descem rente às pernas até sentir alongar posterior','ok'],['Sobe contraindo glúteo no final','ok'],['NÃO arredondar a lombar','no']]},
+        {nome:'Elevação pélvica com halter', reps:'10', vid:['JSRjx5pB5aM'],
+         grupo:'Glúteo máximo, posteriores',
+         dicas:[['Escápulas apoiadas na borda do banco, halter sobre o quadril','ok'],['Pés firmes, joelhos a ~90° no topo','ok'],['Sobe contraindo o glúteo, 1-2s no topo','ok'],['NÃO arquear a lombar — queixo levemente pra dentro','no']]}
+      ]},
+      {tipo:'estacao', modo:'biset', nome:'Estação 2 · mesa flexora', series:'4 séries', descansos:D_BI, tec:['drop'],
+       nota:'Drop-set só na última série da flexora.', exs:[
+        {nome:'Mesa flexora', reps:'12', vid:['2-ULaRrQa7c'],
+         grupo:'Posteriores de coxa',
+         dicas:[['Deitado de bruços, joelho alinhado com o eixo da máquina','ok'],['Almofada ACIMA do tornozelo','ok'],['Puxa o calcanhar em direção ao glúteo, desce controlado','ok'],['NÃO levantar o quadril do banco','no']]},
+        {nome:'Panturrilha unilateral com halter', reps:'15', vid:['eKM9BEkK9o4'],
+         grupo:'Gastrocnêmio, sóleo',
+         dicas:[['Halter na mão do lado que trabalha, a outra mão apoiada','ok'],['Ponta do pé num degrau ou anilha, calcanhar livre','ok'],['Sobe o máximo, 1-2s no topo, desce alongando','ok'],['NÃO fazer rápido (perde tensão)','no']]}
+      ]},
+      {tipo:'estacao', modo:'triset', nome:'Estação 3 · solo', series:'3 voltas', descansos:D_TRI, finalizar:true, hiit:true, exs:[
+        {nome:'Ponte glútea', reps:'15', vid:['1satDE63Bwc'], semCarga:true,
+         grupo:'Glúteo máximo, posteriores, core',
+         dicas:[['Deitado, joelhos flexionados, pés no chão','ok'],['Sobe o quadril contraindo glúteo FORTE','ok'],['2s no topo, desce devagar','ok'],['NÃO empurrar pela lombar','no']]},
+        {nome:'Abdominal remador', reps:'15', vid:['Au9VMxWm7jE'], semCarga:true,
+         grupo:'Reto abdominal, oblíquos, flexores do quadril',
+         dicas:[['Antebraços nos estofados, mãos nas alças','ok'],['Flexiona joelhos em direção ao peito','ok'],['Contrai abdômen 1s no fim, volta devagar','ok'],['NÃO puxar com os braços — motor é o core','no']]},
+        {nome:'Prancha', reps:'45 s', vid:['ldMjBgrYEfg'], semCarga:true,
+         grupo:'Core: reto abdominal, transverso, oblíquos',
+         dicas:PRANCHA_DICAS.slice(0,4)}
+      ]}
+    ]
+  }
+};
+
+function restTimerHTML(descansos, label){
+  return `<div class="rest-timer">
+    <span class="rt-label">${label||'Descanso:'}</span>
+    ${descansos.map(d=>`<button class="rest-btn" type="button" data-rest="${d.seg}">${d.txt}</button>`).join('\n    ')}
+  </div>`;
+}
+
+function trisetVideoHTML(vid, nome){
+  if(!vid) return `<div class="triset-placeholder"><span>🎬 Busque "${nome}" no YouTube</span></div>`;
+  return `<div class="triset-ex-video">${videoPosterHTML(vid,nome)}<a class="yt-mini" href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener">↗ YouTube</a></div>`;
+}
+
+const COMO_FAZER = {
+  unico:  n=>[`Faça as séries com descanso completo entre elas`],
+  biset:  n=>[`Faça os 2 exercícios em sequência, sem descanso entre eles`,`Descanse só depois do par`],
+  triset: n=>[`Faça os 3 exercícios em sequência, sem descanso entre eles`,`Descanse só depois da volta completa`]
+};
+
+function exercicioHTML(treinoId, idx, ex){
+  // Aquecimento (bike)
+  if(ex.tipo==='bike'){
+    return `<details class="exercicio">
+      <summary><span class="ex-num">0</span><span class="ex-nome">Bike (aquecimento)</span><span class="ex-serie">10 min</span><span class="ex-toggle">▾</span></summary>
+      <div class="ex-conteudo">
+        <div class="ex-video">${videoPosterHTML('EYSBDytp0so','Como regular a bike na academia')}<a class="yt-link" href="https://www.youtube.com/watch?v=EYSBDytp0so" target="_blank" rel="noopener">↗ Abrir no YouTube</a></div>
+        <div>
+          <div class="ex-grupo">Cardiovascular / aquecimento geral</div>
+          <ul class="ex-dicas">
+            <li class="ok">Banco regulado: joelho levemente flexionado com o pedal embaixo</li>
+            <li class="ok">Carga leve a moderada, cadência confortável</li>
+            <li class="ok">Aproveita pra hidratar (300-400ml)</li>
+            <li class="no">Não é HIIT — objetivo é aquecer, não cansar</li>
+          </ul>
+        </div>
+      </div>
+    </details>`;
+  }
+
+  // Prancha (core)
+  if(ex.tipo==='prancha'){
+    const pdicas=PRANCHA_DICAS.map(d=>`<li class="${d[1]}">${d[0]}</li>`).join('');
+    return `<details class="exercicio">
+      <summary><span class="ex-num">1</span><span class="ex-nome">Prancha isométrica</span><span class="ex-serie">${ex.serie}</span><span class="ex-toggle">▾</span></summary>
+      <div class="ex-conteudo">
+        <div class="ex-video">${videoPosterHTML('ldMjBgrYEfg','Prancha isométrica')}<a class="yt-link" href="https://www.youtube.com/watch?v=ldMjBgrYEfg" target="_blank" rel="noopener">↗ Abrir no YouTube</a></div>
+        <div>
+          <div class="ex-grupo">Core: reto abdominal, transverso, oblíquos</div>
+          ${pranchaHTML(ex.seg)}
+          <ul class="ex-dicas" style="margin-top:14px">${pdicas}</ul>
+          <div class="ex-respira"><strong>Respiração:</strong> lenta, nunca prender o ar.</div>
+        </div>
+      </div>
+    </details>`;
+  }
+
+  // Estação: exercício único, bi-set ou triset
+  if(ex.tipo==='estacao'){
+    const exsHTML = ex.exs.map((e,i)=>{
+      const letra = String.fromCharCode(65+i); // A, B, C
+      const dicas = e.dicas.map(d=>`<li class="${d[1]}">${d[0]}</li>`).join('');
+      return `<div class="triset-ex">
+        <div class="triset-ex-nome">${letra}) ${e.nome}</div>
+        <div class="triset-ex-reps">${e.reps} reps</div>
+        <div class="triset-ex-grupo">${e.grupo}</div>
+        ${trisetVideoHTML(e.vid?e.vid[0]:null, e.nome)}
+        ${e.semCarga?'':pesoTrackHTML(`${treinoId}-g${idx}-${i}`)}
+        <ul class="triset-ex-dicas">${dicas}</ul>
+      </div>`;
+    }).join('');
+    const tecs = (ex.tec||[]).map(k=>TEC[k]);
+    const badges = tecs.map(t=>`<span class="tec-badge">${t.t}</span>`).join('');
+    const tecBox = tecs.map(t=>`<div class="tec-box">${t.d}</div>`).join('');
+    const passos = COMO_FAZER[ex.modo]().map(p=>`<li>${p}</li>`).join('');
+    const finalizarBloco = ex.finalizar ? `<div class="ex-aviso" style="margin-top:10px">🏁 <strong>Finalizar o treino:</strong> + 10–15 min de escada, bike ou transport.${ex.hiit?' Hoje é dia de <strong>HIIT de 15 min</strong> (2x por semana: B4 e D4).':''}</div>` : '';
+
+    return `<details class="exercicio">
+      <summary><span class="ex-num">${idx}</span><span class="ex-nome">${ex.nome}${badges}</span><span class="ex-serie">${ex.series}</span><span class="ex-toggle">▾</span></summary>
+      <div class="ex-conteudo" style="grid-template-columns:1fr">
+        <div>
+          ${tecBox}
+          <div class="triset-flow">
+            <div class="tf-title">📋 Como executar (${ex.series}):</div>
+            <ol>${passos}</ol>
+          </div>
+          ${ex.nota?`<div class="estacao-nota">💡 ${ex.nota}</div>`:''}
+          <div class="triset-grid" style="margin-top:14px">${exsHTML}</div>
+          ${restTimerHTML(ex.descansos, 'Descanso:')}
+          <div class="ex-respira"><strong>Respiração:</strong> ${RESPIRA_PADRAO}</div>
+          ${finalizarBloco}
+        </div>
+      </div>
+    </details>`;
+  }
+}
+
+/* ===== Cardio box ===== */
+function cardioBoxHTML(){
+  return `<div class="cardio-box">
+    <strong>🏃 CARDIO DA FASE 4</strong>
+    <p>2 HIITs de 15 min por semana, no fim do B4 e do D4. Nos dias sem musculação: 40 min de caminhada ou bike leve.</p>
+  </div>`;
+}
+</script>
+<script src="./app.js"></script>
+</body>
+</html>

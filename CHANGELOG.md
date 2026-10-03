@@ -1,5 +1,35 @@
 # Changelog
 
+## 2026-10-03 — Feat: Fase 4 — Consolidação (Semanas 13-16)
+
+**Arquivos alterados:** `fase4.html` (novo), `index.html`, `fase2.html`, `fase3.html` (link na barra de fases), `sw.js`, `manifest.json`
+
+### Adicionado
+
+- **Fase 4** na estrutura comum (`app.js`/`app.css`): A4 Empurrar · B4 Perna (quadríceps) · C4 Puxar · D4 Perna (posterior + glúteo)
+- Cada treino: bike 10 min + prancha 3×45s + 3 estações (bloco de força 4×6–8 com 90 s — Hack 2 min — e trisets/bi-sets de 12 com 60 s, 45 s na Sem 15) + finalização; HIIT 15 min no fim do B4 e do D4
+- Carga por exercício (chave `<treino>-g<estação>-<exercício>`), sem campo nos de peso do corpo
+- Semanas 13–16 sem deload (`semanaDeload:0`) e com nota por semana (cargas novas → subir → rest-pause e 45 s → retestar e medir)
+- A4 Estação 3 com crucifixo inclinado ↔ tríceps francês (alternativa ao crossover); C4 Estação 3 com pulldown de braço estendido (dorsais)
+- Tema verde-azulado (`#0f766e`); `fase4.html` no pré-cache, `CACHE_NAME` v11→v12
+
+### Vídeos
+
+- Todos conferidos pelo título no YouTube antes de entrar. Novos: Hack, panturrilha no leg press, crucifixo inclinado, tríceps francês sentado, crucifixo inverso com halteres, mesa flexora, panturrilha unilateral e bike (regulagem)
+
+### Fora do app (de propósito)
+
+- Repositório e site são públicos: medidas pessoais, medicação e metas numéricas não entram
+
+### Pendências encontradas (Fases 1–3, não alteradas)
+
+- Fase 3 "Pulldown no cabo": texto descreve tríceps, vídeo `Lgr9JqdRp3M` mostra pulldown de braço estendido (dorsais)
+- Fase 3 "Remada curvada com halteres": vídeo `G2gbM0N2ey8` é de remada serrote
+- Fase 1 "Elevação pélvica": vídeo `1gVulBzh43o` é de ponte de glúteo no step
+- Fases 1/2 bike: vídeo `v_h7lHYsV_U` é propaganda de bicicleta, não aula de execução
+
+---
+
 ## 2026-10-02 — Refactor: motor pronto para a Fase 4
 
 **Arquivos alterados:** `app.js`, `app.css`, `index.html` (Fase 1), `fase2.html` (Fase 2), `fase3.html` (Fase 3)
